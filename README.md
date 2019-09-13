@@ -1,3 +1,3 @@
 # api
 
-#https://developer.okta.com/blog/2018/11/15/node-express-typescript
+https://medium.com/javascript-in-plain-english/creating-a-rest-api-with-jwt-authentication-and-role-based-authorization-using-typescript-fbfa3cab22a4
