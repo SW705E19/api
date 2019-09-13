@@ -23,9 +23,12 @@
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
       "ts-node-dev": "^1.0.0-pre.42",
-      "typeorm": "0.2.18"
+      "typeorm": "^0.2.18"
    },
    "scripts": {
-      "start": "ts-node src/index.ts"
+      "tsc": "tsc",
+      "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
+      "prod": "tsc && node ./build/app.js",
+      "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
    }
 }
