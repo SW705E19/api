@@ -20,7 +20,7 @@ static listAll = async (req: Request, res: Response) => {
 
 static getOneById = async (req: Request, res: Response) => {
   //Get the ID from the url
-  const id: string = req.params.id;                                                                 // TODO Changed to string from number 
+  const id: string = req.params.id;                                                                 
 
   //Get the user from database
   const userRepository = getRepository(User);
@@ -93,7 +93,7 @@ static editUser = async (req: Request, res: Response) => {
     return;
   }
 
-  //Try to safe, if fails, that means username already in use
+  //Try to save, if it fails that means username already in use
   try {
     await userRepository.save(user);
   } catch (e) {
@@ -101,7 +101,7 @@ static editUser = async (req: Request, res: Response) => {
     return;
   }
   //After all send a 204 (no content, but accepted) response
-  res.status(204).send();
+  res.status(204).send("User updated");
 };
 
 static deleteUser = async (req: Request, res: Response) => {

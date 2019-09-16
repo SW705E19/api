@@ -66,7 +66,7 @@ class AuthController {
       return;
     }
 
-    //Validate de model (password lenght)
+    //Validate the model (password lenght)
     user.password = newPassword;
     const errors = await validate(user);
     if (errors.length > 0) {

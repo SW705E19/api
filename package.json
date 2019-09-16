@@ -1,7 +1,7 @@
 {
-   "name": "new-typeorm-project",
+   "name": "sw705e19-project-api",
    "version": "0.0.1",
-   "description": "Awesome project developed with TypeORM.",
+   "description": "Node-js api for tutor website",
    "devDependencies": {
       "@types/jest": "^24.0.18",
       "@types/node": "^8.0.29",
@@ -13,14 +13,18 @@
    "dependencies": {
       "@types/bcryptjs": "^2.4.2",
       "@types/body-parser": "^1.17.1",
+      "@types/bunyan": "^1.8.6",
       "@types/cors": "^2.8.6",
       "@types/helmet": "0.0.44",
       "@types/jsonwebtoken": "^8.3.3",
       "bcryptjs": "^2.4.3",
       "body-parser": "^1.18.1",
+      "bunyan": "^1.8.12",
+      "bunyan-express-serializer": "^1.0.0",
       "class-validator": "^0.10.0",
       "cors": "^2.8.5",
       "express": "^4.15.4",
+      "express-request-id": "^1.4.1",
       "helmet": "^3.21.0",
       "jsonwebtoken": "^8.5.1",
       "reflect-metadata": "^0.1.10",

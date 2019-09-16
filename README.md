@@ -4,10 +4,6 @@ You should run npm install to get all node modules.
 
 You should have sqlite installed to see the database file.
 
-To create an admin user in your local sqlite database run this command:
-
-> typeorm migration:create -n CreateAdminUser
-
 npm start to start the server - listen on localhost:3000
 
 npx jest to run tests.
