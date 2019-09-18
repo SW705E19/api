@@ -30,7 +30,7 @@ class AuthController {
       return;
     }
 
-    //Sing JWT, valid for 1 hour
+    //Sign JWT, valid for 1 hour
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       config.jwtSecret,
@@ -60,13 +60,13 @@ class AuthController {
       res.status(401).send();
     }
 
-    //Check if old password matchs
+    //Check if old password is the same
     if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) {
       res.status(401).send();
       return;
     }
 
-    //Validate the model (password lenght)
+    //Validate the model (password length)
     user.password = newPassword;
     const errors = await validate(user);
     if (errors.length > 0) {
