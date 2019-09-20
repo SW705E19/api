@@ -1,7 +1,7 @@
-
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { validate } from "class-validator";
+import userLogger from '../logging/users/userLogger';
 
 import { User } from "../entity/User";
 
@@ -20,7 +20,7 @@ static listAll = async (req: Request, res: Response) => {
 
 static getOneById = async (req: Request, res: Response) => {
   //Get the ID from the url
-  const id: string = req.params.id;                                                                 
+  const id: string = req.params.id;
 
   //Get the user from database
   const userRepository = getRepository(User);
@@ -63,6 +63,8 @@ static newUser = async (req: Request, res: Response) => {
   }
 
   //If all ok, send 201 response
+  var userInfoForLog = "Created: " + user.id.toString() + ", " + user.username + ", " + user.role + ", " + user.createdAt.toString();
+  userLogger.info(userInfoForLog);
   res.status(201).send("User created");
 };
 
@@ -93,7 +95,7 @@ static editUser = async (req: Request, res: Response) => {
     return;
   }
 
-  //Try to save, if it fails that means username already in use
+  //Try to safe, if fails, that means username already in use
   try {
     await userRepository.save(user);
   } catch (e) {
@@ -101,7 +103,7 @@ static editUser = async (req: Request, res: Response) => {
     return;
   }
   //After all send a 204 (no content, but accepted) response
-  res.status(204).send("User updated");
+  res.status(204).send();
 };
 
 static deleteUser = async (req: Request, res: Response) => {
@@ -117,6 +119,9 @@ static deleteUser = async (req: Request, res: Response) => {
     return;
   }
   userRepository.delete(id);
+
+  var deletedInfoForLog = "Deletion: " + user.username +", " + user.role;
+  userLogger.info(deletedInfoForLog);
 
   //After all send a 204 (no content, but accepted) response
   res.status(204).send();
