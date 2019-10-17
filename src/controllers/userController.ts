@@ -95,7 +95,7 @@ static editUser = async (req: Request, res: Response) => {
     return;
   }
 
-  //Try to safe, if fails, that means username already in use
+  //Try to save, if fails, that means username already in use
   try {
     await userRepository.save(user);
   } catch (e) {

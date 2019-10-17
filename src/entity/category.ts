@@ -3,11 +3,11 @@ import {
     PrimaryGeneratedColumn,
     Column,
     Unique,
-    CreateDateColumn,
-    UpdateDateColumn
+    ManyToMany,
+    JoinTable
   } from "typeorm";
   import { Length, IsNotEmpty } from "class-validator";
-  import * as bcrypt from "bcryptjs";
+  import { Tutor } from "./tutor";
 
   @Entity()
   @Unique(["name"])
@@ -18,4 +18,12 @@ import {
       @Column()
       @Length(2, 40)
       name: string;
+
+      @Column()
+      @Length(2, 200)
+      description: string;
+
+      @ManyToMany(type => Tutor)
+      @JoinTable()
+      tutor: Tutor[];
   }

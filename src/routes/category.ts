@@ -5,4 +5,12 @@ import CategoryController from "../controllers/categoryController"
 
 const router = Router();
 
-router.post("/create-category", [checkJwt,checkRole(["ADMIN"])], CategoryController.listAll );
+router.get("/", [checkJwt,checkRole(["ADMIN"])], CategoryController.listAll );
+
+router.post("/", [checkJwt, checkRole(["ADMIN"])], CategoryController.newCategory );
+
+router.get("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.getOneById);
+
+router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"]), CategoryController.deleteCategory]);
+
+export default router;
