@@ -5,14 +5,13 @@ import { validate } from "class-validator";
 import categoryLogger from "../logging/categories/categoryLogger";
 
 import { Category } from "../entity/category";
+import { User } from "../entity/user";
 
 class CategoryController{
 
     static listAll = async (req: Request, res: Response) => {
         const categoryRepository = getRepository(Category);
-        const categorys = await categoryRepository.find({
-            select:["id", "name"]}
-        );
+        const categorys = await categoryRepository.find();
         res.send(categorys);  
     }
     static getOneById = async (req: Request, res: Response) => {
@@ -23,19 +22,20 @@ class CategoryController{
         const categoryRepository = getRepository(Category);
         let category: Category;
         try {
-            category = await categoryRepository.findOneOrFail(id, {
-                select: ["id", "name"]
-            });
+            category = await categoryRepository.findOneOrFail(id);
         } catch (error) {
+            var infoForLog = "Category not found: " + id;
+            categoryLogger.info(infoForLog);
             res.status(404).send("Category not found");
         }
         res.send(category);
     }
     static newCategory = async (req: Request, res: Response) => {
         //Get parameters from body
-        let { name } = req.body;
+        let { name, description } = req.body;
         let category = new Category();
         category.name = name;
+        category.description = description;
 
         //Validate the parameters
         const errors = await validate(category);
@@ -48,7 +48,7 @@ class CategoryController{
         try {
             await categoryRepository.save(category);
         } catch (error) {
-            res.status(409).send("name already in use");
+            res.status(409).send("Name already in use");
             return;
         }
         var categoryInfoForLog = "Created: " + Category.bind.toString() + ", " + category.name;
@@ -65,13 +65,16 @@ class CategoryController{
         
         // Try to find category in db
         const categoryRepository = getRepository(Category);
-        let category;
+        let category: Category;
         try {
             category = await categoryRepository.findOneOrFail(id);
         } catch (error) {
+            var infoForLog = "Category not found: " + id;
+            categoryLogger.info(infoForLog);
             res.status(404).send("Category not found");
             return;
         }
+        
         //Try to save
         try {
             await categoryRepository.save(category);
@@ -89,6 +92,8 @@ class CategoryController{
         try {
             category = await categoryRepository.findOneOrFail(id);
         } catch (error) {
+            var infoForLog = "Category not found: " + id;
+            categoryLogger.info(infoForLog);
             res.status(404).send("Category not found");
             return;
         }
@@ -98,6 +103,7 @@ class CategoryController{
         categoryLogger.info(deletedInfoForLog);
         res.status(204).send();
     }
+    
 };
 
 

@@ -23,9 +23,9 @@ import {
     @Length(4, 100)
     password: string;
   
-    @Column()
+    @Column("text", {array: true})
     @IsNotEmpty()
-    role: string;
+    roles: string[];
   
     @Column()
     @CreateDateColumn()

@@ -1,2 +1,6 @@
 {"name":"CategoryLogger","hostname":"frederik-Lenovo-IdeaPad-Y500","pid":9382,"level":30,"msg":"Created: function bind() { [native code] }, postmanMade","time":"2019-10-17T09:01:30.509Z","v":0}
 {"name":"CategoryLogger","hostname":"frederik-Lenovo-IdeaPad-Y500","pid":11273,"level":30,"msg":"Deletion: Category","time":"2019-10-17T09:40:56.115Z","v":0}
+{"name":"CategoryLogger","hostname":"DESKTOP-MAM25IS","pid":10256,"level":30,"msg":"Added tutor: john lærmig, to category: cat1","time":"2019-10-21T10:25:53.514Z","v":0}
+{"name":"CategoryLogger","hostname":"DESKTOP-MAM25IS","pid":10256,"level":30,"msg":"Added tutor: mathias forehead, to category: cat1","time":"2019-10-21T10:26:15.031Z","v":0}
+{"name":"CategoryLogger","hostname":"DESKTOP-MAM25IS","pid":13696,"level":30,"msg":"Created: function bind() { [native code] }, category1","time":"2019-10-23T12:14:55.583Z","v":0}
+{"name":"CategoryLogger","hostname":"DESKTOP-MAM25IS","pid":13696,"level":30,"msg":"Created: function bind() { [native code] }, category2","time":"2019-10-23T12:16:15.100Z","v":0}

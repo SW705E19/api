@@ -19,7 +19,16 @@ export const checkRole = (roles: Array<string>) => {
     }
 
     //Check if array of authorized roles includes the user's role
-    if (roles.indexOf(user.role) > -1) next();
+    let rolefound = false;
+    for (let i = 0; i < roles.length; i++) {
+      for (let j = 0; j < user.roles.length; j++) {
+        if(user.roles[j] == roles[i]){
+          rolefound = true;         // If we try to just call next() here we break a promies for some reason
+          break;
+        }
+      }
+    }
+    if (rolefound) next();
     else res.status(401).send();
   };
 };
