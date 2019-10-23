@@ -30,6 +30,7 @@
       "express-request-id": "^1.4.1",
       "helmet": "^3.21.0",
       "jsonwebtoken": "^8.5.1",
+      "pg": "^7.12.1",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
       "ts-node-dev": "^1.0.0-pre.42",

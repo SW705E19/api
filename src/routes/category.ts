@@ -11,6 +11,8 @@ router.post("/", [checkJwt, checkRole(["ADMIN"])], CategoryController.newCategor
 
 router.get("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.getOneById);
 
-router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"]), CategoryController.deleteCategory]);
+router.post("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.editCategory);
+
+router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.deleteCategory);
 
 export default router;

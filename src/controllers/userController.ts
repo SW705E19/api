@@ -4,128 +4,129 @@ import { validate } from "class-validator";
 import userLogger from '../logging/users/userLogger';
 
 import { User } from "../entity/user";
+import { Result } from "range-parser";
 
 class UserController{
 
-static listAll = async (req: Request, res: Response) => {
-  //Get users from database
-  const userRepository = getRepository(User);
-  const users = await userRepository.find({
-    select: ["id", "username", "role"] //We dont want to send the passwords on response
-  });
-
-  //Send the users object
-  res.send(users);
-};
-
-static getOneById = async (req: Request, res: Response) => {
-  //Get the ID from the url
-  const id: string = req.params.id;
-
-  //Get the user from database
-  const userRepository = getRepository(User);
-  let user: User;
-  try {
-    user = await userRepository.findOneOrFail(id, {
-      select: ["id", "username", "role"] //We dont want to send the password on response
+  static listAll = async (req: Request, res: Response) => {
+    //Get users from database
+    const userRepository = getRepository(User);
+    const users = await userRepository.find({
+      select: ["id", "username", "roles"] //We dont want to send the passwords on response
     });
-  } catch (error) {
-    res.status(404).send("User not found");
-  }
-  res.send(user);
-};
 
-static newUser = async (req: Request, res: Response) => {
-  //Get parameters from the body
-  let { username, password, role } = req.body;
-  let user = new User();
-  user.username = username;
-  user.password = password;
-  user.role = role;
+    //Send the users object
+    res.send(users);
+  };
 
-  //Validade if the parameters are ok
-  const errors = await validate(user);
-  if (errors.length > 0) {
-    res.status(400).send(errors);
-    return;
-  }
+  static getOneById = async (req: Request, res: Response) => {
+    //Get the ID from the url
+    const id: string = req.params.id;
 
-  //Hash the password, to securely store on DB
-  user.hashPassword();
+    //Get the user from database
+    const userRepository = getRepository(User);
+    let user: User;
+    try {
+      user = await userRepository.findOneOrFail(id, {
+        select: ["id", "username", "roles"] //We dont want to send the password on response
+      });
+    } catch (error) {
+      res.status(404).send("User not found");
+    }
+    res.send(user);
+  };
 
-  //Try to save. If fails, the username is already in use
-  const userRepository = getRepository(User);
-  try {
-    await userRepository.save(user);
-  } catch (e) {
-    res.status(409).send("username already in use");
-    return;
-  }
+  static newUser = async (req: Request, res: Response) => {
+    //Get parameters from the body
+    let { username, password, roles } = req.body;
+    let user = new User();
+    user.username = username;
+    user.password = password;
+    user.roles = roles;
 
-  //If all ok, send 201 response
-  var userInfoForLog = "Created: " + user.id.toString() + ", " + user.username + ", " + user.role + ", " + user.createdAt.toString();
-  userLogger.info(userInfoForLog);
-  res.status(201).send("User created");
-};
+    //Validade if the parameters are ok
+    const errors = await validate(user);
+    if (errors.length > 0) {
+      res.status(400).send(errors);
+      return;
+    }
 
-static editUser = async (req: Request, res: Response) => {
-  //Get the ID from the url
-  const id = req.params.id;
+    //Hash the password, to securely store on DB
+    user.hashPassword();
 
-  //Get values from the body
-  const { username, role } = req.body;
+    //Try to save. If fails, the username is already in use
+    const userRepository = getRepository(User);
+    try {
+      await userRepository.save(user);
+    } catch (e) {
+      res.status(409).send("username already in use");
+      return;
+    }
 
-  //Try to find user on database
-  const userRepository = getRepository(User);
-  let user;
-  try {
-    user = await userRepository.findOneOrFail(id);
-  } catch (error) {
-    //If not found, send a 404 response
-    res.status(404).send("User not found");
-    return;
-  }
+    //If all ok, send 201 response
+    var userInfoForLog = "Created: " + user.id.toString() + ", " + user.username + ", " + user.roles + ", " + user.createdAt.toString();
+    userLogger.info(userInfoForLog);
+    res.status(201).send("User created");
+  };
 
-  //Validate the new values on model
-  user.username = username;
-  user.role = role;
-  const errors = await validate(user);
-  if (errors.length > 0) {
-    res.status(400).send(errors);
-    return;
-  }
+  static editUser = async (req: Request, res: Response) => {
+    //Get the ID from the url
+    const id = req.params.id;
 
-  //Try to save, if fails, that means username already in use
-  try {
-    await userRepository.save(user);
-  } catch (e) {
-    res.status(409).send("username already in use");
-    return;
-  }
-  //After all send a 204 (no content, but accepted) response
-  res.status(204).send();
-};
+    //Get values from the body
+    const { username, roles } = req.body;
 
-static deleteUser = async (req: Request, res: Response) => {
-  //Get the ID from the url
-  const id = req.params.id;
+    //Try to find user on database
+    const userRepository = getRepository(User);
+    let user: User;
+    try {
+      user = await userRepository.findOneOrFail(id);
+    } catch (error) {
+      //If not found, send a 404 response
+      res.status(404).send("User not found");
+      return;
+    }
 
-  const userRepository = getRepository(User);
-  let user: User;
-  try {
-    user = await userRepository.findOneOrFail(id);
-  } catch (error) {
-    res.status(404).send("User not found");
-    return;
-  }
-  userRepository.delete(id);
+    //Validate the new values on model
+    user.username = username;
+    user.roles = roles;
+    const errors = await validate(user);
+    if (errors.length > 0) {
+      res.status(400).send(errors);
+      return;
+    }
 
-  var deletedInfoForLog = "Deletion: " + user.username +", " + user.role;
-  userLogger.info(deletedInfoForLog);
+    //Try to save, if fails, that means username already in use
+    try {
+      await userRepository.save(user);
+    } catch (e) {
+      res.status(409).send("username already in use");
+      return;
+    }
+    //After all send a 204 (no content, but accepted) response
+    res.status(204).send();
+  };
 
-  //After all send a 204 (no content, but accepted) response
-  res.status(204).send();
-};
+  static deleteUser = async (req: Request, res: Response) => {
+    //Get the ID from the url
+    const id = req.params.id;
+
+    const userRepository = getRepository(User);
+    let user: User;
+    try {
+      user = await userRepository.findOneOrFail(id);
+    } catch (error) {
+      res.status(404).send("User not found");
+      return;
+    }
+    userRepository.delete(id);
+
+    var deletedInfoForLog = "Deletion: " + user.username +", " + user.roles;
+    userLogger.info(deletedInfoForLog);
+
+    //After all send a 204 (no content, but accepted) response
+    res.status(204).send();
+  };
 };
 
 export default UserController;

@@ -7,7 +7,6 @@ import {
     JoinTable
   } from "typeorm";
   import { Length, IsNotEmpty } from "class-validator";
-  import { Tutor } from "./tutor";
 
   @Entity()
   @Unique(["name"])
@@ -22,8 +21,4 @@ import {
       @Column()
       @Length(2, 200)
       description: string;
-
-      @ManyToMany(type => Tutor)
-      @JoinTable()
-      tutor: Tutor[];
   }

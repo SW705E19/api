@@ -5,14 +5,13 @@ import { validate } from "class-validator";
 import categoryLogger from "../logging/categories/categoryLogger";
 
 import { Category } from "../entity/category";
+import { User } from "../entity/user";
 
 class CategoryController{
 
     static listAll = async (req: Request, res: Response) => {
         const categoryRepository = getRepository(Category);
-        const categorys = await categoryRepository.find({
-            select:["id", "name"]}
-        );
+        const categorys = await categoryRepository.find();
         res.send(categorys);  
     }
     static getOneById = async (req: Request, res: Response) => {
@@ -24,7 +23,7 @@ class CategoryController{
         let category: Category;
         try {
             category = await categoryRepository.findOneOrFail(id, {
-                select: ["id", "name"]
+                relations: [ "tutors"]
             });
         } catch (error) {
             res.status(404).send("Category not found");
@@ -33,9 +32,10 @@ class CategoryController{
     }
     static newCategory = async (req: Request, res: Response) => {
         //Get parameters from body
-        let { name } = req.body;
+        let { name, description } = req.body;
         let category = new Category();
         category.name = name;
+        category.description = description;
 
         //Validate the parameters
         const errors = await validate(category);
@@ -98,6 +98,7 @@ class CategoryController{
         categoryLogger.info(deletedInfoForLog);
         res.status(204).send();
     }
+    
 };
 
 
