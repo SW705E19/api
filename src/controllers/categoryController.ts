@@ -70,7 +70,12 @@ class CategoryController {
 			res.status(404).send('Category not found');
 			return;
 		}
-
+		category.name = name;
+		const errors: ValidationError[] = await validate(Category);
+		if (errors.length > 0) {
+			res.status(400).send(errors);
+			return;
+		}
 		//Try to save
 		try {
 			await categoryRepository.save(category);
