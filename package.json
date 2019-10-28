@@ -5,9 +5,14 @@
    "devDependencies": {
       "@types/jest": "^24.0.18",
       "@types/node": "^8.0.29",
-      "@typescript-eslint/eslint-plugin": "^2.3.0",
-      "@typescript-eslint/parser": "^2.3.0",
-      "eslint": "^6.4.0",
+      "@typescript-eslint/eslint-plugin": "^2.5.0",
+      "@typescript-eslint/parser": "^2.5.0",
+      "eslint": "^6.6.0",
+      "eslint-config-standard": "^14.1.0",
+      "eslint-plugin-import": "^2.18.2",
+      "eslint-plugin-node": "^10.0.0",
+      "eslint-plugin-promise": "^4.2.1",
+      "eslint-plugin-standard": "^4.0.1",
       "jest": "^24.9.0",
       "ts-jest": "^24.1.0",
       "ts-node": "3.3.0",
@@ -26,10 +31,14 @@
       "bunyan-express-serializer": "^1.0.0",
       "class-validator": "^0.10.0",
       "cors": "^2.8.5",
+      "eslint-config-prettier": "^6.5.0",
+      "eslint-plugin-prettier": "^3.1.1",
       "express": "^4.15.4",
       "express-request-id": "^1.4.1",
       "helmet": "^3.21.0",
+      "husky": "^3.0.9",
       "jsonwebtoken": "^8.5.1",
+      "prettier": "^1.18.2",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
       "ts-node-dev": "^1.0.0-pre.42",
@@ -39,6 +48,14 @@
       "tsc": "tsc",
       "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
       "prod": "tsc && node ./build/app.js",
-      "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
+      "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
+      "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
+      "cilint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet"
+   },
+   "husky": {
+      "hooks": {
+         "pre-commit": "npm run lint",
+         "pre-push": "npx jest --silent"
+      }
    }
 }
