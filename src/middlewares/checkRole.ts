@@ -18,9 +18,8 @@ export const checkRole = (roles: Array<string>) => {
 		}
 
 		//Check if array of authorized roles includes the user's role
-		let roleFound = false;
-
-		roleFound = roles.some((role: string) => {
+		
+		const roleFound = roles.some((role: string) => {
 			return user.roles.some((userRole: string) => {
 				return userRole === role;
 			});
@@ -30,6 +29,4 @@ export const checkRole = (roles: Array<string>) => {
 		else res.status(401).send();
 	};
 };
-function test(element, index, array): boolean {
-	return true;
-}
+
