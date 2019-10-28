@@ -29,7 +29,6 @@ export const checkRole = (roles: Array<string>) => {
         return userRole === role
       })
     });
-    console.log(roleFound);
     
     if (roleFound) next();
     else res.status(401).send();
