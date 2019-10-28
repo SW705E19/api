@@ -1,13 +1,13 @@
-var bunyan = require('bunyan');
+import bunyan = require('bunyan');
 
-var userLogger = bunyan.createLogger({
+const userLogger = bunyan.createLogger({
     name: 'UserLogger',
     streams: [
         {
             level: 'info',
             path: __dirname + '/users.log',
-        }
-    ]
+        },
+    ],
 });
 
 export default userLogger;
