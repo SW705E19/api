@@ -1,12 +1,12 @@
 import { Router, Request, Response } from "express";
 import auth from "./auth";
-import user from "./user";
-import category from "./category"
+import user from "./users";
+import category from "./categories"
 
 const routes = Router();
 
 routes.use("/auth", auth);
-routes.use("/user", user);
-routes.use("/category", category);
+routes.use("/users", user);
+routes.use("/categories", category);
 
 export default routes;

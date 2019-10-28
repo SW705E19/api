@@ -11,7 +11,7 @@ router.post("/", [checkJwt, checkRole(["ADMIN"])], CategoryController.newCategor
 
 router.get("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.getOneById);
 
-router.post("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.editCategory);
+router.patch("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.editCategory);
 
 router.delete("/:id([0-9]+)", [checkJwt, checkRole(["ADMIN"])], CategoryController.deleteCategory);
 
