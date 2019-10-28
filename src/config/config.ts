@@ -1,3 +1,3 @@
 export default {
-    jwtSecret: '@JoFaeDetKunneVæreSjovtHvisDuBlevDockerImagedWinkWink',
+	jwtSecret: '@JoFaeDetKunneVæreSjovtHvisDuBlevDockerImagedWinkWink',
 };

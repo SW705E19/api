@@ -23,6 +23,7 @@ module.exports = {
   rules: {
     "no-empty-function": "off",
     "@typescript-eslint/no-empty-function": "warn",
-    "no-var": "error"
+    "no-var": "error",
+    "indent": ["error", "tab"]
   }
 }
