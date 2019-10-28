@@ -36,6 +36,7 @@
       "express": "^4.15.4",
       "express-request-id": "^1.4.1",
       "helmet": "^3.21.0",
+      "husky": "^3.0.9",
       "jsonwebtoken": "^8.5.1",
       "prettier": "^1.18.2",
       "reflect-metadata": "^0.1.10",
@@ -48,6 +49,12 @@
       "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
       "prod": "tsc && node ./build/app.js",
       "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
-      "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix"
+      "lint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --fix",
+      "cilint": "tsc --noEmit && eslint '*/**/*.{js,ts,tsx}' --quiet"
+   },
+   "husky": {
+      "hooks": {
+         "pre-commit": "npm run lint"
+      }
    }
 }
