@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { getRepository } from 'typeorm';
 
-import { Request, Response, NextFunction } from "express";
-import { getRepository } from "typeorm";
-
-import { User } from "../entity/user";
+import { User } from '../entity/user';
 
 export const checkRole = (roles: Array<string>) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
@@ -20,22 +17,19 @@ export const checkRole = (roles: Array<string>) => {
 			res.status(401).send();
 		}
 
-    //Check if array of authorized roles includes the user's role
-    let roleFound: boolean = false;
+		//Check if array of authorized roles includes the user's role
+		let roleFound = false;
 
-    
-    roleFound = roles.some((role: string) => 
-    {
-      return user.roles.some((userRole: string) => 
-      {
-        return userRole === role
-      })
-    });
-    
-    if (roleFound) next();
-    else res.status(401).send();
-  };
+		roleFound = roles.some((role: string) => {
+			return user.roles.some((userRole: string) => {
+				return userRole === role;
+			});
+		});
+
+		if (roleFound) next();
+		else res.status(401).send();
+	};
 };
-function test(element, index, array): boolean{
-  return true;
+function test(element, index, array): boolean {
+	return true;
 }

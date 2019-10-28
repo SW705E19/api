@@ -1,13 +1,13 @@
-var bunyan = require('bunyan');
+import bunyan = require('bunyan');
 
-var categoryLogger = bunyan.createLogger({
-    name: 'CategoryLogger',
-    streams: [
-        {
-            level: 'info',
-            path: __dirname + '/category.log',
-        }
-    ]
+const categoryLogger = bunyan.createLogger({
+	name: 'CategoryLogger',
+	streams: [
+		{
+			level: 'info',
+			path: __dirname + '/category.log',
+		},
+	],
 });
 
 export default categoryLogger;
