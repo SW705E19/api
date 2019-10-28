@@ -4,4 +4,6 @@ pipeline:
     commands: npm install
   test:
     image: node:latest
-    commands: npx jest
+    commands:
+      - npx jest
+      - npm run cilint
