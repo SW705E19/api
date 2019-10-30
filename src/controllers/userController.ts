@@ -1,16 +1,17 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
-import { validate } from 'class-validator';
+import { getRepository, Repository } from 'typeorm';
+import { validate, ValidationError } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
 
-import { User } from '../entity/User';
+import { User } from '../entity/user';
+import { Result } from 'range-parser';
 
 class UserController {
 	static listAll = async (req: Request, res: Response) => {
 		//Get users from database
-		const userRepository = getRepository(User);
-		const users = await userRepository.find({
-			select: ['id', 'username', 'role'], //We dont want to send the passwords on response
+		const userRepository: Repository<User> = getRepository(User);
+		const users: User[] = await userRepository.find({
+			select: ['id', 'username', 'roles'], //We dont want to send the passwords on response
 		});
 
 		//Send the users object
@@ -22,11 +23,11 @@ class UserController {
 		const id: string = req.params.id;
 
 		//Get the user from database
-		const userRepository = getRepository(User);
+		const userRepository: Repository<User> = getRepository(User);
 		let user: User;
 		try {
 			user = await userRepository.findOneOrFail(id, {
-				select: ['id', 'username', 'role'], //We dont want to send the password on response
+				select: ['id', 'username', 'roles'], //We dont want to send the password on response
 			});
 		} catch (error) {
 			res.status(404).send('User not found');
@@ -36,14 +37,14 @@ class UserController {
 
 	static newUser = async (req: Request, res: Response) => {
 		//Get parameters from the body
-		const { username, password, role } = req.body;
-		const user = new User();
+		const { username, password, roles } = req.body;
+		const user: User = new User();
 		user.username = username;
 		user.password = password;
-		user.role = role;
+		user.roles = roles;
 
 		//Validade if the parameters are ok
-		const errors = await validate(user);
+		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
 			res.status(400).send(errors);
 			return;
@@ -53,22 +54,22 @@ class UserController {
 		user.hashPassword();
 
 		//Try to save. If fails, the username is already in use
-		const userRepository = getRepository(User);
+		const userRepository: Repository<User> = getRepository(User);
 		try {
 			await userRepository.save(user);
-		} catch (e) {
+		} catch (error) {
 			res.status(409).send('username already in use');
 			return;
 		}
 
 		//If all ok, send 201 response
-		const userInfoForLog =
+		const userInfoForLog: string =
 			'Created: ' +
 			user.id.toString() +
 			', ' +
 			user.username +
 			', ' +
-			user.role +
+			user.roles +
 			', ' +
 			user.createdAt.toString();
 		userLogger.info(userInfoForLog);
@@ -77,14 +78,14 @@ class UserController {
 
 	static editUser = async (req: Request, res: Response) => {
 		//Get the ID from the url
-		const id = req.params.id;
+		const id: string = req.params.id;
 
 		//Get values from the body
-		const { username, role } = req.body;
+		const { username, roles } = req.body;
 
 		//Try to find user on database
-		const userRepository = getRepository(User);
-		let user;
+		const userRepository: Repository<User> = getRepository(User);
+		let user: User;
 		try {
 			user = await userRepository.findOneOrFail(id);
 		} catch (error) {
@@ -95,17 +96,17 @@ class UserController {
 
 		//Validate the new values on model
 		user.username = username;
-		user.role = role;
-		const errors = await validate(user);
+		user.roles = roles;
+		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
 			res.status(400).send(errors);
 			return;
 		}
 
-		//Try to safe, if fails, that means username already in use
+		//Try to save, if fails, that means username already in use
 		try {
 			await userRepository.save(user);
-		} catch (e) {
+		} catch (error) {
 			res.status(409).send('username already in use');
 			return;
 		}
@@ -115,9 +116,9 @@ class UserController {
 
 	static deleteUser = async (req: Request, res: Response) => {
 		//Get the ID from the url
-		const id = req.params.id;
+		const id: string = req.params.id;
 
-		const userRepository = getRepository(User);
+		const userRepository: Repository<User> = getRepository(User);
 		let user: User;
 		try {
 			user = await userRepository.findOneOrFail(id);
@@ -127,7 +128,7 @@ class UserController {
 		}
 		userRepository.delete(id);
 
-		const deletedInfoForLog = 'Deletion: ' + user.username + ', ' + user.role;
+		const deletedInfoForLog: string = 'Deletion: ' + user.username + ', ' + user.roles;
 		userLogger.info(deletedInfoForLog);
 
 		//After all send a 204 (no content, but accepted) response
