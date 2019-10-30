@@ -54,10 +54,37 @@ class ServiceController{
     };
 
     editService = async (req: Request, res: Response) => {
-        const {description, tutor, name, id} = req.body;
-        const service = new Service();
+        const id = req.params.id;
+        const {description, tutor, name} = req.body;
+        let service = new Service();
 
+        const serviceRepository = getRepository(Service);
+
+        try {
+            service = await serviceRepository.findOne(id);
+        } catch (error) {
+            serviceLogger.error(error);
+            res.status(404).send('Service was not found');
+        }
+
+        service.description = description;
+        service.tutor = tutor;
+        service.name = name;
+        const errors = await validate(service);
+        if (errors.length > 0) {
+            serviceLogger.error(errors);
+			res.status(400).send(errors);
+			return;
+        }
         
+        try {
+            await serviceRepository.save(service);
+        } catch (error) {
+            serviceLogger.error(error);
+            res.status(500).send('Could not save service');
+			return;
+        }
+        res.status(204).send();
     }
     
 }
