@@ -37,11 +37,14 @@ class UserController {
 
 	static newUser = async (req: Request, res: Response) => {
 		//Get parameters from the body
-		const { username, password, roles } = req.body;
+		const { username, password, roles, email, firstName, lastName,  } = req.body;
 		const user: User = new User();
 		user.username = username;
 		user.password = password;
 		user.roles = roles;
+		user.email = email;
+		user.firstName = firstName;
+		user.lastName = lastName;
 
 		//Validade if the parameters are ok
 		const errors: ValidationError[] = await validate(user);

@@ -1,7 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, ManyToMany } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
-import { User } from './User';
+import { User } from './user';
 import { tsConstructorType } from '@babel/types';
+import { Category } from './category';
+import { TutorInfo } from './tutorInfo';
 
 @Entity()
 export class Service {
@@ -15,8 +17,10 @@ export class Service {
     @Length(4, 140)
     name: string
 
-    @Column()
-    // @ManyToOne(type => User, tutor => tutor.)
-    tutor: User
+    @ManyToOne(type => TutorInfo, tutorInfo => tutorInfo.services)
+    tutorInfo: TutorInfo
+
+    @ManyToMany(type => Category, category => category.services)
+    categories: Category[]
 
 }
