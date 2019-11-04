@@ -38,8 +38,7 @@ class UserController {
 		const jwtPayload = res.locals.jwtPayload;
 		req.params.id = jwtPayload.userId;
 		UserController.getOneById(req, res);
-	}
-	
+	};
 
 	static newUser = async (req: Request, res: Response) => {
 		//Get parameters from the body
