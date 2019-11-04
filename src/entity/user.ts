@@ -39,7 +39,7 @@ export class User {
 	@UpdateDateColumn()
 	updatedAt: Date;
 
-	@OneToOne(type => User, user => user.tutorInfo)
+	@OneToOne(type => TutorInfo, tutorInfo => tutorInfo.user)
 	tutorInfo: TutorInfo;
 	
 

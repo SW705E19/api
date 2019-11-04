@@ -1,7 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, ManyToMany } from 'typeorm';
-import { Length, IsNotEmpty } from 'class-validator';
-import { User } from './user';
-import { tsConstructorType } from '@babel/types';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany } from 'typeorm';
+import { Length } from 'class-validator';
+
 import { Category } from './category';
 import { TutorInfo } from './tutorInfo';
 

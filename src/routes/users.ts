@@ -14,6 +14,9 @@ router.get('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.getO
 //Create a new user
 router.post('/', [checkJwt, checkRole(['ADMIN'])], UserController.newUser);
 
+//Create a new tutorInfo
+router.post('/:id([0-9]+)/newTutor', [checkJwt, checkRole(['ADMIN'])], UserController.newTutor);
+
 //Edit one user
 router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.editUser);
 

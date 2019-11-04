@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner, getRepository} from "typeorm";
 import { User } from "../entity/user";
 
-export class CreateAdmin1572517026831 implements MigrationInterface {
+export class InsertAdmin1572860290391 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         const user = new User();

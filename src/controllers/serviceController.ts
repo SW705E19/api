@@ -4,6 +4,7 @@ import { validate } from "class-validator";
 import { Service } from "../entity/service";
 import serviceLogger from "../logging/services/serviceLogger";
 
+
 class ServiceController{
 
     static listAll = async (req: Request, res: Response) => {
@@ -24,8 +25,28 @@ class ServiceController{
             serviceLogger.error(error);
             res.status(404).send('Service not found');
         }
-        res.send(service);
+        res.send(service); 
     };
+
+    static getByCategory = async (req: Request, res: Response) => {
+        const category: string = req.params.category;
+        const serviceRepository = getRepository(Service);
+        console.log(category);
+        let services: Service[];
+
+        try {
+            services = await serviceRepository
+                        .createQueryBuilder("service")
+                        .innerJoinAndSelect("service.categories", "category")
+                        .where("category.name = :category", { category: category })
+                        .getMany();
+        } catch (error) {
+            serviceLogger.error(error);
+            res.status(404).send('Could not find services');
+            return;
+        }
+        res.send(services);
+    }
 
     static newService = async (req: Request, res: Response) => {
         const {description, tutorInfo, name, categories} = req.body;
@@ -35,7 +56,6 @@ class ServiceController{
         service.name = name;
         service.categories = categories;
 
-        //Validade if the parameters are ok
 		const errors = await validate(service);
 		if (errors.length > 0) {
             serviceLogger.error(errors);
@@ -53,6 +73,14 @@ class ServiceController{
             res.status(400).send('Could not create service');
 			return;
         }
+
+		const serviceInfoForLog: string =
+        'Created: ' +
+        service.name +
+        ', ' +
+        service.description
+        serviceLogger.info(serviceInfoForLog);
+        res.status(201).send('Service created');
     };
 
     static editService = async (req: Request, res: Response) => {
@@ -67,12 +95,14 @@ class ServiceController{
         } catch (error) {
             serviceLogger.error(error);
             res.status(404).send('Service was not found');
+            return;
         }
 
         service.description = description;
         service.tutorInfo = tutorInfo;
         service.name = name;
         service.categories = categories;
+
         const errors = await validate(service);
         if (errors.length > 0) {
             serviceLogger.error(errors);
@@ -91,26 +121,39 @@ class ServiceController{
     }
 
     static deleteService = async (req: Request, res: Response) => {
-        const id = req.body.id;
+        const id = req.params.id;
 
         const serviceRepository = getRepository(Service);
         let service: Service;
 
         try {
-            service = await serviceRepository.findOne(id);
+            service = await serviceRepository.createQueryBuilder('service')
+                        .innerJoinAndSelect('service.categories', 'category')
+                        .innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
+                        .innerJoin('tutorInfo.user', 'user')
+                        .addSelect(['user.id', 'user.username', 'user.firstName', 'user.lastName'])
+                        .where('service.id = :serviceId', {serviceId: id})
+                        .getOne();
+
         } catch (error) {
             serviceLogger.error(error);
             res.status(404).send('Could not find service');
-            return
+            return;
         }
-        serviceRepository.delete(service);
 
-        serviceRepository.delete(id);
+        if(service == null) {
+            res.status(404).send(`A service with id ${id} does not exist`);
+            return;
+        }
 
-		const deletedInfoForLog: string = 'Deletion: ' + service.name + ', ' + service.tutorInfo.user.username;
+        await serviceRepository.delete(service);
+        const deletedInfoForLog: string = 'Deletion: Tutor "' 
+                                            + service.tutorInfo.user.username 
+                                            + '"\'s service "' 
+                                            + service.name + '" was deleted';
+                                                                            
 		serviceLogger.info(deletedInfoForLog);
 
-		//After all send a 204 (no content, but accepted) response
 		res.status(204).send();
     }
     
