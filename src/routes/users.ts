@@ -20,4 +20,7 @@ router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.ed
 //Delete one user
 router.delete('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.deleteUser);
 
+//Get own user
+router.get('/profile', [checkJwt], UserController.getOwnUser);
+
 export default router;
