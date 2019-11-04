@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import { validate } from 'class-validator';
+import userLogger from '../logging/users/userLogger';
 
 import { User } from '../entity/user';
 import config from '../config/config';
@@ -73,6 +74,47 @@ class AuthController {
 		userRepository.save(user);
 
 		res.status(204).send();
+	};
+
+	static register = async (req: Request, res: Response) => {
+		//Get parameters from the body
+		const { username, password, role } = req.body;
+		const user = new User();
+		user.username = username;
+		user.password = password;
+		user.roles = role;
+
+		//Validade if the parameters are ok
+		const errors = await validate(user);
+		if (errors.length > 0) {
+			res.status(400).send(errors);
+			return;
+		}
+
+		//Hash the password, to securely store on DB
+		user.hashPassword();
+
+		//Try to save. If fails, the username is already in use
+		const userRepository = getRepository(User);
+		try {
+			await userRepository.save(user);
+		} catch (e) {
+			res.status(409).send('username already in use');
+			return;
+		}
+
+		//If all ok, send 201 response
+		const userInfoForLog =
+			'Created: ' +
+			user.id.toString() +
+			', ' +
+			user.username +
+			', ' +
+			user.roles +
+			', ' +
+			user.createdAt.toString();
+		userLogger.info(userInfoForLog);
+		res.status(201).send('User created');
 	};
 }
 export default AuthController;
