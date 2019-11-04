@@ -9,6 +9,6 @@ const routes = Router();
 routes.use('/api/auth', auth);
 routes.use('/api/users', users);
 routes.use('/api/categories', categories);
-routes.use('/api/services', services)
+routes.use('/api/services', services);
 
 export default routes;

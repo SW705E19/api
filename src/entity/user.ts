@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from 'typeorm';
+import {
+	Entity,
+	PrimaryGeneratedColumn,
+	Column,
+	Unique,
+	CreateDateColumn,
+	UpdateDateColumn,
+	OneToMany,
+	OneToOne,
+} from 'typeorm';
 import { Length, IsNotEmpty, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import { TutorInfo } from './tutorInfo';
@@ -41,7 +50,6 @@ export class User {
 
 	@OneToOne(type => TutorInfo, tutorInfo => tutorInfo.user)
 	tutorInfo: TutorInfo;
-	
 
 	hashPassword() {
 		this.password = bcrypt.hashSync(this.password, 8);

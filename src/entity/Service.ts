@@ -6,20 +6,19 @@ import { TutorInfo } from './tutorInfo';
 
 @Entity()
 export class Service {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @Column()
-    description: string
+	@PrimaryGeneratedColumn()
+	id: number;
 
-    @Column()
-    @Length(4, 140)
-    name: string
+	@Column()
+	description: string;
 
-    @ManyToOne(type => TutorInfo, tutorInfo => tutorInfo.services)
-    tutorInfo: TutorInfo
+	@Column()
+	@Length(4, 140)
+	name: string;
 
-    @ManyToMany(type => Category, category => category.services)
-    categories: Category[]
+	@ManyToOne(type => TutorInfo, tutorInfo => tutorInfo.services)
+	tutorInfo: TutorInfo;
 
+	@ManyToMany(type => Category, category => category.services)
+	categories: Category[];
 }

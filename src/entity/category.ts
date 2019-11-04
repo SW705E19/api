@@ -18,5 +18,5 @@ export class Category {
 
 	@ManyToMany(type => Service, service => service.categories)
 	@JoinTable()
-	services: Service[]
+	services: Service[];
 }

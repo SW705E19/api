@@ -37,7 +37,7 @@ class UserController {
 
 	static newUser = async (req: Request, res: Response) => {
 		//Get parameters from the body
-		const { username, password, roles, email, firstName, lastName,  } = req.body;
+		const { username, password, roles, email, firstName, lastName } = req.body;
 		const user: User = new User();
 		user.username = username;
 		user.password = password;
@@ -145,23 +145,23 @@ class UserController {
 
 		try {
 			user = await userRepository.findOne(id, {
-				select: ['id', 'username', 'roles']
+				select: ['id', 'username', 'roles'],
 			});
 		} catch (error) {
 			res.status(404).send('User not found');
 			return;
 		}
 
-		if(user == null) {
+		if (user == null) {
 			res.status(404).send('User not found');
 		}
 
-		const { description, acceptedPayments} = req.body;
+		const { description, acceptedPayments } = req.body;
 		const tutorInfo: TutorInfo = new TutorInfo();
 		tutorInfo.description = description;
 		tutorInfo.acceptedPayments = acceptedPayments;
 		tutorInfo.services = [];
-		tutorInfo.user = user
+		tutorInfo.user = user;
 
 		//Validade if the parameters are ok
 		const errors: ValidationError[] = await validate(tutorInfo);
@@ -181,15 +181,10 @@ class UserController {
 
 		//If all ok, send 201 response
 		const tutorInfoForLog: string =
-			'Created: ' +
-			tutorInfo.id.toString() +
-			', ' +
-			tutorInfo.user.username +
-			', ' +
-			tutorInfo.description;
+			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.username + ', ' + tutorInfo.description;
 		userLogger.info(tutorInfoForLog);
 		res.status(201).send('TutorInfo created');
-	}
+	};
 }
 
 export default UserController;

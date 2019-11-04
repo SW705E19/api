@@ -1,24 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn } from "typeorm";
-import { User } from "./user";
-import { Service } from "./service";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, OneToMany, JoinColumn } from 'typeorm';
+import { User } from './user';
+import { Service } from './service';
 import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class TutorInfo {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @OneToOne(type => User, user => user.tutorInfo)
-    @JoinColumn()
-    user: User
+	@PrimaryGeneratedColumn()
+	id: number;
 
-    @OneToMany(type => Service, service => service.tutorInfo)
-    services: Service[]
+	@OneToOne(type => User, user => user.tutorInfo)
+	@JoinColumn()
+	user: User;
 
-    @Column()
-    description: string
+	@OneToMany(type => Service, service => service.tutorInfo)
+	services: Service[];
 
-    @Column('text', { array: true })
+	@Column()
+	description: string;
+
+	@Column('text', { array: true })
 	@IsNotEmpty()
-    acceptedPayments: string[]
+	acceptedPayments: string[];
 }
