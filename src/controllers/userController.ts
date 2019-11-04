@@ -35,10 +35,11 @@ class UserController {
 		res.send(user);
 	};
 	static getOwnUser = async (req: Request, res: Response) => {
-		var user = req.body;
-		console.log(user);
-		res.send(400);
+		const user = res.locals.jwtPayload;
+		req.params.id = user.userId;
+		UserController.getOneById(req, res);
 	}
+	
 
 	static newUser = async (req: Request, res: Response) => {
 		//Get parameters from the body
