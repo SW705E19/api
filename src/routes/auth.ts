@@ -9,7 +9,7 @@ router.post('/login', AuthController.login);
 //Change my password
 router.post('/change-password', [checkJwt], AuthController.changePassword);
 
-//Create a new user
+//Create a new user.
 router.post('/register', AuthController.register);
 
 export default router;
