@@ -1,9 +1,9 @@
 pipeline:
   build:
-    image: node:latest
+    image: node:8
     commands: npm install
   test:
-    image: node:latest
+    image: node:8
     commands:
       - npx jest
       - npm run cilint
