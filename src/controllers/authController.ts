@@ -75,9 +75,9 @@ class AuthController {
 		res.status(204).send();
 	};
 
-	static logout = async (req: Request, res: Response) => { 
-		res.setHeader('token', "");
+	static logout = async (req: Request, res: Response) => {
+		res.setHeader('token', '');
 		res.status(200).send();
-	}
+	};
 }
 export default AuthController;
