@@ -9,4 +9,6 @@ router.post('/login', AuthController.login);
 //Change my password
 router.post('/change-password', [checkJwt], AuthController.changePassword);
 
+router.post('/logout', AuthController.logout);
+
 export default router;
