@@ -30,6 +30,7 @@ class UserController {
 				select: ['id', 'username', 'roles'], //We dont want to send the password on response
 			});
 		} catch (error) {
+			userLogger.error(error);
 			res.status(404).send('User not found');
 		}
 		res.send(user);
@@ -54,6 +55,7 @@ class UserController {
 		//Validade if the parameters are ok
 		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
+			userLogger.error(errors);
 			res.status(400).send(errors);
 			return;
 		}
@@ -66,6 +68,7 @@ class UserController {
 		try {
 			await userRepository.save(user);
 		} catch (error) {
+			userLogger.error(error);
 			res.status(409).send('username already in use');
 			return;
 		}
@@ -98,6 +101,7 @@ class UserController {
 			user = await userRepository.findOneOrFail(id);
 		} catch (error) {
 			//If not found, send a 404 response
+			userLogger.error(error);
 			res.status(404).send('User not found');
 			return;
 		}
@@ -115,6 +119,7 @@ class UserController {
 		try {
 			await userRepository.save(user);
 		} catch (error) {
+			userLogger.error(error);
 			res.status(409).send('username already in use');
 			return;
 		}
@@ -131,6 +136,7 @@ class UserController {
 		try {
 			user = await userRepository.findOneOrFail(id);
 		} catch (error) {
+			userLogger.error(error);
 			res.status(404).send('User not found');
 			return;
 		}
@@ -153,6 +159,7 @@ class UserController {
 				select: ['id', 'username', 'roles'],
 			});
 		} catch (error) {
+			userLogger.error(error);
 			res.status(404).send('User not found');
 			return;
 		}
@@ -179,7 +186,7 @@ class UserController {
 		try {
 			await tutorInfoRepository.save(tutorInfo);
 		} catch (error) {
-			console.log(error);
+			userLogger.error(error);
 			res.status(500).send('TutorInfo could not be saved');
 			return;
 		}

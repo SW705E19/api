@@ -15,6 +15,6 @@ router.patch('/:id([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceC
 
 router.delete('/:id([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.deleteService);
 
-router.get('/:category', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.getByCategory);
+router.get('/:category([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.getByCategory);
 
 export default router;

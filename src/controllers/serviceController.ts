@@ -29,7 +29,6 @@ class ServiceController {
 	static getByCategory = async (req: Request, res: Response) => {
 		const category: string = req.params.category;
 		const serviceRepository = getRepository(Service);
-		console.log(category);
 		let services: Service[];
 
 		try {
@@ -67,7 +66,6 @@ class ServiceController {
 			await serviceRepository.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			console.log(error);
 			res.status(400).send('Could not create service');
 			return;
 		}
