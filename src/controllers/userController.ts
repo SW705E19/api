@@ -40,47 +40,6 @@ class UserController {
 		UserController.getOneById(req, res);
 	};
 
-	static newUser = async (req: Request, res: Response) => {
-		//Get parameters from the body
-		const { username, password, roles } = req.body;
-		const user: User = new User();
-		user.username = username;
-		user.password = password;
-		user.roles = roles;
-
-		//Validade if the parameters are ok
-		const errors: ValidationError[] = await validate(user);
-		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
-		}
-
-		//Hash the password, to securely store on DB
-		user.hashPassword();
-
-		//Try to save. If fails, the username is already in use
-		const userRepository: Repository<User> = getRepository(User);
-		try {
-			await userRepository.save(user);
-		} catch (error) {
-			res.status(409).send('username already in use');
-			return;
-		}
-
-		//If all ok, send 201 response
-		const userInfoForLog: string =
-			'Created: ' +
-			user.id.toString() +
-			', ' +
-			user.username +
-			', ' +
-			user.roles +
-			', ' +
-			user.createdAt.toString();
-		userLogger.info(userInfoForLog);
-		res.status(201).send('User created');
-	};
-
 	static editUser = async (req: Request, res: Response) => {
 		//Get the ID from the url
 		const id: string = req.params.id;
