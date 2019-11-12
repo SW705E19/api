@@ -27,7 +27,8 @@ class UserController {
 		let user: User;
 		try {
 			user = await userRepository.findOneOrFail(id, {
-				select: ['id', 'username', 'roles'], //We dont want to send the password on response
+				select: ['id', 'firstName', 'lastName', 'roles'], //We dont want to send the password on response
+				relations: ['tutorInfo', 'tutorInfo.services'],
 			});
 		} catch (error) {
 			userLogger.error(error);

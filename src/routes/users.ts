@@ -9,7 +9,7 @@ const router = Router();
 router.get('/', [checkJwt, checkRole(['ADMIN'])], UserController.listAll);
 
 // Get one user
-router.get('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.getOneById);
+router.get('/:id([0-9]+)', UserController.getOneById);
 
 //Create a new tutorInfo
 router.post('/:id([0-9]+)/newTutor', [checkJwt, checkRole(['ADMIN'])], UserController.newTutor);
