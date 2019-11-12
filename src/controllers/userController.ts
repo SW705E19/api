@@ -129,7 +129,7 @@ class UserController {
 		tutorInfo.services = [];
 		tutorInfo.user = user;
 
-		//Validade if the parameters are ok
+		//Validate if the parameters are ok
 		const errors: ValidationError[] = await validate(tutorInfo);
 		if (errors.length > 0) {
 			res.status(400).send(errors);
