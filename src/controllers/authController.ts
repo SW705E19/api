@@ -84,7 +84,7 @@ class AuthController {
 		user.password = password;
 		user.roles = role;
 
-		//Validade if the parameters are ok
+		//Validate if the parameters are ok
 		const errors = await validate(user);
 		if (errors.length > 0) {
 			res.status(400).send(errors);

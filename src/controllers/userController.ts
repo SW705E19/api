@@ -4,7 +4,7 @@ import { validate, ValidationError } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
 
 import { User } from '../entity/user';
-import { Result } from 'range-parser';
+import { TutorInfo } from '../entity/tutorInfo';
 
 class UserController {
 	static listAll = async (req: Request, res: Response) => {
@@ -30,6 +30,7 @@ class UserController {
 				select: ['id', 'username', 'roles'], //We dont want to send the password on response
 			});
 		} catch (error) {
+			userLogger.error(error);
 			res.status(404).send('User not found');
 		}
 		res.send(user);
@@ -54,6 +55,7 @@ class UserController {
 			user = await userRepository.findOneOrFail(id);
 		} catch (error) {
 			//If not found, send a 404 response
+			userLogger.error(error);
 			res.status(404).send('User not found');
 			return;
 		}
@@ -71,6 +73,7 @@ class UserController {
 		try {
 			await userRepository.save(user);
 		} catch (error) {
+			userLogger.error(error);
 			res.status(409).send('username already in use');
 			return;
 		}
@@ -87,6 +90,7 @@ class UserController {
 		try {
 			user = await userRepository.findOneOrFail(id);
 		} catch (error) {
+			userLogger.error(error);
 			res.status(404).send('User not found');
 			return;
 		}
@@ -97,6 +101,55 @@ class UserController {
 
 		//After all send a 204 (no content, but accepted) response
 		res.status(204).send();
+	};
+
+	static newTutor = async (req: Request, res: Response) => {
+		const id = req.params.id;
+		let user: User;
+		const userRepository = getRepository(User);
+
+		try {
+			user = await userRepository.findOne(id, {
+				select: ['id', 'username', 'roles'],
+			});
+		} catch (error) {
+			userLogger.error(error);
+			res.status(404).send('User not found');
+			return;
+		}
+
+		if (user == null) {
+			res.status(404).send('User not found');
+		}
+
+		const { description, acceptedPayments } = req.body;
+		const tutorInfo: TutorInfo = new TutorInfo();
+		tutorInfo.description = description;
+		tutorInfo.acceptedPayments = acceptedPayments;
+		tutorInfo.services = [];
+		tutorInfo.user = user;
+
+		//Validate if the parameters are ok
+		const errors: ValidationError[] = await validate(tutorInfo);
+		if (errors.length > 0) {
+			res.status(400).send(errors);
+			return;
+		}
+
+		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
+		try {
+			await tutorInfoRepository.save(tutorInfo);
+		} catch (error) {
+			userLogger.error(error);
+			res.status(500).send('TutorInfo could not be saved');
+			return;
+		}
+
+		//If all ok, send 201 response
+		const tutorInfoForLog: string =
+			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.username + ', ' + tutorInfo.description;
+		userLogger.info(tutorInfoForLog);
+		res.status(201).send('TutorInfo created');
 	};
 }
 
