@@ -52,7 +52,7 @@
       "prod": "tsc && node ./build/app.js",
       "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run",
       "lint": "tsc --noEmit && eslint src/**/*.{js,ts,tsx} --ignore-path .eslintignore",
-      "fix": "tsc --noEmit && eslint src/**/*.{js,ts,tsx} --ignore-path .eslintignore"
+      "fix": "tsc --noEmit && eslint src/**/*.{js,ts,tsx} --ignore-path .eslintignore --fix"
    },
    "husky": {
       "hooks": {
