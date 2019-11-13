@@ -1,4 +1,4 @@
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/SW705E19/api/develop.svg?style=flat-square)](https://codecov.io/gh/SW705E19/api/)
+[![codecov](https://codecov.io/gh/SW705E19/api/branch/develop/graph/badge.svg)](https://codecov.io/gh/SW705E19/api)
 
 # api
 
