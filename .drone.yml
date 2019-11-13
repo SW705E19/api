@@ -8,4 +8,4 @@ steps:
     commands:
       - npm install
       - npx jest
-      - npm run cilint
+      - npm run lint
