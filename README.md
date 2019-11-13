@@ -1,3 +1,5 @@
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/SW705E19/api/develop.svg?style=flat-square)](https://codecov.io/gh/SW705E19/api/)
+
 # api
 
 You should run npm install to get all node modules.
