@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/SW705E19/api/branch/develop/graph/badge.svg)](https://codecov.io/gh/SW705E19/api)
+
 # api
 
 You should run npm install to get all node modules.
