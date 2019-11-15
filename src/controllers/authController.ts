@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import { validate } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
-
+import authService from '../services/authService';
 import { User } from '../entity/user';
 import config from '../config/config';
 
@@ -16,25 +16,23 @@ class AuthController {
 		}
 
 		//Get user from database
-		const userRepository = getRepository(User);
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail({ where: { username } });
+			user = await authService.getUserByUsername(username);
 		} catch (error) {
-			res.status(401).send();
+			return res.status(401).send();
 		}
 
 		//Check if encrypted password match
 		if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-			res.status(401).send();
-			return;
+			return res.status(401).send();
 		}
 
 		//Sign JWT, valid for 1 hour
 		const token = jwt.sign({ userId: user.id, username: user.username }, config.jwtSecret, { expiresIn: '1h' });
 
 		//Send the jwt in the response
-		res.send(token);
+		return res.send(token);
 	};
 
 	static changePassword = async (req: Request, res: Response) => {
