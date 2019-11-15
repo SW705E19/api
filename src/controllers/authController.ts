@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken';
 import { getRepository } from 'typeorm';
 import { validate } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
-
 import { User } from '../entity/user';
 import config from '../config/config';
 

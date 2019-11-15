@@ -49,7 +49,7 @@ class CategoryController {
 		}
 		const categoryInfoForLog: string = 'Created: ' + Category.bind.toString() + ', ' + category.name;
 		categoryLogger.info(categoryInfoForLog);
-		res.status(201).send('Category created');
+		res.status(201).send(category);
 	};
 
 	static editCategory = async (req: Request, res: Response) => {
@@ -83,7 +83,7 @@ class CategoryController {
 			res.status(409).send('Name already in use');
 		}
 
-		res.status(204).send();
+		res.status(204).send(category);
 	};
 	static deleteCategory = async (req: Request, res: Response) => {
 		const id: string = req.params.id;
