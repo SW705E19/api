@@ -17,6 +17,14 @@ class UserController {
 		//Send the users object
 		res.send(users);
 	};
+	static listAllTutors = async (req: Request, res: Response) => {
+		const userRepository: Repository<User> = getRepository(User);
+		const users: User[] = await userRepository
+			.createQueryBuilder("user")
+			.where("roles @> ARRAY['TUTOR']::text[]")
+			.getMany();
+		res.send(users);
+	};
 
 	static getOneById = async (req: Request, res: Response) => {
 		//Get the ID from the url

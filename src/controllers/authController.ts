@@ -77,11 +77,14 @@ class AuthController {
 
 	static register = async (req: Request, res: Response) => {
 		//Get parameters from the body
-		const { username, password, role } = req.body;
+		const { username, password, roles, firstname, lastname, email  } = req.body;
 		const user = new User();
 		user.username = username;
 		user.password = password;
-		user.roles = role;
+		user.roles = roles;
+		user.email = email;
+		user.firstName = firstname;
+		user.lastName = lastname;
 
 		//Validate if the parameters are ok
 		const errors = await validate(user);
