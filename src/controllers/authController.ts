@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
 import { validate } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
 import authService from '../services/authService';
@@ -12,7 +11,7 @@ class AuthController {
 		//Check if username and password are set
 		const { username, password } = req.body;
 		if (!(username && password)) {
-			res.status(400).send();
+			return res.status(400).send();
 		}
 
 		//Get user from database
@@ -46,11 +45,10 @@ class AuthController {
 		}
 
 		//Get user from the database
-		const userRepository = getRepository(User);
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail(id);
-		} catch (id) {
+			user = await authService.getUserById(id);
+		} catch (error) {
 			return res.status(401).send();
 		}
 
@@ -67,7 +65,7 @@ class AuthController {
 		}
 		//Hash the new password and save
 		user.hashPassword();
-		await userRepository.save(user);
+		await authService.saveUser(user);
 
 		return res.status(204).send();
 	};
@@ -90,9 +88,8 @@ class AuthController {
 		user.hashPassword();
 
 		//Try to save. If fails, the username is already in use
-		const userRepository = getRepository(User);
 		try {
-			await userRepository.save(user);
+			await authService.saveUser(user);
 		} catch (e) {
 			return res.status(409).send('username already in use');
 		}
