@@ -5,12 +5,12 @@ import categoryLogger from '../logging/categories/categoryLogger';
 import { Category } from '../entity/category';
 
 class CategoryController {
-	static listAll = async (req: Request, res: Response) => {
+	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const categoryRepository: Repository<Category> = getRepository(Category);
 		const categories: Category[] = await categoryRepository.find();
-		res.send(categories);
+		return res.send(categories);
 	};
-	static getOneById = async (req: Request, res: Response) => {
+	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from the url
 		const id: string = req.params.id;
 
@@ -22,11 +22,11 @@ class CategoryController {
 		} catch (error) {
 			const infoForLog: string = 'Category not found: ' + id;
 			categoryLogger.info(infoForLog);
-			res.status(404).send('Category not found');
+			return res.status(404).send('Category not found');
 		}
-		res.send(category);
+		return res.send(category);
 	};
-	static newCategory = async (req: Request, res: Response) => {
+	static newCategory = async (req: Request, res: Response): Promise<Response> => {
 		//Get parameters from body
 		const { name, description } = req.body;
 		const category: Category = new Category();
@@ -36,23 +36,21 @@ class CategoryController {
 		//Validate the parameters
 		const errors: ValidationError[] = await validate(category);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 		// Try to save to db. if fails the name is already in use
 		const categoryRepository: Repository<Category> = getRepository(Category);
 		try {
 			await categoryRepository.save(category);
 		} catch (error) {
-			res.status(409).send('Name already in use');
-			return;
+			return res.status(409).send('Name already in use');
 		}
 		const categoryInfoForLog: string = 'Created: ' + Category.bind.toString() + ', ' + category.name;
 		categoryLogger.info(categoryInfoForLog);
-		res.status(201).send(category);
+		return res.status(201).send(category);
 	};
 
-	static editCategory = async (req: Request, res: Response) => {
+	static editCategory = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
 		const id: string = req.params.id;
 
@@ -67,25 +65,23 @@ class CategoryController {
 		} catch (error) {
 			const infoForLog: string = 'Category not found: ' + id;
 			categoryLogger.info(infoForLog);
-			res.status(404).send('Category not found');
-			return;
+			return res.status(404).send('Category not found');
 		}
 		category.name = name;
 		const errors: ValidationError[] = await validate(Category);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 		//Try to save
 		try {
 			await categoryRepository.save(category);
 		} catch (error) {
-			res.status(409).send('Name already in use');
+			return res.status(409).send('Name already in use');
 		}
 
-		res.status(204).send(category);
+		return res.status(204).send(category);
 	};
-	static deleteCategory = async (req: Request, res: Response) => {
+	static deleteCategory = async (req: Request, res: Response): Promise<Response> => {
 		const id: string = req.params.id;
 
 		const categoryRepository: Repository<Category> = getRepository(Category);
@@ -95,14 +91,13 @@ class CategoryController {
 		} catch (error) {
 			const infoForLog: string = 'Category not found: ' + id;
 			categoryLogger.info(infoForLog);
-			res.status(404).send('Category not found');
-			return;
+			return res.status(404).send('Category not found');
 		}
 		categoryRepository.delete(id);
 
-		const deletedInfoForLog: string = 'Deletion: ' + Category.name;
+		const deletedInfoForLog: string = 'Deletion: ' + category.name;
 		categoryLogger.info(deletedInfoForLog);
-		res.status(204).send();
+		return res.status(204).send();
 	};
 }
 

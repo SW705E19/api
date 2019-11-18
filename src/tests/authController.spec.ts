@@ -6,15 +6,6 @@ import { User } from '../entity/user';
 
 describe('auth controller', function() {
 	it('calls service get with admin as username', async function() {
-		const request = {
-			body: {
-				username: 'admin',
-				password: 'admin',
-			},
-		};
-		const req = mockReq(request);
-		const res = mockRes();
-
 		const mockUser = {
 			id: 1,
 			username: 'admin',
@@ -34,9 +25,18 @@ describe('auth controller', function() {
 			},
 		};
 
-		const ahh = sinon.stub(authService, 'getUserByUsername').resolves(mockUser);
+		const request = {
+			body: {
+				username: mockUser.username,
+				password: mockUser.password,
+			},
+		};
+		const req = mockReq(request);
+		const res = mockRes();
+
+		const stubResult = sinon.stub(authService, 'getUserByUsername').resolves(mockUser);
 		AuthController.login(req, res);
 
-		sinon.assert.calledWith(ahh, 'admin');
+		sinon.assert.calledWith(stubResult, mockUser.username);
 	});
 });

@@ -8,7 +8,7 @@ import { User } from '../entity/user';
 import config from '../config/config';
 
 class AuthController {
-	static login = async (req: Request, res: Response) => {
+	static login = async (req: Request, res: Response): Promise<Response> => {
 		//Check if username and password are set
 		const { username, password } = req.body;
 		if (!(username && password)) {
@@ -35,14 +35,14 @@ class AuthController {
 		return res.send(token);
 	};
 
-	static changePassword = async (req: Request, res: Response) => {
+	static changePassword = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from JWT
 		const id = res.locals.jwtPayload.userId;
 
 		//Get parameters from the body
 		const { oldPassword, newPassword } = req.body;
 		if (!(oldPassword && newPassword)) {
-			res.status(400).send();
+			return res.status(400).send();
 		}
 
 		//Get user from the database
@@ -51,30 +51,28 @@ class AuthController {
 		try {
 			user = await userRepository.findOneOrFail(id);
 		} catch (id) {
-			res.status(401).send();
+			return res.status(401).send();
 		}
 
 		//Check if old password is the same
 		if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) {
-			res.status(401).send();
-			return;
+			return res.status(401).send();
 		}
 
 		//Validate the model (password length)
 		user.password = newPassword;
 		const errors = await validate(user);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 		//Hash the new password and save
 		user.hashPassword();
-		userRepository.save(user);
+		await userRepository.save(user);
 
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static register = async (req: Request, res: Response) => {
+	static register = async (req: Request, res: Response): Promise<Response> => {
 		//Get parameters from the body
 		const { username, password, role } = req.body;
 		const user = new User();
@@ -85,8 +83,7 @@ class AuthController {
 		//Validate if the parameters are ok
 		const errors = await validate(user);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		//Hash the password, to securely store on DB
@@ -97,8 +94,7 @@ class AuthController {
 		try {
 			await userRepository.save(user);
 		} catch (e) {
-			res.status(409).send('username already in use');
-			return;
+			return res.status(409).send('username already in use');
 		}
 
 		//If all ok, send 201 response
@@ -112,7 +108,7 @@ class AuthController {
 			', ' +
 			user.createdAt.toString();
 		userLogger.info(userInfoForLog);
-		res.status(201).send('User created');
+		return res.status(201).send('User created');
 	};
 }
 export default AuthController;

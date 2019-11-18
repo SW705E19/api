@@ -7,7 +7,7 @@ import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
 
 class UserController {
-	static listAll = async (req: Request, res: Response) => {
+	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		//Get users from database
 		const userRepository: Repository<User> = getRepository(User);
 		const users: User[] = await userRepository.find({
@@ -15,10 +15,10 @@ class UserController {
 		});
 
 		//Send the users object
-		res.send(users);
+		return res.send(users);
 	};
 
-	static getOneById = async (req: Request, res: Response) => {
+	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
 		const id: string = req.params.id;
 
@@ -32,17 +32,18 @@ class UserController {
 			});
 		} catch (error) {
 			userLogger.error(error);
-			res.status(404).send('User not found');
+			return res.status(404).send('User not found');
 		}
-		res.send(user);
-	};
-	static getOwnUser = async (req: Request, res: Response) => {
-		const jwtPayload = res.locals.jwtPayload;
-		req.params.id = jwtPayload.userId;
-		UserController.getOneById(req, res);
+		return res.send(user);
 	};
 
-	static editUser = async (req: Request, res: Response) => {
+	static getOwnUser = async (req: Request, res: Response): Promise<Response> => {
+		const jwtPayload = res.locals.jwtPayload;
+		req.params.id = jwtPayload.userId;
+		return UserController.getOneById(req, res);
+	};
+
+	static editUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
 		const id: string = req.params.id;
 
@@ -57,8 +58,7 @@ class UserController {
 		} catch (error) {
 			//If not found, send a 404 response
 			userLogger.error(error);
-			res.status(404).send('User not found');
-			return;
+			return res.status(404).send('User not found');
 		}
 
 		//Validate the new values on model
@@ -66,8 +66,7 @@ class UserController {
 		user.roles = roles;
 		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		//Try to save, if fails, that means username already in use
@@ -75,14 +74,13 @@ class UserController {
 			await userRepository.save(user);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(409).send('username already in use');
-			return;
+			return res.status(409).send('username already in use');
 		}
 		//After all send a 204 (no content, but accepted) response
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static deleteUser = async (req: Request, res: Response) => {
+	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
 		const id: string = req.params.id;
 
@@ -92,8 +90,7 @@ class UserController {
 			user = await userRepository.findOneOrFail(id);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(404).send('User not found');
-			return;
+			return res.status(404).send('User not found');
 		}
 		userRepository.delete(id);
 
@@ -101,10 +98,10 @@ class UserController {
 		userLogger.info(deletedInfoForLog);
 
 		//After all send a 204 (no content, but accepted) response
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static newTutor = async (req: Request, res: Response) => {
+	static newTutor = async (req: Request, res: Response): Promise<Response> => {
 		const id = req.params.id;
 		let user: User;
 		const userRepository = getRepository(User);
@@ -115,8 +112,7 @@ class UserController {
 			});
 		} catch (error) {
 			userLogger.error(error);
-			res.status(404).send('User not found');
-			return;
+			return res.status(404).send('User not found');
 		}
 
 		if (user == null) {
@@ -133,8 +129,7 @@ class UserController {
 		//Validate if the parameters are ok
 		const errors: ValidationError[] = await validate(tutorInfo);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
@@ -142,15 +137,14 @@ class UserController {
 			await tutorInfoRepository.save(tutorInfo);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(500).send('TutorInfo could not be saved');
-			return;
+			return res.status(500).send('TutorInfo could not be saved');
 		}
 
 		//If all ok, send 201 response
 		const tutorInfoForLog: string =
 			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.username + ', ' + tutorInfo.description;
 		userLogger.info(tutorInfoForLog);
-		res.status(201).send('TutorInfo created');
+		return res.status(201).send('TutorInfo created');
 	};
 }
 

@@ -5,14 +5,14 @@ import { Service } from '../entity/service';
 import serviceLogger from '../logging/services/serviceLogger';
 
 class ServiceController {
-	static listAll = async (req: Request, res: Response) => {
+	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const serviceRepository = getRepository(Service);
 		const services = await serviceRepository.find();
 
-		res.send(services);
+		return res.send(services);
 	};
 
-	static getOneById = async (req: Request, res: Response) => {
+	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		const id: string = req.params.id;
 		const serviceRepository = getRepository(Service);
 		let service: Service;
@@ -21,12 +21,12 @@ class ServiceController {
 			service = await serviceRepository.findOne(id);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Service not found');
+			return res.status(404).send('Service not found');
 		}
-		res.send(service);
+		return res.send(service);
 	};
 
-	static getByCategory = async (req: Request, res: Response) => {
+	static getByCategory = async (req: Request, res: Response): Promise<Response> => {
 		const category: string = req.params.category;
 		const serviceRepository = getRepository(Service);
 		let services: Service[];
@@ -39,13 +39,12 @@ class ServiceController {
 				.getMany();
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Could not find services');
-			return;
+			return res.status(404).send('Could not find services');
 		}
-		res.send(services);
+		return res.send(services);
 	};
 
-	static newService = async (req: Request, res: Response) => {
+	static newService = async (req: Request, res: Response): Promise<Response> => {
 		const { description, tutorInfo, name, categories } = req.body;
 		const service = new Service();
 		service.description = description;
@@ -56,8 +55,7 @@ class ServiceController {
 		const errors = await validate(service);
 		if (errors.length > 0) {
 			serviceLogger.error(errors);
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		const serviceRepository = getRepository(Service);
@@ -66,16 +64,15 @@ class ServiceController {
 			await serviceRepository.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(400).send('Could not create service');
-			return;
+			return res.status(400).send('Could not create service');
 		}
 
 		const serviceInfoForLog: string = 'Created: ' + service.name + ', ' + service.description;
 		serviceLogger.info(serviceInfoForLog);
-		res.status(201).send('Service created');
+		return res.status(201).send('Service created');
 	};
 
-	static editService = async (req: Request, res: Response) => {
+	static editService = async (req: Request, res: Response): Promise<Response> => {
 		const id = req.params.id;
 		const { description, tutorInfo, name, categories } = req.body;
 		let service = new Service();
@@ -86,8 +83,7 @@ class ServiceController {
 			service = await serviceRepository.findOne(id);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Service was not found');
-			return;
+			return res.status(404).send('Service was not found');
 		}
 
 		service.description = description;
@@ -98,21 +94,19 @@ class ServiceController {
 		const errors = await validate(service);
 		if (errors.length > 0) {
 			serviceLogger.error(errors);
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		try {
 			await serviceRepository.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(500).send('Could not save service');
-			return;
+			return res.status(500).send('Could not save service');
 		}
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static deleteService = async (req: Request, res: Response) => {
+	static deleteService = async (req: Request, res: Response): Promise<Response> => {
 		const id = req.params.id;
 
 		const serviceRepository = getRepository(Service);
@@ -129,13 +123,11 @@ class ServiceController {
 				.getOne();
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Could not find service');
-			return;
+			return res.status(404).send('Could not find service');
 		}
 
 		if (service == null) {
-			res.status(404).send(`A service with id ${id} does not exist`);
-			return;
+			return res.status(404).send(`A service with id ${id} does not exist`);
 		}
 
 		await serviceRepository.delete(service);
@@ -144,7 +136,7 @@ class ServiceController {
 
 		serviceLogger.info(deletedInfoForLog);
 
-		res.status(204).send();
+		return res.status(204).send();
 	};
 }
 

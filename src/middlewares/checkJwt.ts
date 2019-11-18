@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
 
-export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
+export const checkJwt = (req: Request, res: Response, next: NextFunction): Response => {
 	//Get the jwt token from the head
 	let token = req.headers.authorization as string;
 	let jwtPayload;
@@ -10,12 +10,11 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction) => {
 	//Try to validate the token and get data
 	try {
 		token = token.substring(7, token.length);
-		jwtPayload = jwt.verify(token, config.jwtSecret) as any;
+		jwtPayload = jwt.verify(token, config.jwtSecret);
 		res.locals.jwtPayload = jwtPayload;
 	} catch (error) {
 		//If token is not valid, respond with 401 (unauthorized)
-		res.status(401).send();
-		return;
+		return res.status(401).send();
 	}
 
 	//The token is valid for 1 hour

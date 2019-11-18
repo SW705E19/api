@@ -1,2 +1,4 @@
 src/migration
 node_modules
+src/entity
+src/tests
