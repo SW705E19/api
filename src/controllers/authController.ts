@@ -77,7 +77,7 @@ class AuthController {
 
 	static register = async (req: Request, res: Response) => {
 		//Get parameters from the body
-		const { username, password, roles, firstname, lastname, email  } = req.body;
+		const { username, password, roles, firstname, lastname, email } = req.body;
 		const user = new User();
 		user.username = username;
 		user.password = password;

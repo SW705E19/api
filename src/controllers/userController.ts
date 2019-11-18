@@ -20,7 +20,7 @@ class UserController {
 	static listAllTutors = async (req: Request, res: Response) => {
 		const userRepository: Repository<User> = getRepository(User);
 		const users: User[] = await userRepository
-			.createQueryBuilder("user")
+			.createQueryBuilder('user')
 			.where("roles @> ARRAY['TUTOR']::text[]")
 			.getMany();
 		res.send(users);
