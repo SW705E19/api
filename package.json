@@ -2,6 +2,11 @@
    "name": "sw705e19-project-api",
    "version": "0.0.1",
    "description": "Node-js api for tutor website",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/SW705E19/api.git"
+   },
+   "license": "UNLICENSED",
    "devDependencies": {
       "@types/chai": "^4.2.5",
       "@types/mocha": "^5.2.7",
@@ -20,7 +25,6 @@
       "sinon": "^7.5.0",
       "sinon-chai": "^3.3.0",
       "sinon-express-mock": "^2.2.1",
-      "ts-jest": "^24.1.0",
       "ts-node": "3.3.0",
       "typescript": "3.3.3333",
       "typings": "^2.1.1"
