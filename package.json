@@ -32,6 +32,7 @@
       "@types/cors": "^2.8.6",
       "@types/helmet": "0.0.44",
       "@types/jsonwebtoken": "^8.3.3",
+      "acorn": "^7.1.0",
       "bcryptjs": "^2.4.3",
       "body-parser": "^1.18.1",
       "bunyan": "^1.8.12",
