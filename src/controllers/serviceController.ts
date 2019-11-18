@@ -1,24 +1,22 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 import { validate } from 'class-validator';
 import { Service } from '../entity/service';
 import serviceLogger from '../logging/services/serviceLogger';
+import ServiceService from '../services/serviceService';
 
 class ServiceController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
-		const serviceRepository = getRepository(Service);
-		const services = await serviceRepository.find();
+		const services = await ServiceService.getAll();
 
 		return res.send(services);
 	};
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		const id: string = req.params.id;
-		const serviceRepository = getRepository(Service);
 		let service: Service;
 
 		try {
-			service = await serviceRepository.findOne(id);
+			service = await ServiceService.getById(id);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(404).send('Service not found');
@@ -28,15 +26,10 @@ class ServiceController {
 
 	static getByCategory = async (req: Request, res: Response): Promise<Response> => {
 		const category: string = req.params.category;
-		const serviceRepository = getRepository(Service);
 		let services: Service[];
 
 		try {
-			services = await serviceRepository
-				.createQueryBuilder('service')
-				.innerJoinAndSelect('service.categories', 'category')
-				.where('category.name = :category', { category: category })
-				.getMany();
+			services = await ServiceService.getByCategoryName(category);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(404).send('Could not find services');
@@ -58,10 +51,8 @@ class ServiceController {
 			return res.status(400).send(errors);
 		}
 
-		const serviceRepository = getRepository(Service);
-
 		try {
-			await serviceRepository.save(service);
+			await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(400).send('Could not create service');
@@ -77,10 +68,8 @@ class ServiceController {
 		const { description, tutorInfo, name, categories } = req.body;
 		let service = new Service();
 
-		const serviceRepository = getRepository(Service);
-
 		try {
-			service = await serviceRepository.findOne(id);
+			service = await ServiceService.getById(id);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(404).send('Service was not found');
@@ -98,7 +87,7 @@ class ServiceController {
 		}
 
 		try {
-			await serviceRepository.save(service);
+			await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(500).send('Could not save service');
@@ -108,19 +97,10 @@ class ServiceController {
 
 	static deleteService = async (req: Request, res: Response): Promise<Response> => {
 		const id = req.params.id;
-
-		const serviceRepository = getRepository(Service);
 		let service: Service;
 
 		try {
-			service = await serviceRepository
-				.createQueryBuilder('service')
-				.innerJoinAndSelect('service.categories', 'category')
-				.innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
-				.innerJoin('tutorInfo.user', 'user')
-				.addSelect(['user.id', 'user.username', 'user.firstName', 'user.lastName'])
-				.where('service.id = :serviceId', { serviceId: id })
-				.getOne();
+			service = await ServiceService.getDetailedById(id);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(404).send('Could not find service');
@@ -130,7 +110,7 @@ class ServiceController {
 			return res.status(404).send(`A service with id ${id} does not exist`);
 		}
 
-		await serviceRepository.delete(service);
+		await ServiceService.deleteById(id);
 		const deletedInfoForLog: string =
 			'Deletion: Tutor "' + service.tutorInfo.user.username + '"\'s service "' + service.name + '" was deleted';
 
