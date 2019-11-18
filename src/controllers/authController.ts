@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { validate } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
-import authService from '../services/authService';
+import userService from '../services/userService';
 import { User } from '../entity/user';
 import config from '../config/config';
 
@@ -17,7 +17,7 @@ class AuthController {
 		//Get user from database
 		let user: User;
 		try {
-			user = await authService.getUserByUsername(username);
+			user = await userService.getByUsername(username);
 		} catch (error) {
 			return res.status(401).send();
 		}
@@ -36,7 +36,7 @@ class AuthController {
 
 	static changePassword = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from JWT
-		const id = res.locals.jwtPayload.userId;
+		const id = res.locals.jwtPayload.userId as string;
 
 		//Get parameters from the body
 		const { oldPassword, newPassword } = req.body;
@@ -47,7 +47,7 @@ class AuthController {
 		//Get user from the database
 		let user: User;
 		try {
-			user = await authService.getUserById(id);
+			user = await userService.getById(id);
 		} catch (error) {
 			return res.status(401).send();
 		}
@@ -65,7 +65,7 @@ class AuthController {
 		}
 		//Hash the new password and save
 		user.hashPassword();
-		await authService.saveUser(user);
+		await userService.save(user);
 
 		return res.status(204).send();
 	};
@@ -89,7 +89,7 @@ class AuthController {
 
 		//Try to save. If fails, the username is already in use
 		try {
-			await authService.saveUser(user);
+			await userService.save(user);
 		} catch (e) {
 			return res.status(409).send('username already in use');
 		}

@@ -45,6 +45,7 @@
       "express-request-id": "^1.4.1",
       "helmet": "^3.21.0",
       "husky": "^3.0.9",
+      "jest": "^24.9.0",
       "jsonwebtoken": "^8.5.1",
       "pg": "^7.12.1",
       "prettier": "^1.18.2",
