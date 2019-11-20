@@ -5,6 +5,7 @@ import userService from '../services/userService';
 import { User } from '../entity/user';
 import { should, expect } from 'chai';
 import { doesNotThrow } from 'assert';
+import * as bcrypt from 'bcryptjs';
 
 describe('auth controller', function () {
 	/* Default user for connection testing */
@@ -18,13 +19,7 @@ describe('auth controller', function () {
 		roles: ['ADMIN'],
 		createdAt: new Date(),
 		updatedAt: new Date(),
-		tutorInfo: null,
-		hashPassword: () => {
-			return '$2a$08$XhgejAH/gB9z9buss73hJOkZnpwN7W5/QLPtrvti5QbFPb6.kmQNa';
-		},
-		checkIfUnencryptedPasswordIsValid: () => {
-			return true;
-		},
+		tutorInfo: null
 	};
 
 	it('calls service get with admin as username', async function () {
@@ -78,14 +73,11 @@ describe('auth controller', function () {
 		const request = {
 			body: {
 				username: mockUser.username,
-				password: mockUser.password,
-				checkIfUnencryptedPasswordIsValid: false
+				password: mockUser.password
 			},
 		};
 
-
-		// const stubResult = sinon.stub(user, 'checkIfUnencryptedPasswordIsValid').resolves(false);
-		// sinon.assert.calledWith(stubResult, mockUser.username);
+		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(false);
 
 		const req = mockReq(request);
 		const res = mockRes({
@@ -94,5 +86,29 @@ describe('auth controller', function () {
 
 		await AuthController.login(req, res);
 		expect(res.statusCode).to.equal(401);
+		compareSyncStub.restore();
+
 	});
+
+	it('returns status 200 with if login details are valid', async () => {
+		const request = {
+			body: {
+				username: mockUser.username,
+				password: mockUser.password
+			},
+		};
+
+		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(true);
+
+		const req = mockReq(request);
+		const res = mockRes({
+			status: function (s) { this.statusCode = s; return this; }
+		});
+
+		await AuthController.login(req, res);
+		expect(res.statusCode).to.equal(401);
+		compareSyncStub.restore();
+
+	});
+
 });
