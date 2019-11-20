@@ -6,7 +6,7 @@ import CategoryService from '../services/categoryService';
 
 class CategoryController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
-		const categories = CategoryService.getAll();
+		const categories = await CategoryService.getAll();
 		return res.send(categories);
 	};
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
