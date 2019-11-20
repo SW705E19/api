@@ -8,12 +8,18 @@ describe('auth controller', function() {
 	it('calls service get with admin as username', async function() {
 		const mockUser = {
 			id: 1,
-			username: 'admin',
 			email: 'john@bob.dk',
 			firstName: 'john',
 			lastName: 'bob',
 			password: 'admin',
 			roles: ['ADMIN'],
+			phoneNumber: '44556677',
+			education: 'Math',
+			address: 'adminvej 2',
+			languages: ['Danish'],
+			subjectsOfInterest: ['Math'],
+			
+
 			createdAt: new Date(),
 			updatedAt: new Date(),
 			tutorInfo: null,
@@ -27,16 +33,16 @@ describe('auth controller', function() {
 
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 				password: mockUser.password,
 			},
 		};
 		const req = mockReq(request);
 		const res = mockRes();
 
-		const stubResult = sinon.stub(userService, 'getByUsername').resolves(mockUser);
+		const stubResult = sinon.stub(userService, 'getByEmail').resolves(mockUser);
 		AuthController.login(req, res);
 
-		sinon.assert.calledWith(stubResult, mockUser.username);
+		sinon.assert.calledWith(stubResult, mockUser.email);
 	});
 });

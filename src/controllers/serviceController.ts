@@ -111,7 +111,7 @@ class ServiceController {
 
 		await ServiceService.deleteById(id);
 		const deletedInfoForLog: string =
-			'Deletion: Tutor "' + service.tutorInfo.user.username + '"\'s service "' + service.name + '" was deleted';
+			'Deletion: Tutor "' + service.tutorInfo.user.email + '"\'s service "' + service.name + '" was deleted';
 
 		serviceLogger.info(deletedInfoForLog);
 
