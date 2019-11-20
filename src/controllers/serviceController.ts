@@ -7,7 +7,6 @@ import ServiceService from '../services/serviceService';
 class ServiceController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const services = await ServiceService.getAll();
-
 		return res.send(services);
 	};
 
