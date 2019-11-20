@@ -7,6 +7,7 @@ import { User } from '../entity/user';
 describe('auth controller', function() {
 	it('calls service get with admin as username', async function() {
 		const mockUser = {
+			username: 'johnbob',
 			id: 1,
 			email: 'john@bob.dk',
 			firstName: 'john',
