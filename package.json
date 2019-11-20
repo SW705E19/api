@@ -2,21 +2,32 @@
    "name": "sw705e19-project-api",
    "version": "0.0.1",
    "description": "Node-js api for tutor website",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/SW705E19/api.git"
+   },
+   "license": "UNLICENSED",
    "devDependencies": {
-      "@types/jest": "^24.0.18",
+      "@types/chai": "^4.2.5",
+      "@types/mocha": "^5.2.7",
       "@types/node": "^8.0.29",
+      "@types/sinon": "^7.5.0",
       "@typescript-eslint/eslint-plugin": "^2.5.0",
       "@typescript-eslint/parser": "^2.5.0",
+      "chai": "^4.2.0",
       "codecov": "^3.6.1",
       "eslint-config-standard": "^14.1.0",
       "eslint-plugin-import": "^2.18.2",
       "eslint-plugin-node": "^10.0.0",
       "eslint-plugin-promise": "^4.2.1",
       "eslint-plugin-standard": "^4.0.1",
-      "jest": "^24.9.0",
-      "ts-jest": "^24.1.0",
+      "mocha": "^6.2.2",
+      "sinon": "^7.5.0",
+      "sinon-chai": "^3.3.0",
+      "sinon-express-mock": "^2.2.1",
       "ts-node": "3.3.0",
-      "typescript": "3.3.3333"
+      "typescript": "3.3.3333",
+      "typings": "^2.1.1"
    },
    "dependencies": {
       "@types/bcryptjs": "^2.4.2",
@@ -47,6 +58,7 @@
       "typeorm": "^0.2.18"
    },
    "scripts": {
+      "test": "mocha -r ts-node/register src/tests/*.ts",
       "tsc": "tsc",
       "start": "set debug=* && ts-node-dev --respawn --transpileOnly ./src/index.ts",
       "prod": "tsc && node ./build/app.js",
@@ -57,7 +69,7 @@
    "husky": {
       "hooks": {
          "pre-commit": "npm run lint",
-         "pre-push": "npx jest --silent"
+         "pre-push": "npm run test"
       }
    }
 }
