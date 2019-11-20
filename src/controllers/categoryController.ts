@@ -87,7 +87,7 @@ class CategoryController {
 			categoryLogger.info(infoForLog);
 			return res.status(404).send('Category not found');
 		}
-		CategoryService.deleteById(id);
+		await CategoryService.deleteById(id);
 
 		const deletedInfoForLog: string = 'Deletion: ' + category.name;
 		categoryLogger.info(deletedInfoForLog);
