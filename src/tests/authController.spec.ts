@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import AuthController from '../controllers/authController';
 import { mockReq, mockRes } from 'sinon-express-mock';
-import authService from '../services/authService';
+import userService from '../services/userService';
 import { User } from '../entity/user';
 
 describe('auth controller', function() {
@@ -34,7 +34,7 @@ describe('auth controller', function() {
 		const req = mockReq(request);
 		const res = mockRes();
 
-		const stubResult = sinon.stub(authService, 'getUserByUsername').resolves(mockUser);
+		const stubResult = sinon.stub(userService, 'getByUsername').resolves(mockUser);
 		AuthController.login(req, res);
 
 		sinon.assert.calledWith(stubResult, mockUser.username);
