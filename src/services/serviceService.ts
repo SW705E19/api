@@ -1,7 +1,5 @@
 import { getRepository, Repository, DeleteResult } from 'typeorm';
 import { Service } from '../entity/service';
-import { TutorInfo } from '../entity/tutorInfo';
-import { userInfo } from 'os';
 
 class ServiceService {
 	static getAll = async (): Promise<Service[]> => {
