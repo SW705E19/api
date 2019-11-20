@@ -5,6 +5,7 @@ import userLogger from '../logging/users/userLogger';
 import userService from '../services/userService';
 import { User } from '../entity/user';
 import config from '../config/config';
+import * as bcrypt from 'bcryptjs';
 
 class AuthController {
 	static login = async (req: Request, res: Response): Promise<Response> => {
@@ -23,7 +24,7 @@ class AuthController {
 		}
 
 		//Check if encrypted password match
-		if (!user.checkIfUnencryptedPasswordIsValid(password)) {
+		if (!bcrypt.compareSync(password, user.password)) {
 			return res.status(401).send();
 		}
 
@@ -53,7 +54,7 @@ class AuthController {
 		}
 
 		//Check if old password is the same
-		if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) {
+		if (!bcrypt.compareSync(oldPassword, user.password)) {
 			return res.status(401).send();
 		}
 
@@ -64,7 +65,7 @@ class AuthController {
 			return res.status(400).send(errors);
 		}
 		//Hash the new password and save
-		user.hashPassword();
+		user.password = bcrypt.hashSync(user.password, 8);
 		await userService.save(user);
 
 		return res.status(204).send();
@@ -85,7 +86,7 @@ class AuthController {
 		}
 
 		//Hash the password, to securely store on DB
-		user.hashPassword();
+		user.password = bcrypt.hashSync(user.password, 8);
 
 		//Try to save. If fails, the username is already in use
 		try {
