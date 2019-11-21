@@ -14,7 +14,7 @@ class UserController {
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id;
+		const id = (req.params.id as unknown) as number;
 
 		//Get the user from database
 		let user: User;
@@ -35,7 +35,7 @@ class UserController {
 
 	static editUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id as string;
+		const id = (req.params.id as unknown) as number;
 
 		//Get values from the body
 		const { username, roles } = req.body;
@@ -72,7 +72,7 @@ class UserController {
 
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id as string;
+		const id = (req.params.id as unknown) as number;
 
 		let user: User;
 		try {
@@ -91,7 +91,8 @@ class UserController {
 	};
 
 	static newTutor = async (req: Request, res: Response): Promise<Response> => {
-		const id = req.params.id as string;
+		const id = (req.params.id as unknown) as number;
+
 		let user: User;
 
 		try {

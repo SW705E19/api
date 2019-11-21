@@ -15,10 +15,11 @@ class UserService {
 		return await userRepository.findOneOrFail({ where: { username } });
 	};
 
-	static getById = async (id: string): Promise<User> => {
+	static getById = async (id: number): Promise<User> => {
 		//Get user from database
+		const userId = (id as unknown) as string;
 		const userRepository: Repository<User> = getRepository(User);
-		const resuser = await userRepository.findOneOrFail(id);
+		const resuser = await userRepository.findOneOrFail(userId);
 
 		return resuser;
 	};
@@ -28,9 +29,10 @@ class UserService {
 		return await userRepository.save(user);
 	};
 
-	static deleteById = async (id: string): Promise<DeleteResult> => {
+	static deleteById = async (id: number): Promise<DeleteResult> => {
+		const userId = (id as unknown) as string;
 		const userRepository: Repository<User> = getRepository(User);
-		return await userRepository.delete(id);
+		return await userRepository.delete(userId);
 	};
 
 	static saveTutor = async (tutorInfo: TutorInfo): Promise<TutorInfo> => {
