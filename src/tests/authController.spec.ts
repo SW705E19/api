@@ -14,6 +14,8 @@ describe('auth controller', function() {
 			lastName: 'bob',
 			password: 'admin',
 			roles: ['ADMIN'],
+			avatarUrl: 'https://randompicture.com',
+			dateOfBirth: '21-11-2000',
 			phoneNumber: '44556677',
 			education: 'Math',
 			address: 'adminvej 2',

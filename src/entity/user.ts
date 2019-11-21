@@ -37,6 +37,16 @@ export class User {
 	})
 	address: string;
 
+	@Column({
+		default: '21-11-2000'
+	})
+	dateOfBirth: string
+
+	@Column({
+		default: 'https://source.unsplash.com/random/200x200'
+	})
+	avatarUrl: string;
+
 	@Column('text', { array: true, default: "{English}"})
 	@IsNotEmpty()
 	languages: string[];

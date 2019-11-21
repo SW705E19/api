@@ -76,6 +76,8 @@ class AuthController {
 			email,
 			password,
 			roles,
+			avatarUrl,
+			dateOfBirth,
 			phoneNumber,
 			education,
 			address,
@@ -88,6 +90,8 @@ class AuthController {
 		user.email = email;
 		user.password = password;
 		user.roles = roles;
+		user.avatarUrl = avatarUrl;
+		user.dateOfBirth = dateOfBirth;
 		user.phoneNumber = phoneNumber;
 		user.education = education;
 		user.address = address;
