@@ -12,34 +12,22 @@ import * as bcrypt from 'bcryptjs';
 import { TutorInfo } from './tutorInfo';
 
 @Entity()
-@Unique(['email', 'username'])
+@Unique(['email'])
 
 export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({
-		default: '22334455'
-	})
+	@Column()
 	phoneNumber: string;
 
 	@Column()
-	@Length(4,20)
-	username: string;
-
-	@Column({
-		default: 'Software engineer'
-	})
 	education: string;
 
-	@Column({
-		default: 'tutorvej'
-	})
+	@Column()
 	address: string;
 
-	@Column({
-		default: '21-11-2000'
-	})
+	@Column()
 	dateOfBirth: string
 
 	@Column({
@@ -47,11 +35,11 @@ export class User {
 	})
 	avatarUrl: string;
 
-	@Column('text', { array: true, default: "{English}"})
+	@Column('text', { array: true })
 	@IsNotEmpty()
 	languages: string[];
 
-	@Column('text', { array: true, default: "{English}"})
+	@Column('text', { array: true })
 	@IsNotEmpty()
 	subjectsOfInterest: string[];
 
