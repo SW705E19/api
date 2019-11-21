@@ -113,7 +113,7 @@ class AuthController {
 		try {
 			await userService.save(user);
 		} catch (e) {
-			return res.status(409).send('email already in use');
+			return res.status(409).send(e);
 		}
 
 		//If all ok, send 201 response
