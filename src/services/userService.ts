@@ -21,12 +21,23 @@ class UserService {
 		const resuser = await userRepository
 			.createQueryBuilder('user')
 			.select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
-			.innerJoin('user.tutorInfo', 'tutorInfo')
-			.addSelect(['tutorInfo.id'])
 			.where('user.id = :id', { id: id })
 			.getOne();
 
 		return resuser;
+	};
+
+	static getTutorByUserId = async (userId: string): Promise<TutorInfo> => {
+		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
+		const restutorInfo = await tutorInfoRepository
+			.createQueryBuilder('tutorInfo')
+			.select(['tutorInfo.id', 'tutorInfo.description', 'tutorInfo.acceptedPayments', 'tutorInfo.user'])
+			.innerJoin('tutorInfo.user', 'user')
+			.addSelect('user.id')
+			.where('user.id = :userId', { userId: userId })
+			.getOne();
+
+		return restutorInfo;
 	};
 
 	static save = async (user: User): Promise<User> => {
