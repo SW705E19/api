@@ -7,7 +7,7 @@ import CategoryService from '../services/categoryService';
 class CategoryController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const categories = await CategoryService.getAll();
-		return res.send(categories);
+		return res.status(200).send(categories);
 	};
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from the url
@@ -21,7 +21,7 @@ class CategoryController {
 			categoryLogger.info(infoForLog);
 			return res.status(404).send('Category not found');
 		}
-		return res.send(category);
+		return res.status(200).send(category);
 	};
 	static newCategory = async (req: Request, res: Response): Promise<Response> => {
 		//Get parameters from body
@@ -48,10 +48,10 @@ class CategoryController {
 
 	static editCategory = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id;
+		const id = req.params.id as string;
 
 		//Get values from the body
-		const { name } = req.body;
+		const { name, description, services } = req.body;
 
 		// Try to find category in db
 		let category: Category;
@@ -63,7 +63,10 @@ class CategoryController {
 			return res.status(404).send('Category not found');
 		}
 		category.name = name;
-		const errors: ValidationError[] = await validate(Category);
+		category.description = description;
+		category.services = services;
+
+		const errors: ValidationError[] = await validate(category);
 		if (errors.length > 0) {
 			return res.status(400).send(errors);
 		}
