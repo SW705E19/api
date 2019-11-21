@@ -18,7 +18,13 @@ class UserService {
 	static getById = async (id: string): Promise<User> => {
 		//Get user from database
 		const userRepository: Repository<User> = getRepository(User);
-		const resuser = await userRepository.findOneOrFail(id);
+		const resuser = await userRepository
+			.createQueryBuilder('user')
+			.select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
+			.innerJoin('user.tutorInfo', 'tutorInfo')
+			.addSelect(['tutorInfo.id'])
+			.where('user.id = :id', { id: id })
+			.getOne();
 
 		return resuser;
 	};
