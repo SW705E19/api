@@ -37,7 +37,7 @@ class UserController {
 			tutorInfo = await userService.getTutorByUserId(userId);
 		} catch (error) {
 			userLogger.error(error);
-			return res.status(404).send('Tutorinfo not found');
+			return res.status(404).send('Tutor info not found');
 		}
 		return res.send(tutorInfo);
 	};
