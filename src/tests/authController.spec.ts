@@ -45,7 +45,7 @@ describe('auth controller login', function() {
 		stubResult.restore();
 	});
 
-	it('returns status 401 if service throws exception', async function() {
+	it('returns status 400 if service throws exception', async function() {
 		const request = {
 			body: {},
 		};
