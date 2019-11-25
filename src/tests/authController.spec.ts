@@ -157,7 +157,7 @@ describe('auth controller login', function () {
 		expect(authRes).to.equal('Email or password is not specified.');
 	});
 
-	it('returns status 401 with if unencrypted pasword is invalid', async () => {
+	it('returns status 401 if unencrypted pasword is invalid', async () => {
 		const request = {
 			body: {
 				email: mockUser.email,
@@ -198,13 +198,13 @@ describe('auth controller login', function () {
 		});
 
 		const authRes = await AuthController.login(req, res);
-		expect(authRes).to.equal('New password is same as old.');
+		expect(authRes).to.equal('Wrong password.');
 		compareSyncStub.restore();
 		getByEmailStub.restore();
 
 	});
 
-	it('returns status 200 with if login details are valid', async () => {
+	it('returns status 200 if login details are valid', async () => {
 		const request = {
 			body: {
 				email: mockUser.email,

@@ -25,7 +25,7 @@ class AuthController {
 
 		//Check if encrypted password match
 		if (!bcrypt.compareSync(password, user.password)) {
-			return res.status(401).send('New password is same as old.');
+			return res.status(401).send('Wrong password.');
 		}
 
 		//Sign JWT, valid for 1 hour
