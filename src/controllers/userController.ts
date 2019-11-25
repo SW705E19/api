@@ -14,12 +14,12 @@ class UserController {
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id;
+		const userId: number = (req.params.id as unknown) as number;
 
 		//Get the user from database
 		let user: User;
 		try {
-			user = await userService.getById(id);
+			user = await userService.getById(userId);
 		} catch (error) {
 			userLogger.error(error);
 			return res.status(404).send('User not found');
@@ -50,7 +50,7 @@ class UserController {
 
 	static editUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id as string;
+		const userId: number = (req.params.id as unknown) as number;
 
 		//Get values from the body
 		const { email, roles } = req.body;
@@ -59,7 +59,7 @@ class UserController {
 
 		let user: User;
 		try {
-			user = await userService.getById(id);
+			user = await userService.getById(userId);
 		} catch (error) {
 			//If not found, send a 404 response
 			userLogger.error(error);
@@ -87,16 +87,16 @@ class UserController {
 
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id as string;
+		const userId: number = (req.params.id as unknown) as number;
 
 		let user: User;
 		try {
-			user = await userService.getById(id);
+			user = await userService.getById(userId);
 		} catch (error) {
 			userLogger.error(error);
 			return res.status(404).send('User not found');
 		}
-		await userService.deleteById(id);
+		await userService.deleteById(userId);
 
 		const deletedInfoForLog: string = 'Deletion: ' + user.email + ', ' + user.roles;
 		userLogger.info(deletedInfoForLog);
@@ -106,11 +106,12 @@ class UserController {
 	};
 
 	static newTutor = async (req: Request, res: Response): Promise<Response> => {
-		const id = req.params.id as string;
+		const userId: number = (req.params.id as unknown) as number;
+
 		let user: User;
 
 		try {
-			user = await userService.getById(id);
+			user = await userService.getById(userId);
 		} catch (error) {
 			userLogger.error(error);
 			return res.status(404).send('User not found');
