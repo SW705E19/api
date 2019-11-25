@@ -10,15 +10,15 @@ import * as bcrypt from 'bcryptjs';
 class AuthController {
 	static login = async (req: Request, res: Response): Promise<Response> => {
 		//Check if username and password are set
-		const { username, password } = req.body;
-		if (!(username && password)) {
-			return res.status(400).send('Username or password is not specified.');
+		const { email, password } = req.body;
+		if (!(email && password)) {
+			return res.status(400).send('Email or password is not specified.');
 		}
 
 		//Get user from database
 		let user: User;
 		try {
-			user = await userService.getByUsername(username);
+			user = await userService.getByEmail(email);
 		} catch (error) {
 			return res.status(401).send(error);
 		}
@@ -29,7 +29,9 @@ class AuthController {
 		}
 
 		//Sign JWT, valid for 1 hour
-		const token = jwt.sign({ userId: user.id, username: user.username }, config.jwtSecret, { expiresIn: '1h' });
+		const token = jwt.sign({ userId: user.id, email: user.email, roles: user.roles }, config.jwtSecret, {
+			expiresIn: '1h',
+		});
 
 		//Send the jwt in the response
 		return res.status(200).send(token);
@@ -73,11 +75,33 @@ class AuthController {
 
 	static register = async (req: Request, res: Response): Promise<Response> => {
 		//Get parameters from the body
-		const { username, password, role } = req.body;
+		const {
+			email,
+			password,
+			roles,
+			avatarUrl,
+			dateOfBirth,
+			phoneNumber,
+			education,
+			address,
+			languages,
+			subjectsOfInterest,
+			firstName,
+			lastName,
+		} = req.body;
 		let user = new User();
-		user.username = username;
+		user.email = email;
 		user.password = password;
-		user.roles = role;
+		user.roles = roles;
+		user.avatarUrl = avatarUrl;
+		user.dateOfBirth = dateOfBirth;
+		user.phoneNumber = phoneNumber;
+		user.education = education;
+		user.address = address;
+		user.languages = languages;
+		user.subjectsOfInterest = subjectsOfInterest;
+		user.firstName = firstName;
+		user.lastName = lastName;
 
 		//Validate if the parameters are ok
 		const errors = await validator.validate(user);
@@ -97,14 +121,7 @@ class AuthController {
 
 		//If all ok, send 201 response
 		const userInfoForLog =
-			'Created: ' +
-			user.id.toString() +
-			', ' +
-			user.username +
-			', ' +
-			user.roles +
-			', ' +
-			user.createdAt.toString();
+			'Created: ' + user.id.toString() + ', ' + user.email + ', ' + user.roles + ', ' + user.createdAt.toString();
 		userLogger.info(userInfoForLog);
 		return res.status(201).send(user);
 	};

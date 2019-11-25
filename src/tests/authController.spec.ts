@@ -11,7 +11,6 @@ describe('auth controller login', function () {
 	/* Default user for connection testing */
 	const mockUser = {
 		id: 1,
-		username: 'admin',
 		email: 'john@bob.dk',
 		firstName: 'john',
 		lastName: 'bob',
@@ -19,23 +18,30 @@ describe('auth controller login', function () {
 		roles: ['ADMIN'],
 		createdAt: new Date(),
 		updatedAt: new Date(),
-		tutorInfo: null
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', '']
 	};
 
-	it('calls service get with admin as username', async function () {
+	it('calls service get with correct email', async function () {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 				password: mockUser.password,
 			},
 		};
 		const req = mockReq(request);
 		const res = mockRes();
 
-		const stubResult = sinon.stub(userService, 'getByUsername').resolves(mockUser);
+		const stubResult = sinon.stub(userService, 'getByEmail').resolves(mockUser);
 		await AuthController.login(req, res);
 
-		sinon.assert.calledWith(stubResult, mockUser.username);
+		sinon.assert.calledWith(stubResult, mockUser.email);
 		stubResult.restore();
 	});
 
@@ -50,7 +56,7 @@ describe('auth controller login', function () {
 				this.statusCode = s; return this;
 			}
 		});
-		const stubResult = sinon.stub(userService, 'getByUsername').throws('exception');
+		const stubResult = sinon.stub(userService, 'getByEmail').throws('exception');
 		await AuthController.login(req, res);
 
 		await AuthController.login(req, res);
@@ -72,7 +78,7 @@ describe('auth controller login', function () {
 			}
 		});
 
-		const stubResult = sinon.stub(userService, 'getByUsername').throws('exception');
+		const stubResult = sinon.stub(userService, 'getByEmail').throws('exception');
 		await AuthController.login(req, res);
 
 		await AuthController.login(req, res);
@@ -82,7 +88,7 @@ describe('auth controller login', function () {
 		stubResult.restore();
 	});
 
-	it('returns status 400 with no username specified for login', async () => {
+	it('returns status 400 with no email specified for login', async () => {
 		const request = {
 			body: {
 				password: mockUser.password,
@@ -99,7 +105,7 @@ describe('auth controller login', function () {
 		expect(res.statusCode).to.equal(400);
 	});
 
-	it('returns error message with no username specified for login', async () => {
+	it('returns error message with no email specified for login', async () => {
 		const request = {
 			body: {
 				password: mockUser.password,
@@ -115,13 +121,13 @@ describe('auth controller login', function () {
 		});
 
 		let authRes = await AuthController.login(req, res);
-		expect(authRes).to.equal('Username or password is not specified.');
+		expect(authRes).to.equal('Email or password is not specified.');
 	});
 
 	it('returns status 400 with no password specified for login', async () => {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 			},
 		};
 		const req = mockReq(request);
@@ -136,7 +142,7 @@ describe('auth controller login', function () {
 	it('returns error message with no password specified for login', async () => {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 			},
 		};
 		const req = mockReq(request);
@@ -149,13 +155,13 @@ describe('auth controller login', function () {
 		});
 
 		const authRes = await AuthController.login(req, res);
-		expect(authRes).to.equal('Username or password is not specified.');
+		expect(authRes).to.equal('Email or password is not specified.');
 	});
 
 	it('returns status 401 with if unencrypted pasword is invalid', async () => {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 				password: mockUser.password
 			},
 		};
@@ -175,13 +181,13 @@ describe('auth controller login', function () {
 	it('returns error if unencrypted pasword is invalid', async () => {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 				password: mockUser.password
 			},
 		};
 
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(false);
-		const getByUsernameStub = sinon.stub(userService, 'getByUsername').resolves(mockUser);
+		const getByEmailStub = sinon.stub(userService, 'getByEmail').resolves(mockUser);
 
 		const req = mockReq(request);
 		const res = mockRes({
@@ -195,19 +201,19 @@ describe('auth controller login', function () {
 		const authRes = await AuthController.login(req, res);
 		expect(authRes).to.equal('New password is same as old.');
 		compareSyncStub.restore();
-		getByUsernameStub.restore();
+		getByEmailStub.restore();
 
 	});
 
 	it('returns status 200 with if login details are valid', async () => {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 				password: mockUser.password
 			},
 		};
 
-		const getByUsernameStub = sinon.stub(userService, 'getByUsername').resolves(mockUser);
+		const getByEmailStub = sinon.stub(userService, 'getByEmail').resolves(mockUser);
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(true);
 
 		const req = mockReq(request);
@@ -218,20 +224,20 @@ describe('auth controller login', function () {
 		await AuthController.login(req, res);
 		expect(res.statusCode).to.equal(200);
 		compareSyncStub.restore();
-		getByUsernameStub.restore();
+		getByEmailStub.restore();
 
 	});
 
 	it('returns token if login details are valid', async () => {
 		const request = {
 			body: {
-				username: mockUser.username,
+				email: mockUser.email,
 				password: mockUser.password
 			},
 		};
 
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(true);
-		const getByUsernameStub = sinon.stub(userService, 'getByUsername').resolves(mockUser);
+		const getByEmailStub = sinon.stub(userService, 'getByEmail').resolves(mockUser);
 
 		const req = mockReq(request);
 		const res = mockRes({
@@ -245,16 +251,15 @@ describe('auth controller login', function () {
 		const authRes = await AuthController.login(req, res);
 		expect(authRes).to.not.be.null;
 		compareSyncStub.restore();
-		getByUsernameStub.restore();
+		getByEmailStub.restore();
 	});
 
 });
 
 describe('auth controller changePassword', function () {
 	/* Default user for connection testing */
-	const mockUser = {
+	let mockUser = {
 		id: 1,
-		username: 'admin',
 		email: 'john@bob.dk',
 		firstName: 'john',
 		lastName: 'bob',
@@ -262,7 +267,14 @@ describe('auth controller changePassword', function () {
 		roles: ['ADMIN'],
 		createdAt: new Date(),
 		updatedAt: new Date(),
-		tutorInfo: null
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', '']
 	};
 
 	it('calls service getById with right id', async function () {
@@ -627,9 +639,8 @@ describe('auth controller changePassword', function () {
 
 describe('auth controller register', function () {
 	/* Default user for connection testing */
-	const mockUser = {
+	let mockUser = {
 		id: 1,
-		username: 'admin',
 		email: 'john@bob.dk',
 		firstName: 'john',
 		lastName: 'bob',
@@ -637,7 +648,14 @@ describe('auth controller register', function () {
 		roles: ['ADMIN'],
 		createdAt: new Date(),
 		updatedAt: new Date(),
-		tutorInfo: null
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', '']
 	};
 
 	it('returns error if new model is not valid', async function () {

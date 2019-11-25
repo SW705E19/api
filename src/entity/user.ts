@@ -5,7 +5,6 @@ import {
 	Unique,
 	CreateDateColumn,
 	UpdateDateColumn,
-	OneToMany,
 	OneToOne,
 } from 'typeorm';
 import { Length, IsNotEmpty, IsEmail } from 'class-validator';
@@ -13,14 +12,36 @@ import * as bcrypt from 'bcryptjs';
 import { TutorInfo } from './tutorInfo';
 
 @Entity()
-@Unique(['username'])
+@Unique(['email'])
+
 export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
 
 	@Column()
-	@Length(4, 20)
-	username: string;
+	phoneNumber: string;
+
+	@Column()
+	education: string;
+
+	@Column()
+	address: string;
+
+	@Column()
+	dateOfBirth: string
+
+	@Column({
+		default: 'https://source.unsplash.com/random/200x200'
+	})
+	avatarUrl: string;
+
+	@Column('text', { array: true })
+	@IsNotEmpty()
+	languages: string[];
+
+	@Column('text', { array: true })
+	@IsNotEmpty()
+	subjectsOfInterest: string[];
 
 	@Column()
 	@IsEmail()
