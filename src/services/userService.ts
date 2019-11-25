@@ -27,7 +27,7 @@ class UserService {
 		return resuser;
 	};
 
-	static getTutorByUserId = async (userId: string): Promise<TutorInfo> => {
+	static getTutorByUserId = async (userId: number): Promise<TutorInfo> => {
 		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
 		const restutorInfo = await tutorInfoRepository
 			.createQueryBuilder('tutorInfo')

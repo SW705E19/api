@@ -29,7 +29,7 @@ class UserController {
 
 	static getOneTutorInfoByUserId = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const userId: string = req.params.id;
+		const userId: number = (req.params.id as unknown) as number;
 
 		//Get the tutorInfo from database
 		let tutorInfo: TutorInfo;
