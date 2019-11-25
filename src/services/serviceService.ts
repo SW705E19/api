@@ -31,7 +31,7 @@ class ServiceService {
 			.innerJoinAndSelect('service.categories', 'category')
 			.innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
 			.innerJoin('tutorInfo.user', 'user')
-			.addSelect(['user.id', 'user.username', 'user.firstName', 'user.lastName'])
+			.addSelect(['user.id', 'user.email', 'user.firstName', 'user.lastName'])
 			.where('service.id = :serviceId', { serviceId: id })
 			.getOne();
 

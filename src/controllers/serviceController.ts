@@ -23,6 +23,19 @@ class ServiceController {
 		return res.send(service);
 	};
 
+	static getDetailedById = async (req: Request, res: Response): Promise<Response> => {
+		const id: string = req.params.id;
+		let service: Service;
+
+		try {
+			service = await ServiceService.getDetailedById(id);
+		} catch (error) {
+			serviceLogger.error(error);
+			return res.status(404).send('Service not found');
+		}
+		return res.send(service);
+	};
+
 	static getByCategory = async (req: Request, res: Response): Promise<Response> => {
 		const category: string = req.params.category;
 		let services: Service[];
