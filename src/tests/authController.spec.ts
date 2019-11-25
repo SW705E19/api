@@ -116,7 +116,7 @@ describe('auth controller login', function () {
 			}
 		});
 
-		let authRes = await AuthController.login(req, res);
+		const authRes = await AuthController.login(req, res);
 		expect(authRes).to.equal('Email or password is not specified.');
 	});
 
@@ -254,7 +254,7 @@ describe('auth controller login', function () {
 
 describe('auth controller changePassword', function () {
 	/* Default user for connection testing */
-	let mockUser = {
+	const mockUser = {
 		id: 1,
 		email: 'john@bob.dk',
 		firstName: 'john',
@@ -400,10 +400,9 @@ describe('auth controller changePassword', function () {
 			status: function (s: any) { this.statusCode = s; return this; }
 		});
 
-		await AuthController.login(req, res);
+		await AuthController.changePassword(req, res);
 		expect(res.statusCode).to.equal(400);
 
-		await AuthController.changePassword(req, res);
 	});
 
 	it('returns error message if no new or old password is specified', async function () {
@@ -635,7 +634,7 @@ describe('auth controller changePassword', function () {
 
 describe('auth controller register', function () {
 	/* Default user for connection testing */
-	let mockUser = {
+	const mockUser = {
 		id: 1,
 		email: 'john@bob.dk',
 		firstName: 'john',
