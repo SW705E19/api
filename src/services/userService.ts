@@ -15,9 +15,8 @@ class UserService {
 		return await userRepository.findOneOrFail({ where: { email } });
 	};
 
-	static getById = async (id: number): Promise<User> => {
+	static getById = async (id: string): Promise<User> => {
 		//Get user from database
-		const userId = (id as unknown) as string;
 		const userRepository: Repository<User> = getRepository(User);
 		const resuser = await userRepository
 			.createQueryBuilder('user')
@@ -46,10 +45,9 @@ class UserService {
 		return await userRepository.save(user);
 	};
 
-	static deleteById = async (id: number): Promise<DeleteResult> => {
-		const userId = (id as unknown) as string;
+	static deleteById = async (id: string): Promise<DeleteResult> => {
 		const userRepository: Repository<User> = getRepository(User);
-		return await userRepository.delete(userId);
+		return await userRepository.delete(id);
 	};
 
 	static saveTutor = async (tutorInfo: TutorInfo): Promise<TutorInfo> => {
