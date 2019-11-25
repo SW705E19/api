@@ -27,6 +27,21 @@ class UserController {
 		return res.send(user);
 	};
 
+	static getOneTutorInfoByUserId = async (req: Request, res: Response): Promise<Response> => {
+		//Get the ID from the url
+		const userId: number = (req.params.id as unknown) as number;
+
+		//Get the tutorInfo from database
+		let tutorInfo: TutorInfo;
+		try {
+			tutorInfo = await userService.getTutorByUserId(userId);
+		} catch (error) {
+			userLogger.error(error);
+			return res.status(404).send('Tutor info not found');
+		}
+		return res.send(tutorInfo);
+	};
+
 	static getOwnUser = async (req: Request, res: Response): Promise<Response> => {
 		const jwtPayload = res.locals.jwtPayload;
 		req.params.id = jwtPayload.userId;
