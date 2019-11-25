@@ -6,13 +6,13 @@ class UserService {
 	static getAll = async (): Promise<User[]> => {
 		const userRepository: Repository<User> = getRepository(User);
 		return await userRepository.find({
-			select: ['id', 'username', 'roles'], //We dont want to send the passwords on response
+			select: ['id', 'email', 'roles'], //We dont want to send the passwords on response
 		});
 	};
-	static getByUsername = async (username: string): Promise<User> => {
+	static getByEmail = async (email: string): Promise<User> => {
 		//Get user from database
 		const userRepository: Repository<User> = getRepository(User);
-		return await userRepository.findOneOrFail({ where: { username } });
+		return await userRepository.findOneOrFail({ where: { email } });
 	};
 
 	static getById = async (id: string): Promise<User> => {

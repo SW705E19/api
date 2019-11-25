@@ -53,7 +53,7 @@ class UserController {
 		const id: string = req.params.id as string;
 
 		//Get values from the body
-		const { username, roles } = req.body;
+		const { email, roles } = req.body;
 
 		//Try to find user on database
 
@@ -67,7 +67,7 @@ class UserController {
 		}
 
 		//Validate the new values on model
-		user.username = username;
+		user.email = email;
 		user.roles = roles;
 		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
@@ -98,7 +98,7 @@ class UserController {
 		}
 		await userService.deleteById(id);
 
-		const deletedInfoForLog: string = 'Deletion: ' + user.username + ', ' + user.roles;
+		const deletedInfoForLog: string = 'Deletion: ' + user.email + ', ' + user.roles;
 		userLogger.info(deletedInfoForLog);
 
 		//After all send a 204 (no content, but accepted) response
@@ -142,7 +142,7 @@ class UserController {
 
 		//If all ok, send 201 response
 		const tutorInfoForLog: string =
-			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.username + ', ' + tutorInfo.description;
+			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.email + ', ' + tutorInfo.description;
 		userLogger.info(tutorInfoForLog);
 		return res.status(201).send('TutorInfo created');
 	};
