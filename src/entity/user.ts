@@ -28,7 +28,7 @@ export class User {
 	address: string;
 
 	@Column()
-	dateOfBirth: string
+	dateOfBirth: Date;
 
 	@Column({
 		default: 'https://source.unsplash.com/random/200x200'

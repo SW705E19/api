@@ -5,9 +5,14 @@ class ServiceService {
 	static getAll = async (): Promise<Service[]> => {
 		//Get all categories from database
 		const serviceRepository: Repository<Service> = getRepository(Service);
-		const servicees: Service[] = await serviceRepository.find();
-
-		return servicees;
+		const services: Service[] = await serviceRepository
+			.createQueryBuilder('service')
+			.innerJoin('service.tutorInfo', 'tutorInfo')
+			.addSelect(['tutorInfo.id'])
+			.innerJoin('tutorInfo.user', 'user')
+			.addSelect(['user.firstName', 'user.lastName'])
+			.getMany();
+		return services;
 	};
 
 	static getById = async (id: string): Promise<Service> => {
@@ -26,7 +31,7 @@ class ServiceService {
 			.innerJoinAndSelect('service.categories', 'category')
 			.innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
 			.innerJoin('tutorInfo.user', 'user')
-			.addSelect(['user.id', 'user.username', 'user.firstName', 'user.lastName'])
+			.addSelect(['user.id', 'user.email', 'user.firstName', 'user.lastName'])
 			.where('service.id = :serviceId', { serviceId: id })
 			.getOne();
 

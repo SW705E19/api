@@ -7,7 +7,6 @@ import ServiceService from '../services/serviceService';
 class ServiceController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const services = await ServiceService.getAll();
-
 		return res.send(services);
 	};
 
@@ -17,6 +16,19 @@ class ServiceController {
 
 		try {
 			service = await ServiceService.getById(id);
+		} catch (error) {
+			serviceLogger.error(error);
+			return res.status(404).send('Service not found');
+		}
+		return res.send(service);
+	};
+
+	static getDetailedById = async (req: Request, res: Response): Promise<Response> => {
+		const id: string = req.params.id;
+		let service: Service;
+
+		try {
+			service = await ServiceService.getDetailedById(id);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(404).send('Service not found');
@@ -112,7 +124,7 @@ class ServiceController {
 
 		await ServiceService.deleteById(id);
 		const deletedInfoForLog: string =
-			'Deletion: Tutor "' + service.tutorInfo.user.username + '"\'s service "' + service.name + '" was deleted';
+			'Deletion: Tutor "' + service.tutorInfo.user.email + '"\'s service "' + service.name + '" was deleted';
 
 		serviceLogger.info(deletedInfoForLog);
 

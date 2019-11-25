@@ -27,6 +27,21 @@ class UserController {
 		return res.send(user);
 	};
 
+	static getOneTutorInfoByUserId = async (req: Request, res: Response): Promise<Response> => {
+		//Get the ID from the url
+		const userId: number = (req.params.id as unknown) as number;
+
+		//Get the tutorInfo from database
+		let tutorInfo: TutorInfo;
+		try {
+			tutorInfo = await userService.getTutorByUserId(userId);
+		} catch (error) {
+			userLogger.error(error);
+			return res.status(404).send('Tutor info not found');
+		}
+		return res.send(tutorInfo);
+	};
+
 	static getOwnUser = async (req: Request, res: Response): Promise<Response> => {
 		const jwtPayload = res.locals.jwtPayload;
 		req.params.id = jwtPayload.userId;
@@ -38,7 +53,7 @@ class UserController {
 		const id = (req.params.id as unknown) as number;
 
 		//Get values from the body
-		const { username, roles } = req.body;
+		const { email, roles } = req.body;
 
 		//Try to find user on database
 
@@ -52,7 +67,7 @@ class UserController {
 		}
 
 		//Validate the new values on model
-		user.username = username;
+		user.email = email;
 		user.roles = roles;
 		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
@@ -83,7 +98,7 @@ class UserController {
 		}
 		await userService.deleteById(id);
 
-		const deletedInfoForLog: string = 'Deletion: ' + user.username + ', ' + user.roles;
+		const deletedInfoForLog: string = 'Deletion: ' + user.email + ', ' + user.roles;
 		userLogger.info(deletedInfoForLog);
 
 		//After all send a 204 (no content, but accepted) response
@@ -128,7 +143,7 @@ class UserController {
 
 		//If all ok, send 201 response
 		const tutorInfoForLog: string =
-			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.username + ', ' + tutorInfo.description;
+			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.email + ', ' + tutorInfo.description;
 		userLogger.info(tutorInfoForLog);
 		return res.status(201).send('TutorInfo created');
 	};
