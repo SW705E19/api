@@ -11,6 +11,8 @@ router.post('/', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.ne
 
 router.get('/:id([0-9]+)', [checkJwt], ServiceController.getOneById);
 
+router.get('/detail/:id([0-9]+)', [checkJwt], ServiceController.getDetailedById);
+
 router.patch('/:id([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.editService);
 
 router.delete('/:id([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.deleteService);
