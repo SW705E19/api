@@ -57,7 +57,6 @@ describe('auth controller login', function () {
 			}
 		});
 		const stubResult = sinon.stub(userService, 'getByEmail').throws('exception');
-		await AuthController.login(req, res);
 
 		await AuthController.login(req, res);
 		expect(res.statusCode).to.equal(400);
