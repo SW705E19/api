@@ -7,7 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import * as validator from 'class-validator';
 import { ValidationError } from 'class-validator';
 
-describe('auth controller login', function () {
+describe('auth controller login', function() {
 	/* Default user for connection testing */
 	const mockUser = {
 		id: 1,
@@ -25,10 +25,10 @@ describe('auth controller login', function () {
 		dateOfBirth: new Date(),
 		avatarUrl: '',
 		languages: ['', ''],
-		subjectsOfInterest: ['', '']
+		subjectsOfInterest: ['', ''],
 	};
 
-	it('calls service get with correct email', async function () {
+	it('calls service get with correct email', async function() {
 		const request = {
 			body: {
 				email: mockUser.email,
@@ -45,16 +45,17 @@ describe('auth controller login', function () {
 		stubResult.restore();
 	});
 
-	it('returns status 401 if service throws exception', async function () {
+	it('returns status 401 if service throws exception', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 
 		const res = mockRes({
-			status: function (s: any) {
-				this.statusCode = s; return this;
-			}
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 		const stubResult = sinon.stub(userService, 'getByEmail').throws('exception');
 
@@ -63,18 +64,20 @@ describe('auth controller login', function () {
 		stubResult.restore();
 	});
 
-	it('returns error message if service throws exception', async function () {
+	it('returns error message if service throws exception', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const stubResult = sinon.stub(userService, 'getByEmail').throws('exception');
@@ -92,9 +95,10 @@ describe('auth controller login', function () {
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) {
-				this.statusCode = s; return this;
-			}
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.login(req, res);
@@ -109,11 +113,13 @@ describe('auth controller login', function () {
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.login(req, res);
@@ -128,7 +134,10 @@ describe('auth controller login', function () {
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.login(req, res);
@@ -143,11 +152,13 @@ describe('auth controller login', function () {
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.login(req, res);
@@ -158,7 +169,7 @@ describe('auth controller login', function () {
 		const request = {
 			body: {
 				email: mockUser.email,
-				password: mockUser.password
+				password: mockUser.password,
 			},
 		};
 
@@ -166,19 +177,21 @@ describe('auth controller login', function () {
 
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.login(req, res);
 		expect(res.statusCode).to.equal(401);
 		compareSyncStub.restore();
-
 	});
 	it('returns error if unencrypted pasword is invalid', async () => {
 		const request = {
 			body: {
 				email: mockUser.email,
-				password: mockUser.password
+				password: mockUser.password,
 			},
 		};
 
@@ -187,25 +200,26 @@ describe('auth controller login', function () {
 
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.login(req, res);
 		expect(authRes).to.equal('Wrong password.');
 		compareSyncStub.restore();
 		getByEmailStub.restore();
-
 	});
 
 	it('returns status 200 if login details are valid', async () => {
 		const request = {
 			body: {
 				email: mockUser.email,
-				password: mockUser.password
+				password: mockUser.password,
 			},
 		};
 
@@ -214,21 +228,23 @@ describe('auth controller login', function () {
 
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.login(req, res);
 		expect(res.statusCode).to.equal(200);
 		compareSyncStub.restore();
 		getByEmailStub.restore();
-
 	});
 
 	it('returns token if login details are valid', async () => {
 		const request = {
 			body: {
 				email: mockUser.email,
-				password: mockUser.password
+				password: mockUser.password,
 			},
 		};
 
@@ -237,11 +253,13 @@ describe('auth controller login', function () {
 
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.login(req, res);
@@ -249,10 +267,9 @@ describe('auth controller login', function () {
 		compareSyncStub.restore();
 		getByEmailStub.restore();
 	});
-
 });
 
-describe('auth controller changePassword', function () {
+describe('auth controller changePassword', function() {
 	/* Default user for connection testing */
 	const mockUser = {
 		id: 1,
@@ -270,10 +287,10 @@ describe('auth controller changePassword', function () {
 		dateOfBirth: new Date(),
 		avatarUrl: '',
 		languages: ['', ''],
-		subjectsOfInterest: ['', '']
+		subjectsOfInterest: ['', ''],
 	};
 
-	it('calls service getById with right id', async function () {
+	it('calls service getById with right id', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -284,9 +301,9 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
-			}
+					userId: mockUser.id,
+				},
+			},
 		});
 
 		const stubResult = sinon.stub(userService, 'getById').resolves(mockUser);
@@ -296,7 +313,7 @@ describe('auth controller changePassword', function () {
 		stubResult.restore();
 	});
 
-	it('returns status 400 if no old password is specified', async function () {
+	it('returns status 400 if no old password is specified', async function() {
 		const request = {
 			body: {
 				newPassword: 'abc123fbc!',
@@ -306,17 +323,20 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.changePassword(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
 
-	it('returns error message if no old password is specified', async function () {
+	it('returns error message if no old password is specified', async function() {
 		const request = {
 			body: {
 				newPassword: 'abc123fbc!',
@@ -326,21 +346,23 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.changePassword(req, res);
 		expect(authRes).to.equal('Old or new password is not specified.');
 	});
 
-	it('returns status 400 if no new password is specified', async function () {
+	it('returns status 400 if no new password is specified', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -350,18 +372,20 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.changePassword(req, res);
 		expect(res.statusCode).to.equal(400);
-
 	});
 
-	it('returns error message if no new password is specified', async function () {
+	it('returns error message if no new password is specified', async function() {
 		const request = {
 			body: {
 				oldPassword: 'abc123fbc!',
@@ -371,64 +395,68 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.changePassword(req, res);
 		expect(authRes).to.equal('Old or new password is not specified.');
 	});
 
-	it('returns status 400 if no new or old password is specified', async function () {
+	it('returns status 400 if no new or old password is specified', async function() {
 		const request = {
-			body: {
-			},
+			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		await AuthController.changePassword(req, res);
 		expect(res.statusCode).to.equal(400);
-
 	});
 
-	it('returns error message if no new or old password is specified', async function () {
+	it('returns error message if no new or old password is specified', async function() {
 		const request = {
-			body: {
-			},
+			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const authRes = await AuthController.changePassword(req, res);
 		expect(authRes).to.equal('Old or new password is not specified.');
 	});
 
-	it('returns status 503 if userService get fails', async function () {
+	it('returns status 503 if userService get fails', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -439,10 +467,13 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').throws('exception');
@@ -452,7 +483,7 @@ describe('auth controller changePassword', function () {
 		expect(res.statusCode).to.equal(503);
 	});
 
-	it('returns error message if userService get fails', async function () {
+	it('returns error message if userService get fails', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -463,24 +494,26 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').throws('exception');
-		const authRes =  await AuthController.changePassword(req, res);
+		const authRes = await AuthController.changePassword(req, res);
 
 		expect(authRes).to.not.be.null;
 		getByIdStub.restore();
 	});
 
-	it('returns 401 error new password is same as old', async function () {
+	it('returns 401 error new password is same as old', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -491,10 +524,13 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').resolves(mockUser);
@@ -506,7 +542,7 @@ describe('auth controller changePassword', function () {
 		expect(res.statusCode).to.equal(401);
 	});
 
-	it('returns error message if new password is same as old', async function () {
+	it('returns error message if new password is same as old', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -517,25 +553,27 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').resolves(mockUser);
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(false);
 		const authRes = await AuthController.changePassword(req, res);
-		expect(authRes).to.equal('New password is the same as old.')
+		expect(authRes).to.equal('New password is the same as old.');
 		getByIdStub.restore();
 		compareSyncStub.restore();
 	});
 
-	it('returns 400 error if new model is not valid', async function () {
+	it('returns 400 error if new model is not valid', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -546,15 +584,18 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').resolves(mockUser);
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(true);
-		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError])
+		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError()]);
 		await AuthController.changePassword(req, res);
 		getByIdStub.restore();
 		compareSyncStub.restore();
@@ -563,7 +604,7 @@ describe('auth controller changePassword', function () {
 		expect(res.statusCode).to.equal(400);
 	});
 
-	it('returns 204 success if model is valid', async function () {
+	it('returns 204 success if model is valid', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -574,15 +615,18 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').resolves(mockUser);
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(true);
-		const validateStub = sinon.stub(validator, 'validate').resolves([])
+		const validateStub = sinon.stub(validator, 'validate').resolves([]);
 		const hashSyncStub = sinon.stub(bcrypt, 'hashSync').resolves(mockUser.password);
 		const userSaveStub = sinon.stub(userService, 'save').resolves(mockUser);
 		await AuthController.changePassword(req, res);
@@ -594,7 +638,7 @@ describe('auth controller changePassword', function () {
 		expect(res.statusCode).to.equal(204);
 	});
 
-	it('returns user success if model is valid', async function () {
+	it('returns user success if model is valid', async function() {
 		const request = {
 			body: {
 				oldPassword: mockUser.password,
@@ -605,19 +649,21 @@ describe('auth controller changePassword', function () {
 		const res = mockRes({
 			locals: {
 				jwtPayload: {
-					userId: mockUser.id
-				}
+					userId: mockUser.id,
+				},
 			},
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
 		const getByIdStub = sinon.stub(userService, 'getById').resolves(mockUser);
 		const compareSyncStub = sinon.stub(bcrypt, 'compareSync').returns(true);
-		const validateStub = sinon.stub(validator, 'validate').resolves([])
+		const validateStub = sinon.stub(validator, 'validate').resolves([]);
 		const hashSyncStub = sinon.stub(bcrypt, 'hashSync').resolves(mockUser.password);
 		const userSaveStub = sinon.stub(userService, 'save').resolves(mockUser);
 
@@ -629,10 +675,9 @@ describe('auth controller changePassword', function () {
 		userSaveStub.restore();
 		expect(authRes).to.equal(mockUser);
 	});
-
 });
 
-describe('auth controller register', function () {
+describe('auth controller register', function() {
 	/* Default user for connection testing */
 	const mockUser = {
 		id: 1,
@@ -650,56 +695,64 @@ describe('auth controller register', function () {
 		dateOfBirth: new Date(),
 		avatarUrl: '',
 		languages: ['', ''],
-		subjectsOfInterest: ['', '']
+		subjectsOfInterest: ['', ''],
 	};
 
-	it('returns error if new model is not valid', async function () {
+	it('returns error if new model is not valid', async function() {
 		const request = {
 			body: {},
 		};
 
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
-		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError])
+		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError()]);
 		const authRes = await AuthController.register(req, res);
 		validateStub.restore();
 
 		expect(authRes).to.not.be.null;
 	});
 
-	it('returns 400 error if new model is not valid', async function () {
+	it('returns 400 error if new model is not valid', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
-		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError])
+		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError()]);
 		await AuthController.register(req, res);
 		validateStub.restore();
 
 		expect(res.statusCode).to.equal(400);
 	});
 
-	it('returns 409 error if userService save fails', async function () {
+	it('returns 409 error if userService save fails', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
-		const validateStub = sinon.stub(validator, 'validate').resolves([])
+		const validateStub = sinon.stub(validator, 'validate').resolves([]);
 		const saveStub = sinon.stub(userService, 'save').throws('exception');
 		const hashSyncStub = sinon.stub(bcrypt, 'hashSync').resolves(mockUser.password);
 
@@ -711,20 +764,22 @@ describe('auth controller register', function () {
 		expect(res.statusCode).to.equal(409);
 	});
 
-	it('returns error message if userService save fails', async function () {
+	it('returns error message if userService save fails', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
-		const validateStub = sinon.stub(validator, 'validate').resolves([])
+		const validateStub = sinon.stub(validator, 'validate').resolves([]);
 		const saveStub = sinon.stub(userService, 'save').throws('exception');
 		const hashSyncStub = sinon.stub(bcrypt, 'hashSync').resolves(mockUser.password);
 
@@ -736,16 +791,19 @@ describe('auth controller register', function () {
 		expect(authRes).to.not.be.null;
 	});
 
-	it('returns 201 error if input is valid', async function () {
+	it('returns 201 error if input is valid', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function (s: any) { this.statusCode = s; return this; }
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
 		});
 
-		const validateStub = sinon.stub(validator, 'validate').resolves([])
+		const validateStub = sinon.stub(validator, 'validate').resolves([]);
 		const saveStub = sinon.stub(userService, 'save').resolves(mockUser);
 		const hashSyncStub = sinon.stub(bcrypt, 'hashSync').resolves(mockUser.password);
 
@@ -757,20 +815,22 @@ describe('auth controller register', function () {
 		expect(res.statusCode).to.equal(201);
 	});
 
-	it('returns user if input is valid', async function () {
+	it('returns user if input is valid', async function() {
 		const request = {
 			body: {},
 		};
 		const req = mockReq(request);
 		const res = mockRes({
-			status: function () {
+			status: function() {
 				return {
-					send: (e: any) => e
+					send: (e: string): string => {
+						return e;
+					},
 				};
-			}
+			},
 		});
 
-		const validateStub = sinon.stub(validator, 'validate').resolves([])
+		const validateStub = sinon.stub(validator, 'validate').resolves([]);
 		const saveStub = sinon.stub(userService, 'save').resolves(mockUser);
 		const hashSyncStub = sinon.stub(bcrypt, 'hashSync').resolves(mockUser.password);
 
@@ -781,5 +841,4 @@ describe('auth controller register', function () {
 
 		expect(authRes).to.equal(mockUser);
 	});
-
 });
