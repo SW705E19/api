@@ -15,13 +15,14 @@ class UserService {
 		return await userRepository.findOneOrFail({ where: { email } });
 	};
 
-	static getById = async (id: string): Promise<User> => {
+	static getById = async (id: number): Promise<User> => {
 		//Get user from database
+		const userId = (id as unknown) as number;
 		const userRepository: Repository<User> = getRepository(User);
 		const resuser = await userRepository
 			.createQueryBuilder('user')
 			.select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
-			.where('user.id = :id', { id: id })
+			.where('user.id = :id', { id: userId })
 			.getOne();
 
 		return resuser;
@@ -45,9 +46,11 @@ class UserService {
 		return await userRepository.save(user);
 	};
 
-	static deleteById = async (id: string): Promise<DeleteResult> => {
+	static deleteById = async (id: number): Promise<DeleteResult> => {
+		const userId = (id as unknown) as number;
+
 		const userRepository: Repository<User> = getRepository(User);
-		return await userRepository.delete(id);
+		return await userRepository.delete(userId);
 	};
 
 	static saveTutor = async (tutorInfo: TutorInfo): Promise<TutorInfo> => {
