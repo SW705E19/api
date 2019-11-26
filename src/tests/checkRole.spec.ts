@@ -49,7 +49,6 @@ describe('Check role middleware', function() {
 
 		expect(res.statusCode).to.equal(401);
 		mockGetBy.restore();
-
 	});
 
 	it('returns error message if service fails', async function() {
@@ -81,7 +80,6 @@ describe('Check role middleware', function() {
 		mockGetByTest.restore();
 	});
 
-
 	it('calls next if role is found', async function() {
 		const request = {
 			body: {},
@@ -104,7 +102,6 @@ describe('Check role middleware', function() {
 
 		expect(next.calledOnce).to.be.true;
 		getByIdStub.restore();
-
 	});
 
 	it('returns status 401 if role is not found', async function() {
