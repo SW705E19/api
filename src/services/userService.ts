@@ -9,21 +9,14 @@ class UserService {
 			select: ['id', 'email', 'roles'], //We dont want to send the passwords on response
 		});
 	};
-	static getAllTutors = async (): Promise<User[]> => {
-		const userRepository: Repository<User> = getRepository(User);
-		return await userRepository
-				.createQueryBuilder('user')
-				.select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles','tutorinfo.description'])
-				.innerJoin('user', 'tutorInfo.user')
-				.addSelect('user.id')
-				.where('user.tutorinfo.id = tutorinfo.id')
-				.getMany();
-			// .createQueryBuilder('user')
-			// .select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles','tutorinfo.description'])
-			// .innerJoin('user', 'tutorInfo.user')
-			// .addSelect('user.roles')
-			// .where("user.roles @> ARRAY['TUTOR']::text[]")
-			// .getMany();
+	static getAllTutors = async (): Promise<TutorInfo[]> => {
+		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
+		return await tutorInfoRepository
+			.createQueryBuilder('tutorInfo')
+			.select(['tutorInfo.id', 'tutorInfo.description', 'tutorInfo.acceptedPayments', 'tutorInfo.user'])
+			.innerJoin('tutorInfo.user', 'user')
+			.addSelect(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
+			.getMany();
 	}
 	static getByEmail = async (email: string): Promise<User> => {
 		//Get user from database
