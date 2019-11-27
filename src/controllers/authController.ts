@@ -1,122 +1,129 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { getRepository } from 'typeorm';
-import { validate } from 'class-validator';
+import * as validator from 'class-validator';
 import userLogger from '../logging/users/userLogger';
+import userService from '../services/userService';
 import { User } from '../entity/user';
 import config from '../config/config';
+import * as bcrypt from 'bcryptjs';
 
 class AuthController {
-	static login = async (req: Request, res: Response) => {
+	static login = async (req: Request, res: Response): Promise<Response> => {
 		//Check if username and password are set
-		const { username, password } = req.body;
-		if (!(username && password)) {
-			res.status(400).send();
+		const { email, password } = req.body;
+		if (!(email && password)) {
+			return res.status(400).send('Email or password is not specified.');
 		}
 
 		//Get user from database
-		const userRepository = getRepository(User);
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail({ where: { username } });
+			user = await userService.getByEmail(email);
 		} catch (error) {
-			res.status(401).send();
+			return res.status(401).send(error);
 		}
 
 		//Check if encrypted password match
-		if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-			res.status(401).send();
-			return;
+		if (!bcrypt.compareSync(password, user.password)) {
+			return res.status(401).send('Wrong password.');
 		}
 
 		//Sign JWT, valid for 1 hour
-		const token = jwt.sign({ userId: user.id, username: user.username }, config.jwtSecret, { expiresIn: '1h' });
+		const token = jwt.sign({ userId: user.id, email: user.email, roles: user.roles }, config.jwtSecret, {
+			expiresIn: '1h',
+		});
 
 		//Send the jwt in the response
-		res.send(token);
+		return res.status(200).send(token);
 	};
 
-	static changePassword = async (req: Request, res: Response) => {
+	static changePassword = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from JWT
 		const id = res.locals.jwtPayload.userId;
 
 		//Get parameters from the body
 		const { oldPassword, newPassword } = req.body;
 		if (!(oldPassword && newPassword)) {
-			res.status(400).send();
+			return res.status(400).send('Old or new password is not specified.');
 		}
 
 		//Get user from the database
-		const userRepository = getRepository(User);
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail(id);
-		} catch (id) {
-			res.status(401).send();
+			user = await userService.getById(id);
+		} catch (error) {
+			return res.status(503).send(error);
 		}
 
 		//Check if old password is the same
-		if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) {
-			res.status(401).send();
-			return;
+		if (!bcrypt.compareSync(oldPassword, user.password)) {
+			return res.status(401).send('New password is the same as old.');
 		}
 
 		//Validate the model (password length)
 		user.password = newPassword;
-		const errors = await validate(user);
+		const errors = await validator.validate(user);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 		//Hash the new password and save
-		user.hashPassword();
-		userRepository.save(user);
+		user.password = bcrypt.hashSync(user.password, 8);
+		user = await userService.save(user);
 
-		res.status(204).send();
+		return res.status(204).send(user);
 	};
 
-	static register = async (req: Request, res: Response) => {
+	static register = async (req: Request, res: Response): Promise<Response> => {
 		//Get parameters from the body
-		const { username, password, roles, firstname, lastname, email } = req.body;
-		const user = new User();
-		user.username = username;
+		const {
+			email,
+			password,
+			roles,
+			avatarUrl,
+			dateOfBirth,
+			phoneNumber,
+			education,
+			address,
+			languages,
+			subjectsOfInterest,
+			firstName,
+			lastName,
+		} = req.body;
+		let user = new User();
+		user.email = email;
 		user.password = password;
 		user.roles = roles;
-		user.email = email;
-		user.firstName = firstname;
-		user.lastName = lastname;
+		user.avatarUrl = avatarUrl;
+		user.dateOfBirth = dateOfBirth;
+		user.phoneNumber = phoneNumber;
+		user.education = education;
+		user.address = address;
+		user.languages = languages;
+		user.subjectsOfInterest = subjectsOfInterest;
+		user.firstName = firstName;
+		user.lastName = lastName;
 
 		//Validate if the parameters are ok
-		const errors = await validate(user);
+		const errors = await validator.validate(user);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		//Hash the password, to securely store on DB
-		user.hashPassword();
+		user.password = bcrypt.hashSync(user.password, 8);
 
-		//Try to save. If fails, the username is already in use
-		const userRepository = getRepository(User);
+		//Try to save.
 		try {
-			await userRepository.save(user);
-		} catch (e) {
-			res.status(409).send('username already in use');
-			return;
+			user = await userService.save(user);
+		} catch (error) {
+			return res.status(409).send(error);
 		}
 
 		//If all ok, send 201 response
 		const userInfoForLog =
-			'Created: ' +
-			user.id.toString() +
-			', ' +
-			user.username +
-			', ' +
-			user.roles +
-			', ' +
-			user.createdAt.toString();
+			'Created: ' + user.id.toString() + ', ' + user.email + ', ' + user.roles + ', ' + user.createdAt.toString();
 		userLogger.info(userInfoForLog);
-		res.status(201).send('User created');
+		return res.status(201).send(user);
 	};
 }
 export default AuthController;

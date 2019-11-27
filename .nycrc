@@ -1,0 +1,5 @@
+{
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "all": true,
+    "exclude": ["src/migration", "coverage", "src/entity", "src/logging", "src/config", "src/tests", "*.js"]
+}

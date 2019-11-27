@@ -1,21 +1,15 @@
 import { Request, Response } from 'express';
-import { getRepository, Repository } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import userLogger from '../logging/users/userLogger';
-
+import userService from '../services/userService';
 import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
 
 class UserController {
-	static listAll = async (req: Request, res: Response) => {
-		//Get users from database
-		const userRepository: Repository<User> = getRepository(User);
-		const users: User[] = await userRepository.find({
-			select: ['id', 'username', 'roles'], //We dont want to send the passwords on response
-		});
-
+	static listAll = async (req: Request, res: Response): Promise<Response> => {
+		const users: User[] = await userService.getAll();
 		//Send the users object
-		res.send(users);
+		return res.send(users);
 	};
 	static listAllTutors = async (req: Request, res: Response) => {
 		const userRepository: Repository<User> = getRepository(User);
@@ -26,105 +20,109 @@ class UserController {
 		res.send(users);
 	};
 
-	static getOneById = async (req: Request, res: Response) => {
+	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id;
+		const userId: number = (req.params.id as unknown) as number;
 
 		//Get the user from database
-		const userRepository: Repository<User> = getRepository(User);
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail(id, {
-				select: ['id', 'firstName', 'lastName', 'roles'], //We dont want to send the password on response
-				relations: ['tutorInfo', 'tutorInfo.services'],
-			});
+			user = await userService.getById(userId);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(404).send('User not found');
+			return res.status(404).send('User not found');
 		}
-		res.send(user);
+		return res.send(user);
 	};
-	static getOwnUser = async (req: Request, res: Response) => {
+
+	static getOneTutorInfoByUserId = async (req: Request, res: Response): Promise<Response> => {
+		//Get the ID from the url
+		const userId: number = (req.params.id as unknown) as number;
+
+		//Get the tutorInfo from database
+		let tutorInfo: TutorInfo;
+		try {
+			tutorInfo = await userService.getTutorByUserId(userId);
+		} catch (error) {
+			userLogger.error(error);
+			return res.status(404).send('Tutor info not found');
+		}
+		return res.send(tutorInfo);
+	};
+
+	static getOwnUser = async (req: Request, res: Response): Promise<Response> => {
 		const jwtPayload = res.locals.jwtPayload;
 		req.params.id = jwtPayload.userId;
-		UserController.getOneById(req, res);
+		return UserController.getOneById(req, res);
 	};
 
-	static editUser = async (req: Request, res: Response) => {
+	static editUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id;
+		const userId: number = (req.params.id as unknown) as number;
 
 		//Get values from the body
-		const { username, roles } = req.body;
+		const { email, roles } = req.body;
 
 		//Try to find user on database
-		const userRepository: Repository<User> = getRepository(User);
+
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail(id);
+			user = await userService.getById(userId);
 		} catch (error) {
 			//If not found, send a 404 response
 			userLogger.error(error);
-			res.status(404).send('User not found');
-			return;
+			return res.status(404).send('User not found');
 		}
 
 		//Validate the new values on model
-		user.username = username;
+		user.email = email;
 		user.roles = roles;
 		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		//Try to save, if fails, that means username already in use
 		try {
-			await userRepository.save(user);
+			await userService.save(user);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(409).send('username already in use');
-			return;
+			return res.status(409).send('username already in use');
 		}
 		//After all send a 204 (no content, but accepted) response
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static deleteUser = async (req: Request, res: Response) => {
+	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id: string = req.params.id;
+		const userId: number = (req.params.id as unknown) as number;
 
-		const userRepository: Repository<User> = getRepository(User);
 		let user: User;
 		try {
-			user = await userRepository.findOneOrFail(id);
+			user = await userService.getById(userId);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(404).send('User not found');
-			return;
+			return res.status(404).send('User not found');
 		}
-		userRepository.delete(id);
+		await userService.deleteById(userId);
 
-		const deletedInfoForLog: string = 'Deletion: ' + user.username + ', ' + user.roles;
+		const deletedInfoForLog: string = 'Deletion: ' + user.email + ', ' + user.roles;
 		userLogger.info(deletedInfoForLog);
 
 		//After all send a 204 (no content, but accepted) response
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static newTutor = async (req: Request, res: Response) => {
-		const id = req.params.id;
+	static newTutor = async (req: Request, res: Response): Promise<Response> => {
+		const userId: number = (req.params.id as unknown) as number;
+
 		let user: User;
-		const userRepository = getRepository(User);
 
 		try {
-			user = await userRepository.findOne(id, {
-				select: ['id', 'username', 'roles'],
-			});
+			user = await userService.getById(userId);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(404).send('User not found');
-			return;
+			return res.status(404).send('User not found');
 		}
 
 		if (user == null) {
@@ -141,24 +139,21 @@ class UserController {
 		//Validate if the parameters are ok
 		const errors: ValidationError[] = await validate(tutorInfo);
 		if (errors.length > 0) {
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
-		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
 		try {
-			await tutorInfoRepository.save(tutorInfo);
+			await userService.saveTutor(tutorInfo);
 		} catch (error) {
 			userLogger.error(error);
-			res.status(500).send('TutorInfo could not be saved');
-			return;
+			return res.status(500).send('TutorInfo could not be saved');
 		}
 
 		//If all ok, send 201 response
 		const tutorInfoForLog: string =
-			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.username + ', ' + tutorInfo.description;
+			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.email + ', ' + tutorInfo.description;
 		userLogger.info(tutorInfoForLog);
-		res.status(201).send('TutorInfo created');
+		return res.status(201).send('TutorInfo created');
 	};
 }
 

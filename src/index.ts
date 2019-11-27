@@ -8,7 +8,7 @@ import routes from './routes';
 
 //Connects to the Database -> then starts the express
 createConnection()
-	.then(async connection => {
+	.then(async () => {
 		// Create a new express application instance
 		const app = express();
 

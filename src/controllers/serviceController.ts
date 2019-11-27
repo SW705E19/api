@@ -1,51 +1,55 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 import { validate } from 'class-validator';
 import { Service } from '../entity/service';
 import serviceLogger from '../logging/services/serviceLogger';
+import ServiceService from '../services/serviceService';
 
 class ServiceController {
-	static listAll = async (req: Request, res: Response) => {
-		const serviceRepository = getRepository(Service);
-		const services = await serviceRepository.find();
-
-		res.send(services);
+	static listAll = async (req: Request, res: Response): Promise<Response> => {
+		const services = await ServiceService.getAll();
+		return res.send(services);
 	};
 
-	static getOneById = async (req: Request, res: Response) => {
+	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		const id: string = req.params.id;
-		const serviceRepository = getRepository(Service);
 		let service: Service;
 
 		try {
-			service = await serviceRepository.findOne(id);
+			service = await ServiceService.getById(id);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Service not found');
+			return res.status(404).send('Service not found');
 		}
-		res.send(service);
+		return res.send(service);
 	};
 
-	static getByCategory = async (req: Request, res: Response) => {
+	static getDetailedById = async (req: Request, res: Response): Promise<Response> => {
+		const id: string = req.params.id;
+		let service: Service;
+
+		try {
+			service = await ServiceService.getDetailedById(id);
+		} catch (error) {
+			serviceLogger.error(error);
+			return res.status(404).send('Service not found');
+		}
+		return res.send(service);
+	};
+
+	static getByCategory = async (req: Request, res: Response): Promise<Response> => {
 		const category: string = req.params.category;
-		const serviceRepository = getRepository(Service);
 		let services: Service[];
 
 		try {
-			services = await serviceRepository
-				.createQueryBuilder('service')
-				.innerJoinAndSelect('service.categories', 'category')
-				.where('category.name = :category', { category: category })
-				.getMany();
+			services = await ServiceService.getByCategoryName(category);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Could not find services');
-			return;
+			return res.status(404).send('Could not find services');
 		}
-		res.send(services);
+		return res.send(services);
 	};
 
-	static newService = async (req: Request, res: Response) => {
+	static newService = async (req: Request, res: Response): Promise<Response> => {
 		const { description, tutorInfo, name, categories } = req.body;
 		const service = new Service();
 		service.description = description;
@@ -56,38 +60,31 @@ class ServiceController {
 		const errors = await validate(service);
 		if (errors.length > 0) {
 			serviceLogger.error(errors);
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
-		const serviceRepository = getRepository(Service);
-
 		try {
-			await serviceRepository.save(service);
+			await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(400).send('Could not create service');
-			return;
+			return res.status(400).send('Could not create service');
 		}
 
 		const serviceInfoForLog: string = 'Created: ' + service.name + ', ' + service.description;
 		serviceLogger.info(serviceInfoForLog);
-		res.status(201).send('Service created');
+		return res.status(201).send('Service created');
 	};
 
-	static editService = async (req: Request, res: Response) => {
+	static editService = async (req: Request, res: Response): Promise<Response> => {
 		const id = req.params.id;
 		const { description, tutorInfo, name, categories } = req.body;
 		let service = new Service();
 
-		const serviceRepository = getRepository(Service);
-
 		try {
-			service = await serviceRepository.findOne(id);
+			service = await ServiceService.getById(id);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Service was not found');
-			return;
+			return res.status(404).send('Service was not found');
 		}
 
 		service.description = description;
@@ -98,53 +95,40 @@ class ServiceController {
 		const errors = await validate(service);
 		if (errors.length > 0) {
 			serviceLogger.error(errors);
-			res.status(400).send(errors);
-			return;
+			return res.status(400).send(errors);
 		}
 
 		try {
-			await serviceRepository.save(service);
+			await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(500).send('Could not save service');
-			return;
+			return res.status(500).send('Could not save service');
 		}
-		res.status(204).send();
+		return res.status(204).send();
 	};
 
-	static deleteService = async (req: Request, res: Response) => {
+	static deleteService = async (req: Request, res: Response): Promise<Response> => {
 		const id = req.params.id;
-
-		const serviceRepository = getRepository(Service);
 		let service: Service;
 
 		try {
-			service = await serviceRepository
-				.createQueryBuilder('service')
-				.innerJoinAndSelect('service.categories', 'category')
-				.innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
-				.innerJoin('tutorInfo.user', 'user')
-				.addSelect(['user.id', 'user.username', 'user.firstName', 'user.lastName'])
-				.where('service.id = :serviceId', { serviceId: id })
-				.getOne();
+			service = await ServiceService.getDetailedById(id);
 		} catch (error) {
 			serviceLogger.error(error);
-			res.status(404).send('Could not find service');
-			return;
+			return res.status(404).send('Could not find service');
 		}
 
 		if (service == null) {
-			res.status(404).send(`A service with id ${id} does not exist`);
-			return;
+			return res.status(404).send(`A service with id ${id} does not exist`);
 		}
 
-		await serviceRepository.delete(service);
+		await ServiceService.deleteById(id);
 		const deletedInfoForLog: string =
-			'Deletion: Tutor "' + service.tutorInfo.user.username + '"\'s service "' + service.name + '" was deleted';
+			'Deletion: Tutor "' + service.tutorInfo.user.email + '"\'s service "' + service.name + '" was deleted';
 
 		serviceLogger.info(deletedInfoForLog);
 
-		res.status(204).send();
+		return res.status(204).send();
 	};
 }
 
