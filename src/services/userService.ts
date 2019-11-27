@@ -17,7 +17,7 @@ class UserService {
 			.innerJoin('tutorInfo.user', 'user')
 			.addSelect(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
 			.getMany();
-	}
+	};
 	static getByEmail = async (email: string): Promise<User> => {
 		//Get user from database
 		const userRepository: Repository<User> = getRepository(User);

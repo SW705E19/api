@@ -12,7 +12,7 @@ class UserController {
 		//Send the users object
 		return res.send(users);
 	};
-	static listAllTutors = async (req: Request, res: Response) => {
+	static listAllTutors = async (req: Request, res: Response): Promise<Response> => {
 		const tutors = await UserService.getAllTutors();
 		return res.send(tutors);
 	};
