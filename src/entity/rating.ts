@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Between } from 'typeorm';
 import { User } from './user';
 import { Service } from './service';
+import { Equals, Length } from 'class-validator';
 
 @Entity()
 export class Rating {
@@ -8,11 +9,16 @@ export class Rating {
     id: number;
     
     @Column()
-	rating: number;
+    @Equals(1 || 2 || 3 || 4 || 5)
+    rating: number;
+    
+    @Column()
+	@Length(2, 200)
+	description: string;
 
 	@ManyToOne(type => User, user => user.id)
-	userId: number;
+	user: User;
 
 	@ManyToOne(type => Service, service => service.id)
-	serviceId: number;
+	service: Service;
 }

@@ -25,11 +25,11 @@ class RatingController {
     };*/
 
 	static newRating = async (req: Request, res: Response): Promise<Response> => {
-		const { rating, userId, serviceId } = req.body;
+		const { rating, user, service } = req.body;
 		const newRating = new Rating();
 		newRating.rating = rating;
-		newRating.userId = userId;
-		newRating.serviceId = serviceId;
+		newRating.user = user;
+		newRating.service = service;
 
 		const errors = await validate(newRating);
 		if (errors.length > 0) {
