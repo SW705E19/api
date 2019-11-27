@@ -4,6 +4,7 @@ import userLogger from '../logging/users/userLogger';
 import userService from '../services/userService';
 import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
+import UserService from '../services/userService';
 
 class UserController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
@@ -12,12 +13,8 @@ class UserController {
 		return res.send(users);
 	};
 	static listAllTutors = async (req: Request, res: Response) => {
-		const userRepository: Repository<User> = getRepository(User);
-		const users: User[] = await userRepository
-			.createQueryBuilder('user')
-			.where("roles @> ARRAY['TUTOR']::text[]")
-			.getMany();
-		res.send(users);
+		const tutors = await UserService.getAllTutors();
+		return res.send(tutors);
 	};
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {

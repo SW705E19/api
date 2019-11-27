@@ -9,6 +9,22 @@ class UserService {
 			select: ['id', 'email', 'roles'], //We dont want to send the passwords on response
 		});
 	};
+	static getAllTutors = async (): Promise<User[]> => {
+		const userRepository: Repository<User> = getRepository(User);
+		return await userRepository
+				.createQueryBuilder('user')
+				.select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles','tutorinfo.description'])
+				.innerJoin('user', 'tutorInfo.user')
+				.addSelect('user.id')
+				.where('user.tutorinfo.id = tutorinfo.id')
+				.getMany();
+			// .createQueryBuilder('user')
+			// .select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles','tutorinfo.description'])
+			// .innerJoin('user', 'tutorInfo.user')
+			// .addSelect('user.roles')
+			// .where("user.roles @> ARRAY['TUTOR']::text[]")
+			// .getMany();
+	}
 	static getByEmail = async (email: string): Promise<User> => {
 		//Get user from database
 		const userRepository: Repository<User> = getRepository(User);
