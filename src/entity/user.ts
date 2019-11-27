@@ -27,7 +27,7 @@ export class User {
 	@Column()
 	address: string;
 
-	@Column()
+	@Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP"})
 	dateOfBirth: Date;
 
 	@Column({
