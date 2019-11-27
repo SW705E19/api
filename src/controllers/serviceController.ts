@@ -68,7 +68,7 @@ class ServiceController {
 			createdService = await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			return res.status(409).send('Could not create service');
+			return res.status(400).send('Could not create service');
 		}
 
 		const serviceInfoForLog: string = 'Created: ' + service.name + ', ' + service.description;
@@ -104,9 +104,9 @@ class ServiceController {
 			editedService = await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			return res.status(409).send('Could not save service');
+			return res.status(400).send('Could not save service');
 		}
-		return res.status(204).send(editedService);
+		return res.status(200).send(editedService);
 	};
 
 	static deleteService = async (req: Request, res: Response): Promise<Response> => {

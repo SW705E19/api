@@ -129,7 +129,7 @@ describe('Service controller tests', () => {
 			},
 		});
 
-		sinon.stub(ServiceService, 'getById').resolves(mockServices[req.params.id - 1]);
+		sinon.stub(ServiceService, 'getById').resolves(mockServices.find(x => x.id === req.params.id));
 		await ServiceController.getOneById(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
@@ -147,7 +147,7 @@ describe('Service controller tests', () => {
 			},
 		});
 
-		sinon.stub(ServiceService, 'getDetailedById').resolves(mockServices[req.params.id - 1]);
+		sinon.stub(ServiceService, 'getDetailedById').resolves(mockServices.find(x => x.id === req.params.id));
 		await ServiceController.getDetailedById(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
@@ -219,6 +219,7 @@ describe('Service controller tests', () => {
 			},
 		});
 
+		sinon.stub(ServiceService, 'getByCategoryName').throws();
 		await ServiceController.getByCategory(req, res);
 		expect(res.statusCode).to.equal(404);
 	});
@@ -249,29 +250,6 @@ describe('Service controller tests', () => {
 
 	it('should fail to create a new service and return 400', async () => {
 		const service = {
-			name: '',
-			description: '',
-			tutorInfo: {
-				id: 1,
-			},
-		};
-
-		const req = mockReq({
-			body: service,
-		});
-		const res = mockRes({
-			status: function(s: any) {
-				this.statusCode = s;
-				return this;
-			},
-		});
-
-		await ServiceController.newService(req, res);
-		expect(res.statusCode).to.equal(400);
-	});
-
-	it('should fail to create a new service and return 409', async () => {
-		const service = {
 			name: 'new service',
 			description: 'new service description',
 			tutorInfo: {
@@ -289,11 +267,36 @@ describe('Service controller tests', () => {
 			},
 		});
 
+		sinon.stub(ServiceService, 'save').throws();
 		await ServiceController.newService(req, res);
-		expect(res.statusCode).to.equal(409);
+		expect(res.statusCode).to.equal(400);
 	});
 
-	it('should edit service and return status 204', async () => {
+	it('should fail to create a new service and return 400', async () => {
+		const service = {
+			name: '',
+			description: '',
+			tutorInfo: {
+				id: 1,
+			},
+		};
+
+		const req = mockReq({
+			body: service,
+		});
+		const res = mockRes({
+			status: function(s: any) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+
+		sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError()]);
+		await ServiceController.newService(req, res);
+		expect(res.statusCode).to.equal(400);
+	});
+
+	it('should edit service and return status 200', async () => {
 		const service = {
 			name: 'edit service',
 			description: 'edit service description',
@@ -315,10 +318,10 @@ describe('Service controller tests', () => {
 			},
 		});
 
-		sinon.stub(ServiceService, 'getById').resolves(mockServices[req.params.id - 1]);
+		sinon.stub(ServiceService, 'getById').resolves(mockServices.find(x => x.id === req.params.id));
 		sinon.stub(ServiceService, 'save').resolvesArg(0);
 		await ServiceController.editService(req, res);
-		expect(res.statusCode).to.equal(204);
+		expect(res.statusCode).to.equal(200);
 	});
 
 	it('should fail to edit service and return status 400', async () => {
@@ -339,13 +342,13 @@ describe('Service controller tests', () => {
 			},
 		});
 
-		sinon.stub(ServiceService, 'getById').resolves(mockServices[req.params.id - 1]);
+		sinon.stub(ServiceService, 'getById').resolves(mockServices.find(x => x.id === req.params.id));
 		sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError()]);
 		await ServiceController.editService(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
 
-	it('should fail to edit service and return status 409', async () => {
+	it('should fail to edit service and return status 400', async () => {
 		const service = {
 			name: 'edit service',
 			description: 'edit service',
@@ -367,10 +370,10 @@ describe('Service controller tests', () => {
 			},
 		});
 
-		sinon.stub(ServiceService, 'getById').resolves(mockServices[req.params.id - 1]);
+		sinon.stub(ServiceService, 'getById').resolves(mockServices.find(x => x.id === req.params.id));
 		sinon.stub(ServiceService, 'save').throws();
 		await ServiceController.editService(req, res);
-		expect(res.statusCode).to.equal(409);
+		expect(res.statusCode).to.equal(400);
 	});
 
 	it('should delete service and return status 200', async () => {
@@ -386,7 +389,7 @@ describe('Service controller tests', () => {
 			},
 		});
 
-		sinon.stub(ServiceService, 'getDetailedById').resolves(mockServices[req.params.id - 1]);
+		sinon.stub(ServiceService, 'getDetailedById').resolves(mockServices.find(x => x.id === req.params.id));
 		sinon.stub(ServiceService, 'deleteById').resolves(new DeleteResult());
 		await ServiceController.deleteService(req, res);
 		expect(res.statusCode).to.equal(200);
