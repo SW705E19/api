@@ -63,8 +63,9 @@ class ServiceController {
 			return res.status(400).send(errors);
 		}
 
+		let createdService;
 		try {
-			await ServiceService.save(service);
+			createdService = await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(400).send('Could not create service');
@@ -72,7 +73,7 @@ class ServiceController {
 
 		const serviceInfoForLog: string = 'Created: ' + service.name + ', ' + service.description;
 		serviceLogger.info(serviceInfoForLog);
-		return res.status(201).send('Service created');
+		return res.status(201).send(createdService);
 	};
 
 	static editService = async (req: Request, res: Response): Promise<Response> => {
@@ -98,13 +99,14 @@ class ServiceController {
 			return res.status(400).send(errors);
 		}
 
+		let editedService;
 		try {
-			await ServiceService.save(service);
+			editedService = await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
 			return res.status(500).send('Could not save service');
 		}
-		return res.status(204).send();
+		return res.status(204).send(editedService);
 	};
 
 	static deleteService = async (req: Request, res: Response): Promise<Response> => {
