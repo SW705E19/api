@@ -8,7 +8,7 @@ import config from '../config/config';
 
 class AuthController {
 	static login = async (req: Request, res: Response): Promise<Response> => {
-		//Check if username and password are set
+		//Check if email and password are set
 		const { email, password } = req.body;
 		if (!(email && password)) {
 			return res.status(400).send();
