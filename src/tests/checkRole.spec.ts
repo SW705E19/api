@@ -123,7 +123,7 @@ describe('Check role middleware', function() {
 
 		const mockGetBy401 = sinon.stub(userService, 'getById').resolves(mockUser);
 
-		const checkRoleCall = checkRole([]);
+		const checkRoleCall = checkRole(['FORBIDDEN']);
 		await checkRoleCall(req, res, null);
 		expect(res.statusCode).to.be.equal(401);
 		mockGetBy401.restore();
