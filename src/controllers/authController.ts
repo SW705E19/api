@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { validate } from 'class-validator';
+import * as validator from 'class-validator';
 import userLogger from '../logging/users/userLogger';
 import userService from '../services/userService';
 import { User } from '../entity/user';
 import config from '../config/config';
+import * as bcrypt from 'bcryptjs';
 
 class AuthController {
 	static login = async (req: Request, res: Response): Promise<Response> => {
 		//Check if email and password are set
 		const { email, password } = req.body;
 		if (!(email && password)) {
-			return res.status(400).send();
+			return res.status(400).send('Email or password is not specified.');
 		}
 
 		//Get user from database
@@ -19,12 +20,12 @@ class AuthController {
 		try {
 			user = await userService.getByEmail(email);
 		} catch (error) {
-			return res.status(401).send();
+			return res.status(401).send(error);
 		}
 
 		//Check if encrypted password match
-		if (!user.checkIfUnencryptedPasswordIsValid(password)) {
-			return res.status(401).send();
+		if (!bcrypt.compareSync(password, user.password)) {
+			return res.status(401).send('Wrong password.');
 		}
 
 		//Sign JWT, valid for 1 hour
@@ -33,17 +34,17 @@ class AuthController {
 		});
 
 		//Send the jwt in the response
-		return res.send(token);
+		return res.status(200).send(token);
 	};
 
 	static changePassword = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from JWT
-		const id = res.locals.jwtPayload.userId as string;
+		const id = res.locals.jwtPayload.userId;
 
 		//Get parameters from the body
 		const { oldPassword, newPassword } = req.body;
 		if (!(oldPassword && newPassword)) {
-			return res.status(400).send();
+			return res.status(400).send('Old or new password is not specified.');
 		}
 
 		//Get user from the database
@@ -51,25 +52,25 @@ class AuthController {
 		try {
 			user = await userService.getById(id);
 		} catch (error) {
-			return res.status(401).send();
+			return res.status(503).send(error);
 		}
 
 		//Check if old password is the same
-		if (!user.checkIfUnencryptedPasswordIsValid(oldPassword)) {
-			return res.status(401).send();
+		if (!bcrypt.compareSync(oldPassword, user.password)) {
+			return res.status(401).send('New password is the same as old.');
 		}
 
 		//Validate the model (password length)
 		user.password = newPassword;
-		const errors = await validate(user);
+		const errors = await validator.validate(user);
 		if (errors.length > 0) {
 			return res.status(400).send(errors);
 		}
 		//Hash the new password and save
-		user.hashPassword();
-		await userService.save(user);
+		user.password = bcrypt.hashSync(user.password, 8);
+		user = await userService.save(user);
 
-		return res.status(204).send();
+		return res.status(204).send(user);
 	};
 
 	static register = async (req: Request, res: Response): Promise<Response> => {
@@ -88,7 +89,7 @@ class AuthController {
 			firstName,
 			lastName,
 		} = req.body;
-		const user = new User();
+		let user = new User();
 		user.email = email;
 		user.password = password;
 		user.roles = roles;
@@ -103,26 +104,26 @@ class AuthController {
 		user.lastName = lastName;
 
 		//Validate if the parameters are ok
-		const errors = await validate(user);
+		const errors = await validator.validate(user);
 		if (errors.length > 0) {
 			return res.status(400).send(errors);
 		}
 
 		//Hash the password, to securely store on DB
-		user.hashPassword();
+		user.password = bcrypt.hashSync(user.password, 8);
 
-		//Try to save. If fails, the email is already in use
+		//Try to save.
 		try {
-			await userService.save(user);
-		} catch (e) {
-			return res.status(409).send(e);
+			user = await userService.save(user);
+		} catch (error) {
+			return res.status(409).send(error);
 		}
 
 		//If all ok, send 201 response
 		const userInfoForLog =
 			'Created: ' + user.id.toString() + ', ' + user.email + ', ' + user.roles + ', ' + user.createdAt.toString();
 		userLogger.info(userInfoForLog);
-		return res.status(201).send('User created');
+		return res.status(201).send(user);
 	};
 }
 export default AuthController;
