@@ -3,7 +3,6 @@ import CategoryController from '../controllers/categoryController';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { expect } from 'chai';
 import CategoryService from '../services/categoryService';
-import { error } from 'util';
 import { Category } from '../entity/category';
 import { DeleteResult } from 'typeorm';
 import * as validator from 'class-validator';
@@ -24,7 +23,7 @@ describe('Category controller tests', () => {
 			services: [],
 		},
 	];
-	function getFromArray(id: number) {
+	function getFromMockCategories(id: number): Category {
 		return mockCategories[id];
 	}
 	afterEach(() => {
@@ -34,7 +33,7 @@ describe('Category controller tests', () => {
 	it('list all categories return 200', async () => {
 		const req = mockReq();
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -50,30 +49,26 @@ describe('Category controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').resolves(getFromArray(req.params.id));
+		sinon.stub(CategoryService, 'getById').resolves(getFromMockCategories(req.params.id));
 		await CategoryController.getOneById(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
-	it('should fail get a category by id, return 404', async () => {
-		const req = mockReq({
-			params: {
-				id: 200,
-			},
-		});
+	it('should fail get a category by id, return 400', async () => {
+		const req = mockReq();
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const stubResult = sinon.stub(CategoryService, 'getById').throws();
+		sinon.stub(CategoryService, 'getById').throws();
 		await CategoryController.getOneById(req, res);
-		expect(res.statusCode).to.equal(404);
+		expect(res.statusCode).to.equal(400);
 	});
 	it('should create a new category, return 201', async () => {
 		const category = {
@@ -85,34 +80,34 @@ describe('Category controller tests', () => {
 			body: category,
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const saveStub = sinon.stub(CategoryService, 'save').resolves(mockCategories[0]);
+		sinon.stub(CategoryService, 'save').resolves(mockCategories[0]);
 		await CategoryController.newCategory(req, res);
 		expect(res.statusCode).to.equal(201);
 	});
 	it('should fail to create a new category because param is not a category, return 400', async () => {
 		const notCategory = {
-			notName: 'ayy',
-			notDescrip: 'lmao',
+			notName: 'notCat',
+			notDescrip: 'NotDescript',
 		};
 		const req = mockReq({
 			body: notCategory,
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const saveStub = sinon.stub(CategoryService, 'save').resolves(mockCategories[0]);
+		sinon.stub(CategoryService, 'save').resolves(mockCategories[0]);
 		await CategoryController.newCategory(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
-	it('should fail to create a new category because name is already taken, return 409', async () => {
+	it('should fail to create a new category because name is already taken, return 400', async () => {
 		const category = {
 			name: 'newCat',
 			description: 'new description',
@@ -122,17 +117,18 @@ describe('Category controller tests', () => {
 			body: category,
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const saveStub = sinon.stub(CategoryService, 'save').throws();
+		sinon.stub(validator, 'validate').resolves([]);
+		sinon.stub(CategoryService, 'save').throws();
 
 		await CategoryController.newCategory(req, res);
-		expect(res.statusCode).to.equal(409);
+		expect(res.statusCode).to.equal(400);
 	});
-	it('should edit category, return 204', async () => {
+	it('should edit category, return 200', async () => {
 		const category = {
 			name: 'editCat',
 			description: 'edited description',
@@ -143,15 +139,15 @@ describe('Category controller tests', () => {
 			params: { id: 0 },
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
-		const saveStub = sinon.stub(CategoryService, 'save').resolvesArg(0);
+		sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
+		sinon.stub(CategoryService, 'save').resolvesArg(0);
 		await CategoryController.editCategory(req, res);
-		expect(res.statusCode).to.equal(204);
+		expect(res.statusCode).to.equal(200);
 	});
 	it('should fail to edit category because name is already in use, return 409', async () => {
 		const category = {
@@ -164,13 +160,13 @@ describe('Category controller tests', () => {
 			params: { id: 0 },
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
-		const saveStub = sinon.stub(CategoryService, 'save').throws();
+		sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
+		sinon.stub(CategoryService, 'save').throws();
 		await CategoryController.editCategory(req, res);
 		expect(res.statusCode).to.equal(409);
 	});
@@ -180,29 +176,29 @@ describe('Category controller tests', () => {
 			params: { id: 0 },
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
-		const deleteByIdStub = sinon.stub(CategoryService, 'deleteById').resolves(new DeleteResult());
+		sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
+		sinon.stub(CategoryService, 'deleteById').resolves(new DeleteResult());
 		await CategoryController.deleteCategory(req, res);
-		expect(res.statusCode).to.equal(204);
+		expect(res.statusCode).to.equal(200);
 	});
-	it('should fail to delete the specified category because it does not exist, return 404', async () => {
+	it('should fail to delete the specified category because it does not exist, return 400', async () => {
 		const req = mockReq({
 			params: { id: 0 },
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').throws();
+		sinon.stub(CategoryService, 'getById').throws();
 		await CategoryController.deleteCategory(req, res);
-		expect(res.statusCode).to.equal(404);
+		expect(res.statusCode).to.equal(400);
 	});
 
 	it('should return error when getoneId service throws error', async () => {
@@ -212,11 +208,13 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').throws('exception');
+		sinon.stub(CategoryService, 'getById').throws('exception');
 		const result = await CategoryController.getOneById(req, res);
 		expect(result).equals('Category not found');
 	});
@@ -227,13 +225,15 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError()]);
+		sinon.stub(validator, 'validate').resolves([new ValidationError()]);
 		const result = await CategoryController.newCategory(req, res);
-		expect(result).to.not.be.null;
+		expect(result).to.not.be.empty;
 	});
 	it('should return error when save of new category throws error', async () => {
 		const req = mockReq({
@@ -242,12 +242,14 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const validateStub = sinon.stub(validator, 'validate').resolves([]);
-		const saveStub = sinon.stub(CategoryService, 'save').throws();
+		sinon.stub(validator, 'validate').resolves([]);
+		sinon.stub(CategoryService, 'save').throws();
 		const result = await CategoryController.newCategory(req, res);
 		expect(result).equals('Name already in use');
 	});
@@ -258,12 +260,14 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const validateStub = sinon.stub(validator, 'validate').resolves([]);
-		const getByIdStub = sinon.stub(CategoryService, 'getById').throws();
+		sinon.stub(validator, 'validate').resolves([]);
+		sinon.stub(CategoryService, 'getById').throws();
 		const result = await CategoryController.editCategory(req, res);
 		expect(result).equals('Category not found');
 	});
@@ -274,13 +278,15 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const validateStub = sinon.stub(validator, 'validate').resolves([new ValidationError()]);
+		sinon.stub(validator, 'validate').resolves([new ValidationError()]);
 		const result = await CategoryController.editCategory(req, res);
-		expect(result).to.not.be.null;
+		expect(result).to.not.be.empty;
 	});
 	it('should return error when saving edited category throws error', async () => {
 		const req = mockReq({
@@ -289,13 +295,15 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').resolves(mockCategories[0]);
-		const validateStub = sinon.stub(validator, 'validate').resolves([]);
-		const saveStub = sinon.stub(CategoryService, 'save').throws();
+		sinon.stub(CategoryService, 'getById').resolves(mockCategories[0]);
+		sinon.stub(validator, 'validate').resolves([]);
+		sinon.stub(CategoryService, 'save').throws();
 		const result = await CategoryController.editCategory(req, res);
 		expect(result).equals('Name already in use');
 	});
@@ -306,11 +314,13 @@ describe('Category controller tests', () => {
 		const res = mockRes({
 			status: function() {
 				return {
-					send: (e: any) => e,
+					send: (e: string): string => {
+						return e;
+					},
 				};
 			},
 		});
-		const getByIdStub = sinon.stub(CategoryService, 'getById').throws();
+		sinon.stub(CategoryService, 'getById').throws();
 		const result = await CategoryController.deleteCategory(req, res);
 		expect(result).equals('Category not found');
 	});

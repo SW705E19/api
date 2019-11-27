@@ -11,7 +11,7 @@ class CategoryController {
 	};
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
 		//Get ID from the url
-		const id: string = req.params.id;
+		const id = (req.params.id as unknown) as number;
 
 		let category: Category;
 		try {
@@ -19,7 +19,7 @@ class CategoryController {
 		} catch (error) {
 			const infoForLog: string = 'Category not found: ' + id;
 			categoryLogger.info(infoForLog);
-			return res.status(404).send('Category not found');
+			return res.status(400).send('Category not found');
 		}
 		return res.status(200).send(category);
 	};
@@ -39,7 +39,7 @@ class CategoryController {
 		try {
 			await CategoryService.save(category);
 		} catch (error) {
-			return res.status(409).send('Name already in use');
+			return res.status(400).send('Name already in use');
 		}
 		const categoryInfoForLog: string = 'Created: ' + Category.bind.toString() + ', ' + category.name;
 		categoryLogger.info(categoryInfoForLog);
@@ -48,7 +48,7 @@ class CategoryController {
 
 	static editCategory = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
-		const id = req.params.id as string;
+		const id = (req.params.id as unknown) as number;
 
 		//Get values from the body
 		const { name, description, services } = req.body;
@@ -77,10 +77,10 @@ class CategoryController {
 			return res.status(409).send('Name already in use');
 		}
 
-		return res.status(204).send(category);
+		return res.status(200).send(category);
 	};
 	static deleteCategory = async (req: Request, res: Response): Promise<Response> => {
-		const id: string = req.params.id;
+		const id = (req.params.id as unknown) as number;
 
 		let category: Category;
 		try {
@@ -88,13 +88,13 @@ class CategoryController {
 		} catch (error) {
 			const infoForLog: string = 'Category not found: ' + id;
 			categoryLogger.info(infoForLog);
-			return res.status(404).send('Category not found');
+			return res.status(400).send('Category not found');
 		}
 		await CategoryService.deleteById(id);
 
 		const deletedInfoForLog: string = 'Deletion: ' + category.name;
 		categoryLogger.info(deletedInfoForLog);
-		return res.status(204).send();
+		return res.status(200).send();
 	};
 }
 

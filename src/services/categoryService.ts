@@ -10,7 +10,7 @@ class CategoryService {
 		return categories;
 	};
 
-	static getById = async (id: string): Promise<Category> => {
+	static getById = async (id: number): Promise<Category> => {
 		//Get category from database
 		const categoryRepository: Repository<Category> = getRepository(Category);
 		const category = await categoryRepository.findOneOrFail(id);
@@ -23,7 +23,7 @@ class CategoryService {
 		return await categoryRepository.save(category);
 	};
 
-	static deleteById = async (id: string): Promise<DeleteResult> => {
+	static deleteById = async (id: number): Promise<DeleteResult> => {
 		//Get category from database
 		const categoryRepository: Repository<Category> = getRepository(Category);
 		const category = await categoryRepository.delete(id);
