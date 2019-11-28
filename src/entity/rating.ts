@@ -1,24 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, Between } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from './user';
 import { Service } from './service';
-import { Equals, Length } from 'class-validator';
+import { IsInt, Min, Max } from 'class-validator';
 
 @Entity()
 export class Rating {
 	@PrimaryGeneratedColumn()
     id: number;
     
-    @Column()
-    @Equals(1 || 2 || 3 || 4 || 5)
+	@Column()
+	@IsInt()
+	@Min(1)
+	@Max(5)
     rating: number;
     
-    @Column()
-	@Length(2, 200)
+    @Column({
+		default: 'No comment'
+	})
 	description: string;
 
-	@ManyToOne(type => User, user => user.id)
+	@ManyToOne(type => User, user => user.ratings)
 	user: User;
 
-	@ManyToOne(type => Service, service => service.id)
+	@ManyToOne(type => Service, service => service.ratings)
 	service: Service;
 }

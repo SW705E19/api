@@ -3,6 +3,7 @@ import { mockReq, mockRes } from 'sinon-express-mock';
 import userService from '../services/userService';
 import { expect } from 'chai';
 import { checkRole } from '../middlewares/checkRole';
+import { Rating } from '../entity/rating';
 
 describe('Check role middleware', function() {
 	/* Default user for connection testing */
@@ -23,6 +24,7 @@ describe('Check role middleware', function() {
 		avatarUrl: '',
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
 	};
 
 	it('returns status 401 if service fails', async function() {

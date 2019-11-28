@@ -25,11 +25,12 @@ class RatingController {
     };*/
 
 	static newRating = async (req: Request, res: Response): Promise<Response> => {
-		const { rating, user, service } = req.body;
+		const { rating, user, service, description } = req.body;
 		const newRating = new Rating();
 		newRating.rating = rating;
 		newRating.user = user;
 		newRating.service = service;
+		newRating.description = description;
 
 		const errors = await validate(newRating);
 		if (errors.length > 0) {
@@ -39,14 +40,14 @@ class RatingController {
 
 		let createdRating;
 		try {
-			createdRating = await RatingService.save(rating);
+			createdRating = await RatingService.save(newRating);
 		} catch (error) {
 			ratingLogger.error(error);
 			return res.status(400).send('Could not create rating');
 		}
 
 		const ratingInfoForLog: string =
-			'Created: ' + rating.id + ', service:' + rating.serviceId + ', user:' + rating.userId;
+			'Created: ' + createdRating.id + ', service:' + createdRating.serviceId + ', user:' + createdRating.userId;
 		serviceLogger.info(ratingInfoForLog);
 		return res.status(201).send(createdRating);
 	};

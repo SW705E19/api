@@ -5,7 +5,13 @@ class RatingService {
 	static getAll = async (): Promise<Rating[]> => {
 		//Get all ratings from database
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
-		const ratings: Rating[] = await ratingRepository.find();
+		const ratings: Rating[] = await ratingRepository
+			.createQueryBuilder('rating')
+			.select(['rating.rating'])
+			.innerJoin('rating.user', 'user')
+			.innerJoin('rating.service', 'service')
+			.addSelect(['user.id', 'service.id'])
+			.getMany();
 
 		return ratings;
 	};
