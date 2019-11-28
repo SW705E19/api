@@ -24,7 +24,7 @@ class UserController {
 			userLogger.error(error);
 			return res.status(404).send('User not found');
 		}
-		return res.send(user);
+		return res.status(200).send(user);
 	};
 
 	static getOneTutorInfoByUserId = async (req: Request, res: Response): Promise<Response> => {
@@ -39,7 +39,7 @@ class UserController {
 			userLogger.error(error);
 			return res.status(404).send('Tutor info not found');
 		}
-		return res.send(tutorInfo);
+		return res.status(200).send(tutorInfo);
 	};
 
 	static getOwnUser = async (req: Request, res: Response): Promise<Response> => {
