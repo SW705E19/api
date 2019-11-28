@@ -9,7 +9,7 @@ class UserController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const users: User[] = await userService.getAll();
 		//Send the users object
-		return res.send(users);
+		return res.status(200).send(users);
 	};
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
