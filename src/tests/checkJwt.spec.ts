@@ -25,8 +25,7 @@ describe('Check jwt middleware', function() {
 
 		sinon.stub(jwt, 'verify').throws();
 		const next = sinon.spy();
-		const checkJWTCall = checkJwt;
-		await checkJWTCall(req, res, next);
+		await checkJwt(req,res,next);
 
 		expect(res.statusCode).to.equal(401);
 	});
@@ -47,10 +46,9 @@ describe('Check jwt middleware', function() {
 
 		sinon.stub(jwt, 'verify').throws();
 		const next = sinon.spy();
-		const checkJWTCall = checkJwt;
-		const checkJWTRes = await checkJWTCall(req, res, next);
+		await checkJwt(req, res, next);
 
-		expect(checkJWTRes).to.not.be.null;
+		expect(res).to.not.be.null;
 	});
 	it('calls next if jwt is valid', async function() {
 		const request = {
@@ -73,8 +71,7 @@ describe('Check jwt middleware', function() {
 
 		const next = sinon.spy();
 		sinon.stub(jwt, 'verify').resolves();
-		const checkJWTCall = checkJwt;
-		await checkJWTCall(req, res, next);
+		await checkJwt(req, res, next);
 
 		expect(next.calledOnce).to.be.true;
 	});
@@ -98,8 +95,7 @@ describe('Check jwt middleware', function() {
 		});
 
 		const next = sinon.spy();
-		const checkJWTCall = checkJwt;
-		await checkJWTCall(req, res, next);
+		await checkJwt(req, res, next);
 
 		expect(res.statusCode).to.equal(401);
 	});
