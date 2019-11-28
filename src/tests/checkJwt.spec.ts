@@ -25,7 +25,7 @@ describe('Check jwt middleware', function() {
 
 		sinon.stub(jwt, 'verify').throws();
 		const next = sinon.spy();
-		await checkJwt(req,res,next);
+		await checkJwt(req, res, next);
 
 		expect(res.statusCode).to.equal(401);
 	});
