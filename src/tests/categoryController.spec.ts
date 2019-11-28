@@ -107,7 +107,7 @@ describe('Category controller tests', () => {
 		await CategoryController.newCategory(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
-	it('should fail to create a new category because name is already taken, return 400', async () => {
+	it('should fail to create a new category because save service fail, return 400', async () => {
 		const category = {
 			name: 'newCat',
 			description: 'new description',
@@ -149,7 +149,7 @@ describe('Category controller tests', () => {
 		await CategoryController.editCategory(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
-	it('should fail to edit category because name is already in use, return 409', async () => {
+	it('should fail to edit category because save service fail, return 409', async () => {
 		const category = {
 			name: 1,
 			description: 123,
@@ -251,7 +251,7 @@ describe('Category controller tests', () => {
 		sinon.stub(validator, 'validate').resolves([]);
 		sinon.stub(CategoryService, 'save').throws();
 		const result = await CategoryController.newCategory(req, res);
-		expect(result).equals('Name already in use');
+		expect(result).equals('Saving failed');
 	});
 	it('should return error when editing not found category', async () => {
 		const req = mockReq({
@@ -305,7 +305,7 @@ describe('Category controller tests', () => {
 		sinon.stub(validator, 'validate').resolves([]);
 		sinon.stub(CategoryService, 'save').throws();
 		const result = await CategoryController.editCategory(req, res);
-		expect(result).equals('Name already in use');
+		expect(result).equals('Saving failed');
 	});
 	it('should return error when deleting category was not found', async () => {
 		const req = mockReq({

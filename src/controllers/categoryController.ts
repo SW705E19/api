@@ -39,7 +39,7 @@ class CategoryController {
 		try {
 			await CategoryService.save(category);
 		} catch (error) {
-			return res.status(400).send('Name already in use');
+			return res.status(400).send('Saving failed');
 		}
 		const categoryInfoForLog: string = 'Created: ' + Category.bind.toString() + ', ' + category.name;
 		categoryLogger.info(categoryInfoForLog);
@@ -74,7 +74,7 @@ class CategoryController {
 		try {
 			await CategoryService.save(category);
 		} catch (error) {
-			return res.status(409).send('Name already in use');
+			return res.status(409).send('Saving failed');
 		}
 
 		return res.status(200).send(category);
