@@ -7,6 +7,4 @@ router.get('/', RatingController.getAll);
 
 router.post('/', RatingController.newRating);
 
-// router.get('/:id([0-9]+)', RatingController.getAllByUserId);
-
 export default router;
