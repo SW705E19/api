@@ -56,7 +56,6 @@ class UserController {
 		const { email, roles } = req.body;
 
 		//Try to find user on database
-
 		let user: User;
 		try {
 			user = await userService.getById(userId);
@@ -79,10 +78,10 @@ class UserController {
 			await userService.save(user);
 		} catch (error) {
 			userLogger.error(error);
-			return res.status(409).send('username already in use');
+			return res.status(400).send('username already in use');
 		}
-		//After all send a 204 (no content, but accepted) response
-		return res.status(204).send();
+
+		return res.status(200).send();
 	};
 
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
@@ -117,10 +116,6 @@ class UserController {
 			return res.status(404).send('User not found');
 		}
 
-		if (user == null) {
-			res.status(404).send('User not found');
-		}
-
 		const { description, acceptedPayments } = req.body;
 		const tutorInfo: TutorInfo = new TutorInfo();
 		tutorInfo.description = description;
@@ -134,16 +129,22 @@ class UserController {
 			return res.status(400).send(errors);
 		}
 
+		let createdTutorInfo;
 		try {
-			await userService.saveTutor(tutorInfo);
+			createdTutorInfo = await userService.saveTutor(tutorInfo);
 		} catch (error) {
 			userLogger.error(error);
-			return res.status(500).send('TutorInfo could not be saved');
+			return res.status(400).send('TutorInfo could not be saved');
 		}
 
 		//If all ok, send 201 response
 		const tutorInfoForLog: string =
-			'Created: ' + tutorInfo.id.toString() + ', ' + tutorInfo.user.email + ', ' + tutorInfo.description;
+			'Created: ' +
+			createdTutorInfo.id.toString() +
+			', ' +
+			createdTutorInfo.user.email +
+			', ' +
+			createdTutorInfo.description;
 		userLogger.info(tutorInfoForLog);
 		return res.status(201).send('TutorInfo created');
 	};
