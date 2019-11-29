@@ -11,19 +11,6 @@ class RatingController {
 		return res.send(ratings);
 	};
 
-	/*static getAllByUserId = async (req: Request, res: Response): Promise<Response> => {
-		const id: string = req.params.id;
-		let ratings: Rating[];
-
-		try {
-			ratings = await RatingService.getAllByUserId(id);
-		} catch (error) {
-			serviceLogger.error(error);
-			return res.status(404).send('User not found for ratings');
-		}
-		return res.send(ratings);
-    };*/
-
 	static newRating = async (req: Request, res: Response): Promise<Response> => {
 		const { rating, user, service, description } = req.body;
 		const newRating = new Rating();
