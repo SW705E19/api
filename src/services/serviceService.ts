@@ -1,5 +1,6 @@
 import { getRepository, Repository, DeleteResult } from 'typeorm';
 import { Service } from '../entity/service';
+import { recommender } from '../recommender/recommender';
 
 class ServiceService {
 	static getAll = async (): Promise<Service[]> => {
@@ -58,6 +59,12 @@ class ServiceService {
 		const service = await serviceRepository.delete(id);
 
 		return service;
+	};
+
+	static doRecommender = async (): Promise<Service[]> => {
+		await recommender();
+
+		return;
 	};
 }
 export default ServiceService;
