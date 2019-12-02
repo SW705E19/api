@@ -30,7 +30,20 @@ class UserService {
 		const userRepository: Repository<User> = getRepository(User);
 		const resuser = await userRepository
 			.createQueryBuilder('user')
-			.select(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
+			.select([
+				'user.id',
+				'user.email',
+				'user.firstName',
+				'user.lastName',
+				'user.phoneNumber',
+				'user.education',
+				'user.address',
+				'user.languages',
+				'user.subjectsOfInterest',
+				'user.dateOfBirth',
+				'user.roles',
+				'user.avatarUrl',
+			])
 			.where('user.id = :id', { id: userId })
 			.getOne();
 

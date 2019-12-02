@@ -7,11 +7,11 @@ import ServiceService from '../services/serviceService';
 class ServiceController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const services = await ServiceService.getAll();
-		return res.send(services);
+		return res.status(200).send(services);
 	};
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
-		const id: string = req.params.id;
+		const id = (req.params.id as unknown) as number;
 		let service: Service;
 
 		try {
@@ -20,11 +20,11 @@ class ServiceController {
 			serviceLogger.error(error);
 			return res.status(404).send('Service not found');
 		}
-		return res.send(service);
+		return res.status(200).send(service);
 	};
 
 	static getDetailedById = async (req: Request, res: Response): Promise<Response> => {
-		const id: string = req.params.id;
+		const id = (req.params.id as unknown) as number;
 		let service: Service;
 
 		try {
@@ -33,7 +33,7 @@ class ServiceController {
 			serviceLogger.error(error);
 			return res.status(404).send('Service not found');
 		}
-		return res.send(service);
+		return res.status(200).send(service);
 	};
 
 	static getByCategory = async (req: Request, res: Response): Promise<Response> => {
@@ -46,7 +46,7 @@ class ServiceController {
 			serviceLogger.error(error);
 			return res.status(404).send('Could not find services');
 		}
-		return res.send(services);
+		return res.status(200).send(services);
 	};
 
 	static newService = async (req: Request, res: Response): Promise<Response> => {
@@ -77,7 +77,7 @@ class ServiceController {
 	};
 
 	static editService = async (req: Request, res: Response): Promise<Response> => {
-		const id = req.params.id;
+		const id = (req.params.id as unknown) as number;
 		const { description, tutorInfo, name, categories } = req.body;
 		let service = new Service();
 
@@ -104,13 +104,13 @@ class ServiceController {
 			editedService = await ServiceService.save(service);
 		} catch (error) {
 			serviceLogger.error(error);
-			return res.status(500).send('Could not save service');
+			return res.status(400).send('Could not save service');
 		}
-		return res.status(204).send(editedService);
+		return res.status(200).send(editedService);
 	};
 
 	static deleteService = async (req: Request, res: Response): Promise<Response> => {
-		const id = req.params.id;
+		const id = (req.params.id as unknown) as number;
 		let service: Service;
 
 		try {
@@ -120,17 +120,12 @@ class ServiceController {
 			return res.status(404).send('Could not find service');
 		}
 
-		if (service == null) {
-			return res.status(404).send(`A service with id ${id} does not exist`);
-		}
-
 		await ServiceService.deleteById(id);
-		const deletedInfoForLog: string =
-			'Deletion: Tutor "' + service.tutorInfo.user.email + '"\'s service "' + service.name + '" was deleted';
+		const deletedInfoForLog: string = 'Deletion: service "' + service.name + '" was deleted';
 
 		serviceLogger.info(deletedInfoForLog);
 
-		return res.status(204).send();
+		return res.status(200).send();
 	};
 }
 

@@ -14,7 +14,7 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction): Respo
 		res.locals.jwtPayload = jwtPayload;
 	} catch (error) {
 		//If token is not valid, respond with 401 (unauthorized)
-		return res.status(401).send();
+		return res.status(401).send(error);
 	}
 
 	//The token is valid for 1 hour
@@ -24,7 +24,6 @@ export const checkJwt = (req: Request, res: Response, next: NextFunction): Respo
 		expiresIn: '24h',
 	});
 	res.setHeader('token', newToken);
-
 	//Call the next middleware or controller
 	next();
 };
