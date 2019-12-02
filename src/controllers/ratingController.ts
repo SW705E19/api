@@ -6,9 +6,9 @@ import { validate } from 'class-validator';
 import ratingLogger from '../logging/ratings/ratingLogger';
 
 class RatingController {
-	static getAll = async (req: Request, res: Response): Promise<Response> => {
+	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const ratings = await RatingService.getAll();
-		return res.send(ratings);
+		return res.status(200).send(ratings);
 	};
 
 	static newRating = async (req: Request, res: Response): Promise<Response> => {
@@ -25,7 +25,7 @@ class RatingController {
 			return res.status(400).send(errors);
 		}
 
-		let createdRating: any;
+		let createdRating: Rating;
 		try {
 			createdRating = await RatingService.save(newRating);
 		} catch (error) {
@@ -34,7 +34,12 @@ class RatingController {
 		}
 
 		const ratingInfoForLog: string =
-			'Created: ' + createdRating.id + ', service:' + createdRating.serviceId + ', user:' + createdRating.userId;
+			'Created: ' +
+			createdRating.id +
+			', service:' +
+			createdRating.service.id +
+			', user:' +
+			createdRating.user.id;
 		serviceLogger.info(ratingInfoForLog);
 		return res.status(201).send(createdRating);
 	};
