@@ -60,11 +60,5 @@ class ServiceService {
 
 		return service;
 	};
-
-	static doRecommender = async (): Promise<Service[]> => {
-		await recommender();
-
-		return;
-	};
 }
 export default ServiceService;

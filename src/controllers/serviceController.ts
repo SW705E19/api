@@ -3,6 +3,7 @@ import { validate } from 'class-validator';
 import { Service } from '../entity/service';
 import serviceLogger from '../logging/services/serviceLogger';
 import ServiceService from '../services/serviceService';
+import { recommender } from '../recommender/recommender';
 
 class ServiceController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
@@ -126,6 +127,11 @@ class ServiceController {
 		serviceLogger.info(deletedInfoForLog);
 
 		return res.status(200).send();
+	};
+
+	static doRecommender = async (req: Request, res: Response): Promise<Response> => {
+		const recommendations = await recommender();
+		return res.status(200).send(recommendations);
 	};
 }
 
