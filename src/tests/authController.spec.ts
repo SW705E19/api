@@ -6,6 +6,7 @@ import { expect } from 'chai';
 import * as bcrypt from 'bcryptjs';
 import * as validator from 'class-validator';
 import { ValidationError } from 'class-validator';
+import { Rating } from '../entity/rating';
 
 describe('auth controller login', function() {
 	/* Default user for connection testing */
@@ -26,6 +27,7 @@ describe('auth controller login', function() {
 		avatarUrl: '',
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
 	};
 
 	it('calls service get with correct email', async function() {
@@ -288,6 +290,7 @@ describe('auth controller changePassword', function() {
 		avatarUrl: '',
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
 	};
 
 	it('calls service getById with right id', async function() {
@@ -696,6 +699,7 @@ describe('auth controller register', function() {
 		avatarUrl: '',
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
 	};
 
 	it('returns error if new model is not valid', async function() {
