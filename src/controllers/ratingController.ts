@@ -25,7 +25,7 @@ class RatingController {
 			return res.status(400).send(errors);
 		}
 
-		let createdRating;
+		let createdRating: Rating;
 		try {
 			createdRating = await RatingService.save(newRating);
 		} catch (error) {
