@@ -6,10 +6,12 @@ import {
 	CreateDateColumn,
 	UpdateDateColumn,
 	OneToOne,
+	OneToMany,
 } from 'typeorm';
 import { Length, IsNotEmpty, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import { TutorInfo } from './tutorInfo';
+import { Rating } from './rating';
 
 @Entity()
 @Unique(['email'])
@@ -71,4 +73,7 @@ export class User {
 
 	@OneToOne(type => TutorInfo, tutorInfo => tutorInfo.user)
 	tutorInfo: TutorInfo;
+
+	@OneToMany(type => Rating, rating => rating.user)
+	ratings: Rating[];
 }
