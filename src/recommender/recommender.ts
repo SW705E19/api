@@ -1,6 +1,9 @@
 import UserService from '../services/userService';
 import ServiceService from '../services/serviceService';
 import RatingService from '../services/ratingService';
+import { Rating } from '../entity/rating';
+import { User } from '../entity/user';
+import { Service } from '../entity/service';
 
 function dotMatrices(
 	numberOfRows: number,
@@ -25,7 +28,13 @@ function dotMatrices(
 	return predictedRatings;
 }
 
-function calcRMSE(predictedRatings, userServiceMatrix, numberOfRatings, numberOfRows, numberOfCols): number {
+function calcRMSE(
+	predictedRatings: number[][],
+	userServiceMatrix: number[][],
+	numberOfRatings: number,
+	numberOfRows: number,
+	numberOfCols: number,
+): number {
 	let sum = 0;
 	for (let i = 0; i < numberOfRows; i++) {
 		for (let j = 0; j < numberOfCols; j++) {
@@ -38,7 +47,7 @@ function calcRMSE(predictedRatings, userServiceMatrix, numberOfRatings, numberOf
 	return Math.sqrt(sum / numberOfRatings);
 }
 
-function initUserFactorMatrix(numberOfRows, numberOfFactors, userFactorMatrix): number[][] {
+function initUserFactorMatrix(numberOfRows: number, numberOfFactors: number, userFactorMatrix: number[][]): number[][] {
 	for (let i = 0; i < numberOfRows; i++) {
 		userFactorMatrix[i] = []; // Initialize inner array
 		for (let j = 0; j < numberOfFactors; j++) {
@@ -49,7 +58,11 @@ function initUserFactorMatrix(numberOfRows, numberOfFactors, userFactorMatrix): 
 	return userFactorMatrix;
 }
 
-function initServiceFactorMatrix(numberOfCols, numberOfFactors, serviceFactorMatrix): number[][] {
+function initServiceFactorMatrix(
+	numberOfCols: number,
+	numberOfFactors: number,
+	serviceFactorMatrix: number[][],
+): number[][] {
 	for (let i = 0; i < numberOfFactors; i++) {
 		serviceFactorMatrix[i] = []; // Initialize inner array
 		for (let j = 0; j < numberOfCols; j++) {
@@ -60,7 +73,12 @@ function initServiceFactorMatrix(numberOfCols, numberOfFactors, serviceFactorMat
 	return serviceFactorMatrix;
 }
 
-function populateUserServiceMatrix(allRatings, numberOfRows, numberOfCols, userServiceMatrix): number[][] {
+function populateUserServiceMatrix(
+	allRatings: Rating[],
+	numberOfRows: number,
+	numberOfCols: number,
+	userServiceMatrix: number[][],
+): number[][] {
 	allRatings.forEach(rating => {
 		let rowId: number;
 		let colId: number;
@@ -83,7 +101,13 @@ function populateUserServiceMatrix(allRatings, numberOfRows, numberOfCols, userS
 	return userServiceMatrix;
 }
 
-function initUserServiceMatrix(numberOfRows, numberOfCols, allUsers, allServices, userServiceMatrix): number[][] {
+function initUserServiceMatrix(
+	numberOfRows: number,
+	numberOfCols: number,
+	allUsers: User[],
+	allServices: Service[],
+	userServiceMatrix: number[][],
+): number[][] {
 	userServiceMatrix[0] = [];
 	for (let i = 0; i < numberOfRows; i++) {
 		userServiceMatrix[i + 1] = [];
@@ -188,7 +212,6 @@ export async function recommender(): Promise<void> {
 		}
 	}
 
-	const RSME = calcRMSE(predictedRatings, userServiceMatrix, numberofRatings, numberOfRows, numberOfCols);
-	console.log(predictedRatings);
-	console.log(RSME);
+	const RMSE = calcRMSE(predictedRatings, userServiceMatrix, numberofRatings, numberOfRows, numberOfCols);
+	console.log(RMSE);
 }
