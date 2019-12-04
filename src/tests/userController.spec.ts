@@ -9,6 +9,7 @@ import { Service } from '../entity/service';
 import { ValidationError } from 'class-validator';
 import * as validator from 'class-validator';
 import { DeleteResult } from 'typeorm';
+import { Rating } from '../entity/rating';
 
 describe('User controller tests', () => {
 	const mockUsers: User[] = [
@@ -29,6 +30,7 @@ describe('User controller tests', () => {
 			avatarUrl: '',
 			languages: ['', ''],
 			subjectsOfInterest: ['', ''],
+			ratings: [new Rating(), new Rating()],
 		},
 		{
 			id: 2,
@@ -47,6 +49,7 @@ describe('User controller tests', () => {
 			avatarUrl: '',
 			languages: ['', ''],
 			subjectsOfInterest: ['', ''],
+			ratings: [new Rating(), new Rating()],
 		},
 	];
 
