@@ -14,7 +14,7 @@ class UserController {
 	};
 	static listAllTutors = async (req: Request, res: Response): Promise<Response> => {
 		const tutors = await UserService.getAllTutors();
-		return res.send(tutors);
+		return res.status(200).send(tutors);
 	};
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
