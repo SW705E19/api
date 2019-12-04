@@ -9,6 +9,15 @@ class UserService {
 			select: ['id', 'email', 'roles'], //We dont want to send the passwords on response
 		});
 	};
+	static getAllTutors = async (): Promise<TutorInfo[]> => {
+		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
+		return await tutorInfoRepository
+			.createQueryBuilder('tutorInfo')
+			.select(['tutorInfo.id', 'tutorInfo.description', 'tutorInfo.acceptedPayments', 'tutorInfo.user'])
+			.innerJoin('tutorInfo.user', 'user')
+			.addSelect(['user.id', 'user.email', 'user.firstName', 'user.lastName', 'user.roles'])
+			.getMany();
+	};
 	static getByEmail = async (email: string): Promise<User> => {
 		//Get user from database
 		const userRepository: Repository<User> = getRepository(User);
