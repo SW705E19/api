@@ -5,7 +5,6 @@ import * as bodyParser from 'body-parser';
 import * as helmet from 'helmet';
 import * as cors from 'cors';
 import routes from './routes';
-import { recommender } from './recommender/recommender';
 
 //Connects to the Database -> then starts the express
 createConnection()
@@ -24,7 +23,6 @@ createConnection()
 		const port = 8393;
 		app.listen(port, () => {
 			console.log(`Server started on port ${port}`);
-			recommender();
 		});
 	})
 	.catch(error => console.log(error));
