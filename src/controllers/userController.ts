@@ -4,12 +4,17 @@ import userLogger from '../logging/users/userLogger';
 import userService from '../services/userService';
 import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
+import UserService from '../services/userService';
 
 class UserController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
 		const users: User[] = await userService.getAll();
 		//Send the users object
 		return res.send(users);
+	};
+	static listAllTutors = async (req: Request, res: Response): Promise<Response> => {
+		const tutors = await UserService.getAllTutors();
+		return res.status(200).send(tutors);
 	};
 
 	static getOneById = async (req: Request, res: Response): Promise<Response> => {
