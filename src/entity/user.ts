@@ -42,7 +42,6 @@ export class User {
 	languages: string[];
 
 	@Column('text', { array: true })
-	@IsNotEmpty()
 	subjectsOfInterest: string[];
 
 	@Column()

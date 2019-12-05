@@ -5,6 +5,7 @@ import userService from '../services/userService';
 import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
 import UserService from '../services/userService';
+import AuthController from './authController';
 
 class UserController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
@@ -58,7 +59,20 @@ class UserController {
 		const userId: number = (req.params.id as unknown) as number;
 
 		//Get values from the body
-		const { email, roles } = req.body;
+		const {
+			firstName,
+			lastName,
+			address,
+			password,
+			email,
+			phoneNumber,
+			dateOfBirth,
+			education,
+			languages,
+			subjectsOfInterest,
+			avatarUrl,
+			roles,
+		} = req.body;
 
 		//Try to find user on database
 		let user: User;
@@ -69,21 +83,31 @@ class UserController {
 			userLogger.error(error);
 			return res.status(404).send('User not found');
 		}
-
 		//Validate the new values on model
 		user.email = email;
-		user.roles = roles;
+		user.firstName = firstName;
+		user.firstName = firstName;
+		user.lastName = lastName;
+		user.address = address;
+		user.phoneNumber = phoneNumber;
+		user.dateOfBirth = dateOfBirth;
+		user.education = education;
+		user.languages = languages;
+		user.subjectsOfInterest = subjectsOfInterest;
+		user.avatarUrl = avatarUrl;
+
 		const errors: ValidationError[] = await validate(user);
 		if (errors.length > 0) {
+			userLogger.error(errors);
 			return res.status(400).send(errors);
 		}
 
-		//Try to save, if fails, that means username already in use
+		//Try to save, if fails, that means email already in use
 		try {
 			await userService.save(user);
 		} catch (error) {
 			userLogger.error(error);
-			return res.status(400).send('username already in use');
+			return res.status(400).send('email already in use');
 		}
 
 		return res.status(200).send();
@@ -92,7 +116,11 @@ class UserController {
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
 		//Get the ID from the url
 		const userId: number = (req.params.id as unknown) as number;
+		const loggedInId: number = res.locals.jwtPayload.userId;
 
+		if (userId != loggedInId) {
+			res.status(401).send('Can not delete user that is not you');
+		}
 		let user: User;
 		try {
 			user = await userService.getById(userId);

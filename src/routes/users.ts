@@ -23,7 +23,7 @@ router.post('/:id([0-9]+)/newTutor', [checkJwt, checkRole(['ADMIN'])], UserContr
 router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.editUser);
 
 //Delete one user
-router.delete('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.deleteUser);
+router.delete('/:id([0-9]+)', [checkJwt], UserController.deleteUser);
 
 //Get own user
 router.get('/profile', [checkJwt], UserController.getOwnUser);

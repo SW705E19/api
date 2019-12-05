@@ -229,6 +229,11 @@ describe('User controller tests', () => {
 				this.statusCode = s;
 				return this;
 			},
+			locals: {
+				jwtPayload: {
+					userId: 1,
+				},
+			},
 		});
 
 		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
@@ -247,6 +252,11 @@ describe('User controller tests', () => {
 			status: function(s: number) {
 				this.statusCode = s;
 				return this;
+			},
+			locals: {
+				jwtPayload: {
+					userId: 1,
+				},
 			},
 		});
 
