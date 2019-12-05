@@ -8,6 +8,7 @@ import { ValidationError } from 'class-validator';
 import * as validator from 'class-validator';
 import { DeleteResult } from 'typeorm';
 import { Rating } from '../entity/rating';
+import { Category } from '../entity/category';
 
 describe('Service controller tests', () => {
 	const mockServices: Service[] = [
@@ -233,6 +234,7 @@ describe('Service controller tests', () => {
 		const service = {
 			name: 'new service',
 			description: 'new service description',
+			categories: [new Category(), new Category()],
 			tutorInfo: {
 				id: 1,
 			},
