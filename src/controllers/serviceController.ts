@@ -57,6 +57,11 @@ class ServiceController {
 		service.name = name;
 		service.categories = categories;
 
+		if (categories === undefined || categories.length === 0) {
+			console.log('wut');
+			return res.status(400).send('Service must include atleast one category');
+		}
+
 		const errors = await validate(service);
 		if (errors.length > 0) {
 			serviceLogger.error(errors);
@@ -92,6 +97,10 @@ class ServiceController {
 		service.tutorInfo = tutorInfo;
 		service.name = name;
 		service.categories = categories;
+
+		if (categories === undefined || categories.length === 0) {
+			return res.status(400).send('Service must include atleast one category');
+		}
 
 		const errors = await validate(service);
 		if (errors.length > 0) {
