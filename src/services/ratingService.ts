@@ -16,6 +16,18 @@ class RatingService {
 		return ratings;
 	};
 
+	static getAllByServiceId = async (id: number): Promise<Rating[]> => {
+		//Get all ratings from database based on a service ID.
+		const ratingRepository: Repository<Rating> = getRepository(Rating);
+		const ratings: Rating[] = await ratingRepository
+			.createQueryBuilder('rating')
+			.select(['rating.rating'])
+			.where('rating.service.id = :serviceId', { serviceId: id })
+			.getMany();
+
+		return ratings;
+	};
+
 	static save = async (rating: Rating): Promise<Rating> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
 		return await ratingRepository.save(rating);
