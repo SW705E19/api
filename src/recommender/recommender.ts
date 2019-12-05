@@ -28,25 +28,6 @@ function dotMatrices(
 	return predictedRatings;
 }
 
-function calcRMSE(
-	predictedRatings: number[][],
-	userServiceMatrix: number[][],
-	numberOfRatings: number,
-	numberOfRows: number,
-	numberOfCols: number,
-): number {
-	let sum = 0;
-	for (let i = 0; i < numberOfRows; i++) {
-		for (let j = 0; j < numberOfCols; j++) {
-			if (userServiceMatrix[i + 1][j + 1] > 0) {
-				sum = sum + Math.pow(predictedRatings[i][j] - userServiceMatrix[i + 1][j + 1], 2);
-			}
-		}
-	}
-
-	return Math.sqrt(sum / numberOfRatings);
-}
-
 function initUserFactorMatrix(numberOfRows: number, numberOfFactors: number, userFactorMatrix: number[][]): number[][] {
 	for (let i = 0; i < numberOfRows; i++) {
 		userFactorMatrix[i] = []; // Initialize inner array
@@ -135,7 +116,9 @@ export async function recommender(): Promise<void> {
 	const numberOfRows = allUsers.length;
 	const numberOfCols = allServices.length;
 	const numberofRatings = allRatings.length;
+	//Number of factors is user defined, so we choose it.
 	const numberOfFactors = 10;
+	//Max iterations is also user defined.
 	const maxIterations = 10000;
 
 	let userServiceMatrix: number[][] = [];
@@ -211,7 +194,4 @@ export async function recommender(): Promise<void> {
 			}
 		}
 	}
-
-	const RMSE = calcRMSE(predictedRatings, userServiceMatrix, numberofRatings, numberOfRows, numberOfCols);
-	console.log(RMSE);
 }
