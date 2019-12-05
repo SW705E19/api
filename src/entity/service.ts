@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, OneToMany } from 'typeorm';
-import { Length } from 'class-validator';
+import { Length, IsNotEmpty } from 'class-validator';
 
 import { Category } from './category';
 import { TutorInfo } from './tutorInfo';
@@ -21,6 +21,7 @@ export class Service {
 	tutorInfo: TutorInfo;
 
 	@ManyToMany(type => Category, category => category.services)
+	@IsNotEmpty()
 	categories: Category[];
 
 	@OneToMany(type => Rating, rating => rating.service)
