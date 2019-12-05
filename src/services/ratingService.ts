@@ -16,14 +16,14 @@ class RatingService {
 		return ratings;
 	};
 
-	static getAllByServiceId = async (id: number): Promise<Rating[]> => {
+	static getAverageRatingByServiceId = async (id: number): Promise<Rating[]> => {
 		//Get all ratings from database based on a service ID.
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
 		const ratings: Rating[] = await ratingRepository
 			.createQueryBuilder('rating')
-			.select(['rating.rating'])
+			.select('AVG(rating.rating)', 'avg')
 			.where('rating.service.id = :serviceId', { serviceId: id })
-			.getMany();
+			.getRawOne();
 
 		return ratings;
 	};

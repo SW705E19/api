@@ -44,12 +44,12 @@ class RatingController {
 		return res.status(201).send(createdRating);
 	};
 
-	static getAllByServiceId = async (req: Request, res: Response): Promise<Response> => {
+	static getAverageRatingByServiceId = async (req: Request, res: Response): Promise<Response> => {
 		const id = (req.params.id as unknown) as number;
 		let ratings: Rating[];
 
 		try {
-			ratings = await RatingService.getAllByServiceId(id);
+			ratings = await RatingService.getAverageRatingByServiceId(id);
 		} catch (error) {
 			ratingLogger.error(error);
 			return res.status(404).send('Could not find ratings');

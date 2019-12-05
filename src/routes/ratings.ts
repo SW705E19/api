@@ -7,6 +7,6 @@ router.get('/', RatingController.listAll);
 
 router.post('/', RatingController.newRating);
 
-router.get('/:id([0-9]+)', RatingController.getAllByServiceId);
+router.get('/avg/:id([0-9]+)', RatingController.getAverageRatingByServiceId);
 
 export default router;
