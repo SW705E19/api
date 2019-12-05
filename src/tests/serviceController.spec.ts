@@ -110,7 +110,7 @@ describe('Service controller tests', () => {
 	it('list all services returns status 200', async () => {
 		const req = mockReq();
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -128,7 +128,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -146,7 +146,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -164,7 +164,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -182,7 +182,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -200,7 +200,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -218,7 +218,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -242,7 +242,7 @@ describe('Service controller tests', () => {
 			body: service,
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -266,7 +266,7 @@ describe('Service controller tests', () => {
 			body: service,
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -290,7 +290,7 @@ describe('Service controller tests', () => {
 			body: service,
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -317,7 +317,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -341,7 +341,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -369,7 +369,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -388,7 +388,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
@@ -407,7 +407,7 @@ describe('Service controller tests', () => {
 			},
 		});
 		const res = mockRes({
-			status: function(s: any) {
+			status: function(s: number) {
 				this.statusCode = s;
 				return this;
 			},
