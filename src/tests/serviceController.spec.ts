@@ -310,6 +310,7 @@ describe('Service controller tests', () => {
 			tutorInfo: {
 				id: 1,
 			},
+			categories: [new Category(), new Category()],
 		};
 
 		const req = mockReq({
