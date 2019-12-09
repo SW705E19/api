@@ -5,11 +5,11 @@ import CategoryController from '../controllers/categoryController';
 
 const router = Router();
 
-router.get('/', [checkJwt, checkRole(['ADMIN'])], CategoryController.listAll);
+router.get('/', CategoryController.listAll);
 
 router.post('/', [checkJwt, checkRole(['ADMIN'])], CategoryController.newCategory);
 
-router.get('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], CategoryController.getOneById);
+router.get('/:id([0-9]+)', CategoryController.getOneById);
 
 router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], CategoryController.editCategory);
 
