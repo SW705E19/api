@@ -22,6 +22,6 @@ export class Rating {
 	@ManyToOne(type => User, user => user.ratings)
 	user: User;
 
-	@ManyToOne(type => Service, service => service.ratings)
+	@ManyToOne(type => Service, service => service.ratings, { onDelete: 'CASCADE'})
 	service: Service;
 }
