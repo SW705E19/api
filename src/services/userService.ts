@@ -43,6 +43,7 @@ class UserService {
 				'user.dateOfBirth',
 				'user.roles',
 				'user.avatarUrl',
+				'user.password',
 			])
 			.where('user.id = :id', { id: userId })
 			.getOne();
