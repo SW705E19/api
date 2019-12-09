@@ -115,7 +115,7 @@ export async function recommender(): Promise<void> {
 
 	const numberOfRows = allUsers.length;
 	const numberOfCols = allServices.length;
-	const numberofRatings = allRatings.length;
+
 	//Number of factors is user defined, so we choose it.
 	const numberOfFactors = 10;
 	//Max iterations is also user defined.
