@@ -1,6 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, OneToMany } from 'typeorm';
 import { Length, IsNotEmpty } from 'class-validator';
-
 import { Category } from './category';
 import { TutorInfo } from './tutorInfo';
 import { Rating } from './rating';
