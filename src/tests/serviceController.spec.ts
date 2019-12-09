@@ -9,6 +9,7 @@ import * as validator from 'class-validator';
 import { DeleteResult } from 'typeorm';
 import { Rating } from '../entity/rating';
 import { Category } from '../entity/category';
+import { Recommendation } from '../entity/recommendation';
 
 describe('Service controller tests', () => {
 	const mockServices: Service[] = [
@@ -51,11 +52,13 @@ describe('Service controller tests', () => {
 					languages: ['', ''],
 					subjectsOfInterest: ['', ''],
 					ratings: [new Rating(), new Rating()],
+					recommendations: [new Recommendation(), new Recommendation()],
 				},
 				services: [],
 				acceptedPayments: ['', ''],
 			},
 			ratings: [new Rating(), new Rating()],
+			recommendations: [new Recommendation(), new Recommendation()],
 		},
 		{
 			id: 2,
@@ -96,11 +99,13 @@ describe('Service controller tests', () => {
 					languages: ['', ''],
 					subjectsOfInterest: ['', ''],
 					ratings: [new Rating(), new Rating()],
+					recommendations: [new Recommendation(), new Recommendation()],
 				},
 				services: [],
 				acceptedPayments: ['', ''],
 			},
 			ratings: [new Rating(), new Rating()],
+			recommendations: [new Recommendation(), new Recommendation()],
 		},
 	];
 

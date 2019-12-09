@@ -108,7 +108,7 @@ function initUserServiceMatrix(
 	return userServiceMatrix;
 }
 
-export async function recommender(): Promise<void> {
+export async function calculateRecommendations(): Promise<number[][]> {
 	const allUsers = await UserService.getAll();
 	const allServices = await ServiceService.getAll();
 	const allRatings = await RatingService.getAll();
@@ -194,4 +194,18 @@ export async function recommender(): Promise<void> {
 			}
 		}
 	}
+
+	// Now we put the predicted ratings into the user service matrix.
+	for (let i = 0; i < numberOfRows; i++) {
+		for (let j = 0; j < numberOfCols; j++) {
+			if (userServiceMatrix[i + 1][j + 1] == 0) {
+				userServiceMatrix[i + 1][j + 1] = predictedRatings[i][j];
+			} else {
+				// Set to 0 since the user has already rated the service and the recommendation is not interesting
+				userServiceMatrix[i + 1][j + 1] = 0;
+			}
+		}
+	}
+
+	return userServiceMatrix;
 }

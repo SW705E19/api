@@ -8,6 +8,7 @@ import RatingService from '../services/ratingService';
 import RatingController from '../controllers/ratingController';
 import * as validator from 'class-validator';
 import { ValidationError } from 'class-validator';
+import { Recommendation } from '../entity/recommendation';
 
 describe('Rating controller tests', () => {
 	const mockRatings: Rating[] = [
@@ -38,6 +39,7 @@ describe('Rating controller tests', () => {
 				tutorInfo: null,
 				categories: null,
 				ratings: null,
+				recommendations: [new Recommendation(), new Recommendation()],
 			},
 			user: new User(),
 		},
@@ -52,6 +54,7 @@ describe('Rating controller tests', () => {
 				tutorInfo: null,
 				categories: null,
 				ratings: null,
+				recommendations: [new Recommendation(), new Recommendation()],
 			},
 			user: new User(),
 		},
