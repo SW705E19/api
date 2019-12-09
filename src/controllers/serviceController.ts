@@ -58,7 +58,6 @@ class ServiceController {
 		service.categories = categories;
 
 		if (categories === undefined || categories.length === 0) {
-			console.log('wut');
 			return res.status(400).send('Service must include atleast one category');
 		}
 
