@@ -8,8 +8,12 @@ router.post('/', RecommendationController.calculateRecommendations);
 
 router.get('/', RecommendationController.listAll);
 
-router.get('/own', RecommendationController.getOwnTopRecommendations);
+router.get('/own', [checkJwt], RecommendationController.getOwnRecommendations);
 
-router.get('/:id([0-9]+', RecommendationController.getRecommendationsByUserId);
+router.get('/:id([0-9])+', RecommendationController.getRecommendationsByUserId);
+
+router.get('/own/top', [checkJwt], RecommendationController.getOwnTopRecommendations);
+
+router.get('/top/:id([0-9])+', RecommendationController.getTopRecommendationsById);
 
 export default router;
