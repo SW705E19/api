@@ -86,7 +86,6 @@ class UserController {
 		//Validate the new values on model
 		user.email = email;
 		user.firstName = firstName;
-		user.firstName = firstName;
 		user.lastName = lastName;
 		user.address = address;
 		user.phoneNumber = phoneNumber;
