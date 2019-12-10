@@ -1,6 +1,6 @@
 import { Request, Response } from 'express-serve-static-core';
 import RecommendationService from '../services/recommendationService';
-import { calculateRecommendations } from '../recommender/recommender';
+import Recommender from '../recommender/recommender';
 import { Recommendation } from '../entity/recommendation';
 import recommendationsLogger from '../logging/recommendations/recommendationLogger';
 import { Service } from '../entity/service';
@@ -13,7 +13,7 @@ class RecommendationController {
 	};
 
 	static calculateRecommendations = async (req: Request, res: Response): Promise<Response> => {
-		const userServiceMatrix: number[][] = await calculateRecommendations();
+		const userServiceMatrix: number[][] = await Recommender.calculateRecommendations();
 		await RecommendationService.clearRecommendations();
 
 		const recommendations: Recommendation[] = [];
@@ -31,14 +31,15 @@ class RecommendationController {
 			}
 		}
 
+		let savedRecommendations: Recommendation[];
 		try {
-			await RecommendationService.save(recommendations);
+			savedRecommendations = await RecommendationService.save(recommendations);
 		} catch (error) {
 			recommendationsLogger.error(error);
 			return res.status(400).send('Could not save recommendation');
 		}
 
-		return res.status(201).send('Recommendations saved to database');
+		return res.status(201).send(savedRecommendations);
 	};
 
 	static getOwnRecommendations = async (req: Request, res: Response): Promise<Response> => {
