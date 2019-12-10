@@ -9,8 +9,11 @@ export class TutorInfo {
 	id: number;
 
 	@OneToOne(type => User, user => user.tutorInfo)
-	@JoinColumn()
+	@JoinColumn({name: 'userId'})
 	user: User;
+
+	@Column('int')
+	userId: number;
 
 	@OneToMany(type => Service, service => service.tutorInfo)
 	services: Service[];

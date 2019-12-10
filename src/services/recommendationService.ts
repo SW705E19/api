@@ -18,8 +18,10 @@ class RecommendationService {
 		const recommendationRepository: Repository<Recommendation> = getRepository(Recommendation);
 		const recommendations: Recommendation[] = await recommendationRepository
 			.createQueryBuilder('recommendation')
-			.select(['recommendation.value', 'recommendation.serviceId', 'recommendation.userId'])
+			.select(['recommendation.value'])
 			.where('recommendation.user = :userId', { userId: id })
+			.innerJoinAndSelect('recommendation.service', 'service')
+			.innerJoinAndSelect('service', 'service.tutorInfo')
 			.getMany();
 
 		return recommendations;
@@ -34,8 +36,10 @@ class RecommendationService {
 		const recommendationRepository: Repository<Recommendation> = getRepository(Recommendation);
 		const recommendations: Recommendation[] = await recommendationRepository
 			.createQueryBuilder('recommendation')
-			.select(['recommendation.value', 'recommendation.serviceId', 'recommendation.userId'])
+			.select(['recommendation.value'])
 			.where('recommendation.user = :userId', { userId: id })
+			.innerJoinAndSelect('recommendation.service', 'service')
+			.innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
 			.orderBy('recommendation.value', 'DESC')
 			.limit(5)
 			.getMany();

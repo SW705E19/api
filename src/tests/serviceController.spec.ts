@@ -34,6 +34,7 @@ describe('Service controller tests', () => {
 			tutorInfo: {
 				id: 1,
 				description: 'I am a tutor',
+				userId: 1,
 				user: {
 					id: 1,
 					email: 'john@bob.dk',
@@ -81,6 +82,7 @@ describe('Service controller tests', () => {
 			tutorInfo: {
 				id: 1,
 				description: 'I am a tutor',
+				userId: 1,
 				user: {
 					id: 1,
 					email: 'john@bob.dk',

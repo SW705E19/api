@@ -62,6 +62,7 @@ describe('User controller tests', () => {
 		acceptedPayments: ['', ''],
 		services: [new Service(), new Service()],
 		user: mockUsers[0],
+		userId: 1,
 	};
 
 	afterEach(() => {
