@@ -58,6 +58,8 @@ class UserService {
 			.select(['tutorInfo.id', 'tutorInfo.description', 'tutorInfo.acceptedPayments', 'tutorInfo.user'])
 			.innerJoin('tutorInfo.user', 'user')
 			.addSelect('user.id')
+			.innerJoin('tutorInfo.services', 'service')
+			.addSelect(['service.id', 'service.name', 'service.description'])
 			.where('user.id = :userId', { userId: userId })
 			.getOne();
 
