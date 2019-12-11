@@ -22,6 +22,9 @@ router.post('/:id([0-9]+)/newTutor', [checkJwt, checkRole(['ADMIN'])], UserContr
 //Edit one user
 router.patch('/:id([0-9]+)', [checkJwt, checkRole(['ADMIN'])], UserController.editUser);
 
+//Edit the tutor role on a user
+router.patch('/tutor/:id([0-9]+)',[checkJwt, checkRole(['ADMIN'])], UserController.editTutorRole);
+
 //Delete one user
 router.delete('/:id([0-9]+)', [checkJwt], UserController.deleteUser);
 
