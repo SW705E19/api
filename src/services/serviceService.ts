@@ -11,6 +11,7 @@ class ServiceService {
 			.addSelect(['tutorInfo.id'])
 			.innerJoin('tutorInfo.user', 'user')
 			.addSelect(['user.firstName', 'user.lastName'])
+			.innerJoinAndSelect('service.categories', 'categories')
 			.getMany();
 		return services;
 	};
