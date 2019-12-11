@@ -3,6 +3,7 @@ import { Length, IsNotEmpty } from 'class-validator';
 import { Category } from './category';
 import { TutorInfo } from './tutorInfo';
 import { Rating } from './rating';
+import { Recommendation } from './recommendation';
 
 @Entity()
 export class Service {
@@ -25,4 +26,7 @@ export class Service {
 
 	@OneToMany(type => Rating, rating => rating.service)
 	ratings: Rating[];
+
+	@OneToMany(type => Recommendation, recommendation => recommendation.service)
+	recommendations: Recommendation[];
 }

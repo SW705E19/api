@@ -9,6 +9,7 @@ import * as validator from 'class-validator';
 import { DeleteResult } from 'typeorm';
 import { Rating } from '../entity/rating';
 import { Category } from '../entity/category';
+import { Recommendation } from '../entity/recommendation';
 
 describe('Service controller tests', () => {
 	const mockServices: Service[] = [
@@ -33,6 +34,7 @@ describe('Service controller tests', () => {
 			tutorInfo: {
 				id: 1,
 				description: 'I am a tutor',
+				userId: 1,
 				user: {
 					id: 1,
 					email: 'john@bob.dk',
@@ -51,11 +53,13 @@ describe('Service controller tests', () => {
 					languages: ['', ''],
 					subjectsOfInterest: ['', ''],
 					ratings: [new Rating(), new Rating()],
+					recommendations: [new Recommendation(), new Recommendation()],
 				},
 				services: [],
 				acceptedPayments: ['', ''],
 			},
 			ratings: [new Rating(), new Rating()],
+			recommendations: [new Recommendation(), new Recommendation()],
 		},
 		{
 			id: 2,
@@ -78,6 +82,7 @@ describe('Service controller tests', () => {
 			tutorInfo: {
 				id: 1,
 				description: 'I am a tutor',
+				userId: 1,
 				user: {
 					id: 1,
 					email: 'john@bob.dk',
@@ -96,11 +101,13 @@ describe('Service controller tests', () => {
 					languages: ['', ''],
 					subjectsOfInterest: ['', ''],
 					ratings: [new Rating(), new Rating()],
+					recommendations: [new Recommendation(), new Recommendation()],
 				},
 				services: [],
 				acceptedPayments: ['', ''],
 			},
 			ratings: [new Rating(), new Rating()],
+			recommendations: [new Recommendation(), new Recommendation()],
 		},
 	];
 

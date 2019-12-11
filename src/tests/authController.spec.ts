@@ -7,6 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import * as validator from 'class-validator';
 import { ValidationError } from 'class-validator';
 import { Rating } from '../entity/rating';
+import { Recommendation } from '../entity/recommendation';
 
 describe('auth controller login', function() {
 	/* Default user for connection testing */
@@ -28,6 +29,7 @@ describe('auth controller login', function() {
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
 		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
 	};
 
 	it('calls service get with correct email', async function() {
@@ -291,6 +293,7 @@ describe('auth controller changePassword', function() {
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
 		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
 	};
 
 	it('calls service getById with right id', async function() {
@@ -700,6 +703,7 @@ describe('auth controller register', function() {
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
 		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
 	};
 
 	it('returns error if new model is not valid', async function() {

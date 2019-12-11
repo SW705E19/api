@@ -4,6 +4,7 @@ import userService from '../services/userService';
 import { expect } from 'chai';
 import { checkRole } from '../middlewares/checkRole';
 import { Rating } from '../entity/rating';
+import { Recommendation } from '../entity/recommendation';
 
 describe('Check role middleware', function() {
 	/* Default user for connection testing */
@@ -25,6 +26,7 @@ describe('Check role middleware', function() {
 		languages: ['', ''],
 		subjectsOfInterest: ['', ''],
 		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
 	};
 
 	it('returns status 401 if service fails', async function() {

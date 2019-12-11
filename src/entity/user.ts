@@ -12,6 +12,7 @@ import { Length, IsNotEmpty, IsEmail } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 import { TutorInfo } from './tutorInfo';
 import { Rating } from './rating';
+import { Recommendation } from './recommendation';
 
 @Entity()
 @Unique(['email'])
@@ -75,4 +76,7 @@ export class User {
 
 	@OneToMany(type => Rating, rating => rating.user)
 	ratings: Rating[];
+
+	@OneToMany(type => Recommendation, recommendation => recommendation.user)
+	recommendations: Recommendation[];
 }
