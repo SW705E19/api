@@ -364,23 +364,7 @@ describe('User controller tests', () => {
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
-	it('should fail to change tutor role to TUTOR and return 400', async () => {
-		const req = mockReq({
-			body: ['UTOR'],
-			params: {
-				id: 1,
-			},
-		});
-		const res = mockRes({
-			status: function(s: number) {
-				this.statusCode = s;
-				return this;
-			},
-		});
 
-		await UserController.editTutorRole(req, res);
-		expect(res.statusCode).to.equal(400);
-	});
 	it('should fail to change role because it cant find user and return 404', async () => {
 		const req = mockReq({
 			body: ['TUTOR'],
