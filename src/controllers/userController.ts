@@ -5,7 +5,6 @@ import userService from '../services/userService';
 import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
 import UserService from '../services/userService';
-import AuthController from './authController';
 
 class UserController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
@@ -111,36 +110,36 @@ class UserController {
 	};
 
 	static editTutorRole = async (req: Request, res: Response): Promise<Response> => {
-				//Get the ID from the url
-				const userId: number = (req.params.id as unknown) as number;
+		//Get the ID from the url
+		const userId: number = (req.params.id as unknown) as number;
 
-				//Get values from the body
-				const roles = req.body;
+		//Get values from the body
+		const roles = req.body;
 
-				let user: User;
-				try {
-					user = await userService.getById(userId);
-				} catch (error) {
-					userLogger.error(error);
-					return res.status(404).send('User not found');
-				}
-				user.roles = roles;
+		let user: User;
+		try {
+			user = await userService.getById(userId);
+		} catch (error) {
+			userLogger.error(error);
+			return res.status(404).send('User not found');
+		}
+		user.roles = roles;
 
-				const errors: ValidationError[] = await validate(user);
-				if (errors.length > 0) {
-					userLogger.error(errors);
-					return res.status(400).send(errors);
-				}
-		
-				//Try to save, if fails, that means email already in use
-				try {
-					await userService.save(user);
-				} catch (error) {
-					userLogger.error(error);
-					return res.status(400).send('email already in use');
-				}
-		
-				return res.status(200).send();
+		const errors: ValidationError[] = await validate(user);
+		if (errors.length > 0) {
+			userLogger.error(errors);
+			return res.status(400).send(errors);
+		}
+
+		//Try to save, if fails, that means email already in use
+		try {
+			await userService.save(user);
+		} catch (error) {
+			userLogger.error(error);
+			return res.status(400).send('email already in use');
+		}
+
+		return res.status(200).send();
 	};
 
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
