@@ -8,3 +8,4 @@ temp/
 *.sqlite
 ormconfig.json
 coverage/
+.nyc_output/
