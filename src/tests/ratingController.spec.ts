@@ -59,6 +59,58 @@ describe('Rating controller tests', () => {
 			user: new User(),
 		},
 	];
+	const mockTopFiveAverageRatings: object[] = [
+		{
+			serviceid: 16,
+			name: '1ksakdjaskj',
+			description: '1234',
+			tutorInfoId: 1,
+			avgrating: '4.9444444444444444',
+			userid: 1,
+			firstname: 'admin',
+			lastname: 'adminsen',
+		},
+		{
+			serviceid: 8,
+			name: 'test2',
+			description: 'test2',
+			tutorInfoId: 1,
+			avgrating: '4.0000000000000000',
+			userid: 1,
+			firstname: 'admin',
+			lastname: 'adminsen',
+		},
+		{
+			serviceid: 10,
+			name: 'test4',
+			description: 'test4',
+			tutorInfoId: 1,
+			avgrating: '4.0000000000000000',
+			userid: 1,
+			firstname: 'admin',
+			lastname: 'adminsen',
+		},
+		{
+			serviceid: 11,
+			name: 'redirecttest',
+			description: 'redirecttest',
+			tutorInfoId: 1,
+			avgrating: '3.5000000000000000',
+			userid: 1,
+			firstname: 'admin',
+			lastname: 'adminsen',
+		},
+		{
+			serviceid: 15,
+			name: '1234',
+			description: '1234',
+			tutorInfoId: 1,
+			avgrating: '3.2500000000000000',
+			userid: 1,
+			firstname: 'admin',
+			lastname: 'adminsen',
+		},
+	];
 
 	afterEach(() => {
 		sinon.restore();
@@ -117,6 +169,48 @@ describe('Rating controller tests', () => {
 
 		sinon.stub(RatingService, 'getAverageRatingByServiceId').throws();
 		await RatingController.getAverageRatingByServiceId(req, res);
+		expect(res.statusCode).to.equal(404);
+	});
+
+	it('Get top five average ratings returns 200', async () => {
+		const req = mockReq();
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+		sinon.stub(RatingService, 'getTopFiveAverageRatings').resolves(mockTopFiveAverageRatings);
+		await RatingController.getTopFiveAverageRatings(req, res);
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it('Should properly call the top five average rating function', async () => {
+		const req = mockReq();
+		const res = mockRes({
+			status: function() {
+				return {
+					send: (e: object[]): object[] => {
+						return e;
+					},
+				};
+			},
+		});
+		sinon.stub(RatingService, 'getTopFiveAverageRatings').resolves(mockTopFiveAverageRatings);
+		const topFiveAverageRatings = await RatingController.getTopFiveAverageRatings(req, res);
+		expect(topFiveAverageRatings).equals(mockTopFiveAverageRatings);
+	});
+
+	it('Shoudl fail to get top five average ratings and return 404', async () => {
+		const req = mockReq();
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+		sinon.stub(RatingService, 'getTopFiveAverageRatings').throws();
+		await RatingController.getTopFiveAverageRatings(req, res);
 		expect(res.statusCode).to.equal(404);
 	});
 

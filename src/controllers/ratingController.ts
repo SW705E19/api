@@ -57,6 +57,18 @@ class RatingController {
 
 		return res.status(200).send(ratings);
 	};
+
+	static getTopFiveAverageRatings = async (req: Request, res: Response): Promise<Response> => {
+		let ratings: object[];
+
+		try {
+			ratings = await RatingService.getTopFiveAverageRatings();
+		} catch (error) {
+			ratingLogger.error(error);
+			return res.status(404).send('Could not get average ratings');
+		}
+		return res.status(200).send(ratings);
+	};
 }
 
 export default RatingController;
