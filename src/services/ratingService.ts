@@ -27,6 +27,13 @@ class RatingService {
 
 		return ratings;
 	};
+	static getRatingByUserAndServiceId = async (userId: number, serviceId: number): Promise<Rating> => {
+		const ratingRepository: Repository<Rating> = getRepository(Rating);
+		return await ratingRepository
+		.createQueryBuilder('rating')
+		.select('rating')
+		.
+	};
 
 	static save = async (rating: Rating): Promise<Rating> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
