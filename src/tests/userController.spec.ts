@@ -10,6 +10,7 @@ import { ValidationError } from 'class-validator';
 import * as validator from 'class-validator';
 import { DeleteResult } from 'typeorm';
 import { Rating } from '../entity/rating';
+import { Recommendation } from '../entity/recommendation';
 
 describe('User controller tests', () => {
 	const mockUsers: User[] = [
@@ -31,6 +32,7 @@ describe('User controller tests', () => {
 			languages: ['', ''],
 			subjectsOfInterest: ['', ''],
 			ratings: [new Rating(), new Rating()],
+			recommendations: [new Recommendation(), new Recommendation()],
 		},
 		{
 			id: 2,
@@ -50,6 +52,7 @@ describe('User controller tests', () => {
 			languages: ['', ''],
 			subjectsOfInterest: ['', ''],
 			ratings: [new Rating(), new Rating()],
+			recommendations: [new Recommendation(), new Recommendation()],
 		},
 	];
 
@@ -59,6 +62,7 @@ describe('User controller tests', () => {
 		acceptedPayments: ['', ''],
 		services: [new Service(), new Service()],
 		user: mockUsers[0],
+		userId: 1,
 	};
 
 	afterEach(() => {

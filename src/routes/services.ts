@@ -19,6 +19,4 @@ router.delete('/:id([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], Service
 
 router.get('/:category([0-9]+)', [checkJwt, checkRole(['TUTOR', 'ADMIN'])], ServiceController.getByCategory);
 
-router.get('/recommender', ServiceController.doRecommender);
-
 export default router;
