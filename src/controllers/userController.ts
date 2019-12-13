@@ -116,12 +116,7 @@ class UserController {
 
 				//Get values from the body
 				const roles = req.body;
-				
-				if(!roles.includes('TUTOR') &&
-					!(roles.length == 0)){
-					userLogger.error("invalid role :" + roles);
-					return res.status(400).send('Invalid role');
-				}
+
 				let user: User;
 				try {
 					user = await userService.getById(userId);
