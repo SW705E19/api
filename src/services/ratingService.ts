@@ -32,7 +32,7 @@ class RatingService {
 		return await ratingRepository
 		.createQueryBuilder('rating')
 		.select('rating')
-		.
+		.where('rating.service.id = :serviceId AND rating.user.id = :userId', {serviceId: serviceId, userId: userId }).getOne();
 	};
 
 	static save = async (rating: Rating): Promise<Rating> => {

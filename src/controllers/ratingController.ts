@@ -57,6 +57,9 @@ class RatingController {
 
 		return res.status(200).send(ratings);
 	};
+	static getRatingByUserAndServiceId = async (req: Request, res: Response): Promise<Response> => {
+
+	};
 }
 
 export default RatingController;
