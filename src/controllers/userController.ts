@@ -131,15 +131,14 @@ class UserController {
 			return res.status(400).send(errors);
 		}
 
-		//Try to save, if fails, that means email already in use
 		try {
 			await userService.save(user);
 		} catch (error) {
 			userLogger.error(error);
-			return res.status(400).send('email already in use');
+			return res.status(400).send(error);
 		}
 
-		return res.status(200).send();
+		return res.status(200).send(user);
 	};
 
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {

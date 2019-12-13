@@ -386,4 +386,43 @@ describe('User controller tests', () => {
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(404);
 	});
+	it('should fail to change tutor role to TUTOR and return 400', async () => {
+		const req = mockReq({
+			body: ['TUTOR'],
+			params: {
+				id: 1,
+			},
+		});
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+
+		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'save').throws();
+		await UserController.editTutorRole(req, res);
+		expect(res.statusCode).to.equal(400);
+	});
+	it('should fails to change tutor role to TUTOR and because it cant validate return 400', async () => {
+		const req = mockReq({
+			body: ['TUTOR'],
+			params: {
+				id: 1,
+			},
+		});
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+
+		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'save').resolves();
+		sinon.stub(validator, 'validate').resolves([new ValidationError()]);
+		await UserController.editTutorRole(req, res);
+		expect(res.statusCode).to.equal(400);
+	});
 });
