@@ -13,24 +13,43 @@ class RatingController {
 
 	static newRating = async (req: Request, res: Response): Promise<Response> => {
 		const { rating, user, service, description } = req.body;
-		const newRating = new Rating();
+		let newRating = new Rating();
 		newRating.rating = rating;
 		newRating.user = user;
 		newRating.service = service;
 		newRating.description = description;
 
+		
 		const errors = await validate(newRating);
 		if (errors.length > 0) {
 			ratingLogger.error(errors);
 			return res.status(400).send(errors);
 		}
-
+		
+		let existingRating: Rating;
 		let createdRating: Rating;
 		try {
-			createdRating = await RatingService.save(newRating);
+			existingRating = await RatingService.getRatingByUserAndServiceId(newRating.user.id, newRating.service.id);
 		} catch (error) {
-			ratingLogger.error(error);
-			return res.status(400).send('Could not create rating');
+			existingRating = undefined;
+		}
+		if(existingRating != undefined){
+			existingRating.rating = newRating.rating;
+			try {
+				createdRating = await RatingService.save(existingRating);
+			} catch (error) {
+				ratingLogger.error(error);
+				return res.status(400).send('Could not create rating');
+			}
+		}
+		else{
+			newRating;
+			try {
+				createdRating = await RatingService.save(newRating);
+			} catch (error) {
+				ratingLogger.error(error);
+				return res.status(400).send('Could not create rating');
+			}
 		}
 
 		const ratingInfoForLog: string =
@@ -59,7 +78,6 @@ class RatingController {
 	};
 	static getRatingByUserAndServiceId = async (req: Request, res: Response): Promise<Response> => {
 		const { userId, serviceId } = req.body;
-		console.log(req.body);
 		let rating: Rating;
 		try {
 			rating = await RatingService.getRatingByUserAndServiceId(userId,serviceId);
