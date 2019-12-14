@@ -69,6 +69,38 @@ describe('User controller tests', () => {
 		sinon.restore();
 	});
 
+	it('list all tutors returns status 200', async () => {
+		const req = mockReq();
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+		const mockTutorInfoList = [mockTutorInfo, mockTutorInfo];
+		sinon.stub(UserService, 'getAllTutors').resolves(mockTutorInfoList);
+		await UserController.listAllTutors(req, res);
+		expect(res.statusCode).to.equal(200);
+	});
+
+	it('list all tutors returns list of tutors', async () => {
+		const mockTutorInfoList = [mockTutorInfo, mockTutorInfo];
+		const req = mockReq();
+		const res = mockRes({
+			status: function() {
+				return {
+					send: (e: TutorInfo[]): TutorInfo[] => {
+						return e;
+					},
+				};
+			},
+		});
+
+		sinon.stub(UserService, 'getAllTutors').resolves(mockTutorInfoList);
+		const getAllTutorsRes = await UserController.listAllTutors(req, res);
+		expect(getAllTutorsRes).to.equal(mockTutorInfoList);
+	});
+
 	it('list all services returns status 200', async () => {
 		const req = mockReq();
 		const res = mockRes({

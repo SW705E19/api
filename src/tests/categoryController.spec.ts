@@ -149,6 +149,28 @@ describe('Category controller tests', () => {
 		await CategoryController.editCategory(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
+	it('should edit category with errors, return 400', async () => {
+		const category = {
+			name: 'editCat',
+			description: 'edited description',
+			services: [],
+		};
+		const req = mockReq({
+			body: category,
+			params: { id: 0 },
+		});
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+		sinon.stub(CategoryService, 'getById').resolves(mockCategories[req.params.id]);
+		sinon.stub(CategoryService, 'save').resolvesArg(0);
+		sinon.stub(validator, 'validate').resolves([new ValidationError(), new ValidationError()]);
+		await CategoryController.editCategory(req, res);
+		expect(res.statusCode).to.equal(400);
+	});
 	it('should fail to edit category because save service fail, return 409', async () => {
 		const category = {
 			name: 1,
