@@ -58,7 +58,17 @@ class RatingController {
 		return res.status(200).send(ratings);
 	};
 	static getRatingByUserAndServiceId = async (req: Request, res: Response): Promise<Response> => {
+		const { userId, serviceId } = req.body;
+		console.log(req.body);
+		let rating: Rating;
+		try {
+			rating = await RatingService.getRatingByUserAndServiceId(userId,serviceId);
+		} catch (error) {
+			ratingLogger.error(error);
+			return res.status(404).send('Could not find ratings');
+		}
 
+		return res.status(200).send(rating);
 	};
 }
 
