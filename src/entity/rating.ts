@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { Service } from './service';
-import { IsInt, Min, Max, IsNotEmpty } from 'class-validator';
+import { IsInt, Min, Max } from 'class-validator';
 
 @Entity()
 export class Rating {
