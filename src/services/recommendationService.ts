@@ -40,6 +40,8 @@ class RecommendationService {
 			.where('recommendation.user = :userId', { userId: id })
 			.innerJoinAndSelect('recommendation.service', 'service')
 			.innerJoinAndSelect('service.tutorInfo', 'tutorInfo')
+			.innerJoin('tutorInfo.user', 'user')
+			.addSelect(['user.firstName', 'user.lastName'])
 			.orderBy('recommendation.value', 'DESC')
 			.limit(5)
 			.getMany();

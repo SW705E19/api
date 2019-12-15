@@ -28,6 +28,32 @@ class RatingService {
 		return ratings;
 	};
 
+	static getTopRatings = async (amount: number): Promise<object[]> => {
+		const ratingRepository: Repository<Rating> = getRepository(Rating);
+		const ratings: object[] = await ratingRepository
+			.createQueryBuilder('rating')
+			.innerJoin('rating.service', 'service')
+			.innerJoin('service.tutorInfo', 'tutorInfo')
+			.innerJoin('tutorInfo.user', 'user')
+			.groupBy('service.id')
+			.addGroupBy('user.id')
+			.select([
+				'service.id AS serviceId',
+				'service.name AS name',
+				'service.description AS description',
+				'service.tutorInfo',
+				'AVG(rating.rating) AS avgRating',
+				'user.id AS userId',
+				'user.firstName AS firstName',
+				'user.lastName AS lastName',
+			])
+			.orderBy('avgRating', 'DESC')
+			.limit(amount)
+			.getRawMany();
+
+		return ratings;
+	};
+
 	static save = async (rating: Rating): Promise<Rating> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
 		return await ratingRepository.save(rating);
