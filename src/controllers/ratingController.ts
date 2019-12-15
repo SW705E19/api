@@ -81,7 +81,7 @@ class RatingController {
 			rating = await RatingService.getRatingByUserAndServiceId(userId, serviceId);
 		} catch (error) {
 			ratingLogger.error(error);
-			return res.status(404).send('Could not find ratings');
+			return res.status(404).send('Could not find rating');
 		}
 
 		return res.status(200).send(rating);
