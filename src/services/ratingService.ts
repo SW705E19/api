@@ -28,7 +28,7 @@ class RatingService {
 		return ratings;
 	};
 
-	static getTopFiveAverageRatings = async (): Promise<object[]> => {
+	static getTopRatings = async (amount: number): Promise<object[]> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
 		const ratings: object[] = await ratingRepository
 			.createQueryBuilder('rating')
@@ -48,7 +48,7 @@ class RatingService {
 				'user.lastName AS lastName',
 			])
 			.orderBy('avgRating', 'DESC')
-			.limit(5)
+			.limit(amount)
 			.getRawMany();
 
 		return ratings;
