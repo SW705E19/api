@@ -41,7 +41,6 @@ class RatingController {
 				return res.status(400).send('Could not save rating');
 			}
 		} else {
-			newRating;
 			try {
 				createdRating = await RatingService.save(newRating);
 			} catch (error) {
