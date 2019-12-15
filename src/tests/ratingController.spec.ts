@@ -127,7 +127,7 @@ describe('Rating controller newRating', () => {
 		sinon.restore();
 	});
 
-	it('should find no rating and create a new rating, return 201', async () => {
+	it('should create a new rating if one does not exist, return 201', async () => {
 		const rating = {
 			rating: 3,
 			description: 'I am a 3 rating',
