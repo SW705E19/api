@@ -27,40 +27,40 @@ const mockRatings: Rating[] = [
 	},
 ];
 
-	const mockAverageRatings: Rating[] = [
-		{
-			id: 3,
-			rating: 4,
-			description: 'I am 4 rating',
-			service: {
-				id: 2,
-				description: 'Service that is good',
-				name: 'Good service',
-				tutorInfo: null,
-				categories: null,
-				ratings: null,
-				recommendations: [new Recommendation(), new Recommendation()],
-				image: '',
-			},
-			user: new User(),
+const mockAverageRatings: Rating[] = [
+	{
+		id: 3,
+		rating: 4,
+		description: 'I am 4 rating',
+		service: {
+			id: 2,
+			description: 'Service that is good',
+			name: 'Good service',
+			tutorInfo: null,
+			categories: null,
+			ratings: null,
+			recommendations: [new Recommendation(), new Recommendation()],
+			image: '',
 		},
-		{
-			id: 4,
-			rating: 2,
-			description: 'I am 2 rating',
-			service: {
-				id: 2,
-				description: 'Service that is bad',
-				name: 'Bad service',
-				tutorInfo: null,
-				categories: null,
-				ratings: null,
-				recommendations: [new Recommendation(), new Recommendation()],
-				image: '',
-			},
-			user: new User(),
-	  },
-  ];
+		user: new User(),
+	},
+	{
+		id: 4,
+		rating: 2,
+		description: 'I am 2 rating',
+		service: {
+			id: 2,
+			description: 'Service that is bad',
+			name: 'Bad service',
+			tutorInfo: null,
+			categories: null,
+			ratings: null,
+			recommendations: [new Recommendation(), new Recommendation()],
+			image: '',
+		},
+		user: new User(),
+	},
+];
 describe('Rating controller tests', () => {
 	afterEach(() => {
 		sinon.restore();
