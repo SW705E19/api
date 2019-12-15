@@ -29,4 +29,9 @@ export class Service {
 
 	@OneToMany(type => Recommendation, recommendation => recommendation.service)
 	recommendations: Recommendation[];
+
+	@Column({
+		default: 'https://source.unsplash.com/random/200x200'
+	})
+	image: string;
 }

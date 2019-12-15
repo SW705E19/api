@@ -60,6 +60,7 @@ describe('Service controller tests', () => {
 			},
 			ratings: [new Rating(), new Rating()],
 			recommendations: [new Recommendation(), new Recommendation()],
+			image: '',
 		},
 		{
 			id: 2,
@@ -108,6 +109,7 @@ describe('Service controller tests', () => {
 			},
 			ratings: [new Rating(), new Rating()],
 			recommendations: [new Recommendation(), new Recommendation()],
+			image: '',
 		},
 	];
 
