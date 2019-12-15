@@ -213,7 +213,7 @@ describe('Rating controller newRating', () => {
 		expect(res.statusCode).to.equal(400);
 	});
 
-	it('should fail find a rating and fail to create a new rating and return status 400', async () => {
+	it('should fail to find a rating and fail to create a new rating and return status 400', async () => {
 		const rating = {
 			rating: '3',
 			description: 'I am a 3 rating',
