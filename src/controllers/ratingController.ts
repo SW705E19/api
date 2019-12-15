@@ -46,7 +46,7 @@ class RatingController {
 				createdRating = await RatingService.save(newRating);
 			} catch (error) {
 				ratingLogger.error(error);
-				return res.status(400).send('Could not create rating');
+				return res.status(400).send('Could not save rating');
 			}
 		}
 
