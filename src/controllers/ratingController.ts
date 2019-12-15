@@ -32,7 +32,7 @@ class RatingController {
 		} catch (error) {
 			existingRating = undefined;
 		}
-		if (existingRating != undefined) {
+		if (existingRating !== undefined) {
 			existingRating.rating = newRating.rating;
 			try {
 				createdRating = await RatingService.save(existingRating);
