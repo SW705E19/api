@@ -13,19 +13,18 @@ class RatingController {
 
 	static newRating = async (req: Request, res: Response): Promise<Response> => {
 		const { rating, user, service, description } = req.body;
-		let newRating = new Rating();
+		const newRating = new Rating();
 		newRating.rating = rating;
 		newRating.user = user;
 		newRating.service = service;
 		newRating.description = description;
 
-		
 		const errors = await validate(newRating);
 		if (errors.length > 0) {
 			ratingLogger.error(errors);
 			return res.status(400).send(errors);
 		}
-		
+
 		let existingRating: Rating;
 		let createdRating: Rating;
 		try {
@@ -33,7 +32,7 @@ class RatingController {
 		} catch (error) {
 			existingRating = undefined;
 		}
-		if(existingRating != undefined){
+		if (existingRating != undefined) {
 			existingRating.rating = newRating.rating;
 			try {
 				createdRating = await RatingService.save(existingRating);
@@ -41,8 +40,7 @@ class RatingController {
 				ratingLogger.error(error);
 				return res.status(400).send('Could not create rating');
 			}
-		}
-		else{
+		} else {
 			newRating;
 			try {
 				createdRating = await RatingService.save(newRating);
@@ -80,7 +78,7 @@ class RatingController {
 		const { userId, serviceId } = req.body;
 		let rating: Rating;
 		try {
-			rating = await RatingService.getRatingByUserAndServiceId(userId,serviceId);
+			rating = await RatingService.getRatingByUserAndServiceId(userId, serviceId);
 		} catch (error) {
 			ratingLogger.error(error);
 			return res.status(404).send('Could not find ratings');

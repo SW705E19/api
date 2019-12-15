@@ -59,8 +59,6 @@ const mockAverageRatings: Rating[] = [
 	},
 ];
 describe('Rating controller tests', () => {
-	
-
 	afterEach(() => {
 		sinon.restore();
 	});
@@ -120,14 +118,12 @@ describe('Rating controller tests', () => {
 		await RatingController.getAverageRatingByServiceId(req, res);
 		expect(res.statusCode).to.equal(404);
 	});
-
-	
 });
 describe('Rating controller newRating', () => {
 	afterEach(() => {
 		sinon.restore();
 	});
-	
+
 	it('should find no rating and create a new rating, return 201', async () => {
 		const rating = {
 			rating: 3,
@@ -213,7 +209,7 @@ describe('Rating controller newRating', () => {
 		await RatingController.newRating(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
-	
+
 	it('should fail find a rating and fail to create a new rating and return status 400', async () => {
 		const rating = {
 			rating: '3',
@@ -241,7 +237,7 @@ describe('Rating controller getRatingByUserAndSerivedId', () => {
 		sinon.restore();
 	});
 	it('should get a rating from userid and serviceid and return status 200', async () => {
-		const value = {userId: 1, serviceId: 15};
+		const value = { userId: 1, serviceId: 15 };
 		const req = mockReq({
 			body: value,
 		});
@@ -258,7 +254,7 @@ describe('Rating controller getRatingByUserAndSerivedId', () => {
 	it('should fail to get a rating from userid and serviceid and return status 404', async () => {
 		const value = {
 			userId: '1',
-			serviceId: '15'
+			serviceId: '15',
 		};
 		const req = mockReq({
 			body: value,

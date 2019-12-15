@@ -5,7 +5,6 @@ import userService from '../services/userService';
 import { User } from '../entity/user';
 import { TutorInfo } from '../entity/tutorInfo';
 import UserService from '../services/userService';
-import AuthController from './authController';
 
 class UserController {
 	static listAll = async (req: Request, res: Response): Promise<Response> => {
@@ -63,7 +62,6 @@ class UserController {
 			firstName,
 			lastName,
 			address,
-			password,
 			email,
 			phoneNumber,
 			dateOfBirth,
@@ -71,7 +69,6 @@ class UserController {
 			languages,
 			subjectsOfInterest,
 			avatarUrl,
-			roles,
 		} = req.body;
 
 		//Try to find user on database

@@ -30,9 +30,13 @@ class RatingService {
 	static getRatingByUserAndServiceId = async (userId: number, serviceId: number): Promise<Rating> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
 		return await ratingRepository
-		.createQueryBuilder('rating')
-		.select('rating')
-		.where('rating.service.id = :serviceId AND rating.user.id = :userId', {serviceId: serviceId, userId: userId }).getOne();
+			.createQueryBuilder('rating')
+			.select('rating')
+			.where('rating.service.id = :serviceId AND rating.user.id = :userId', {
+				serviceId: serviceId,
+				userId: userId,
+			})
+			.getOne();
 	};
 
 	static save = async (rating: Rating): Promise<Rating> => {
