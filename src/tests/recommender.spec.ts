@@ -83,123 +83,123 @@ describe('Recommender init service factor matrix', function() {
 });
 
 describe('Recommender populate user service matrix', function() {
+	const mockUser1: User = {
+		id: 1,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	};
+
+	const mockUser2: User = {
+		id: 2,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	};
+
+	const mockUser3: User = {
+		id: 3,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	};
+
+	const service1: Service = {
+		id: 1,
+		name: 'service1',
+		description: 'I am a service',
+		categories: null,
+		tutorInfo: null,
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+		image: '',
+	};
+	const service2: Service = {
+		id: 2,
+		name: 'service1',
+		description: 'I am a service',
+		categories: null,
+		tutorInfo: null,
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+		image: '',
+	};
+	const service3: Service = {
+		id: 3,
+		name: 'service1',
+		description: 'I am a service',
+		categories: null,
+		tutorInfo: null,
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+		image: '',
+	};
+
+	const rating1: Rating = {
+		id: 1,
+		rating: 5,
+		description: 'rating 1',
+		user: mockUser1,
+		service: service1,
+	};
+	const rating2: Rating = {
+		id: 2,
+		rating: 3,
+		description: 'rating 2',
+		user: mockUser2,
+		service: service2,
+	};
+	const rating3: Rating = {
+		id: 3,
+		rating: 2,
+		description: 'rating 2',
+		user: mockUser3,
+		service: service3,
+	};
+
 	it('populates the array', async function() {
-		const mockUser1: User = {
-			id: 1,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const mockUser2: User = {
-			id: 2,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const mockUser3: User = {
-			id: 3,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const service1: Service = {
-			id: 1,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service2: Service = {
-			id: 2,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service3: Service = {
-			id: 3,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-
-		const rating1: Rating = {
-			id: 1,
-			rating: 5,
-			description: 'rating 1',
-			user: mockUser1,
-			service: service1,
-		};
-		const rating2: Rating = {
-			id: 2,
-			rating: 3,
-			description: 'rating 2',
-			user: mockUser2,
-			service: service2,
-		};
-		const rating3: Rating = {
-			id: 3,
-			rating: 2,
-			description: 'rating 2',
-			user: mockUser3,
-			service: service3,
-		};
-
 		const allRatings: Rating[] = [];
 		allRatings.push(rating1);
 		allRatings.push(rating2);
@@ -219,122 +219,6 @@ describe('Recommender populate user service matrix', function() {
 	});
 
 	it('only populates the diagonal', async function() {
-		const mockUser1: User = {
-			id: 1,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const mockUser2: User = {
-			id: 2,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const mockUser3: User = {
-			id: 3,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const service1: Service = {
-			id: 1,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service2: Service = {
-			id: 2,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service3: Service = {
-			id: 3,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-
-		const rating1: Rating = {
-			id: 1,
-			rating: 5,
-			description: 'rating 1',
-			user: mockUser1,
-			service: service1,
-		};
-		const rating2: Rating = {
-			id: 2,
-			rating: 3,
-			description: 'rating 2',
-			user: mockUser2,
-			service: service2,
-		};
-		const rating3: Rating = {
-			id: 3,
-			rating: 2,
-			description: 'rating 2',
-			user: mockUser3,
-			service: service3,
-		};
-
 		const allRatings: Rating[] = [];
 		allRatings.push(rating1);
 		allRatings.push(rating2);
@@ -366,101 +250,101 @@ describe('Recommender populate user service matrix', function() {
 });
 
 describe('Recommender unit user service matrix', function() {
-	it('populates the array', async function() {
-		const mockUser1: User = {
-			id: 1,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
+	const mockUser1: User = {
+		id: 1,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	};
 
-		const mockUser2: User = {
-			id: 2,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
+	const mockUser2: User = {
+		id: 2,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	};
 
-		const mockUser3: User = {
-			id: 3,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
+	const mockUser3: User = {
+		id: 3,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	};
 
-		const service1: Service = {
-			id: 1,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service2: Service = {
-			id: 2,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service3: Service = {
-			id: 3,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
+	const service1: Service = {
+		id: 1,
+		name: 'service1',
+		description: 'I am a service',
+		categories: null,
+		tutorInfo: null,
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+		image: '',
+	};
+	const service2: Service = {
+		id: 2,
+		name: 'service1',
+		description: 'I am a service',
+		categories: null,
+		tutorInfo: null,
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+		image: '',
+	};
+	const service3: Service = {
+		id: 3,
+		name: 'service1',
+		description: 'I am a service',
+		categories: null,
+		tutorInfo: null,
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+		image: '',
+	};
 
+	it('populates the matrix with zeroes', async function() {
 		const allUsers: User[] = [];
 		allUsers.push(mockUser1);
 		allUsers.push(mockUser2);
@@ -479,106 +363,18 @@ describe('Recommender unit user service matrix', function() {
 
 		const res = initUserServiceMatrix(3, 3, allUsers, allServices, userServiceMatrix);
 
-		expect(res[1][1]).to.not.equal(999);
-		expect(res[2][2]).to.not.equal(999);
-		expect(res[3][3]).to.not.equal(999);
+		expect(res[1][1]).to.equal(0);
+		expect(res[1][2]).to.equal(0);
+		expect(res[1][3]).to.equal(0);
+		expect(res[2][1]).to.equal(0);
+		expect(res[2][2]).to.equal(0);
+		expect(res[2][3]).to.equal(0);
+		expect(res[3][1]).to.equal(0);
+		expect(res[3][2]).to.equal(0);
+		expect(res[3][3]).to.equal(0);
 	});
 
-	it('populates non-diagonal with zeroes', async function() {
-		const mockUser1: User = {
-			id: 1,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const mockUser2: User = {
-			id: 2,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const mockUser3: User = {
-			id: 3,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		};
-
-		const service1: Service = {
-			id: 1,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service2: Service = {
-			id: 2,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-		const service3: Service = {
-			id: 3,
-			name: 'service1',
-			description: 'I am a service',
-			categories: null,
-			tutorInfo: null,
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-			image: '',
-		};
-
+	it('populates matrix with zeroes', async function() {
 		const allUsers: User[] = [];
 		allUsers.push(mockUser1);
 		allUsers.push(mockUser2);
