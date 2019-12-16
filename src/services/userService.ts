@@ -55,12 +55,11 @@ class UserService {
 		const tutorInfoRepository: Repository<TutorInfo> = getRepository(TutorInfo);
 		const restutorInfo = await tutorInfoRepository
 			.createQueryBuilder('tutorInfo')
-			.select(['tutorInfo.id', 'tutorInfo.description', 'tutorInfo.acceptedPayments', 'tutorInfo.user'])
+			.select(['tutorInfo.id', 'tutorInfo.description', 'tutorInfo.acceptedPayments'])
 			.innerJoin('tutorInfo.user', 'user')
 			.addSelect('user.id')
-			.innerJoin('tutorInfo.services', 'service')
-			.addSelect(['service.id', 'service.name', 'service.description'])
 			.where('user.id = :userId', { userId: userId })
+			.leftJoinAndSelect('tutorInfo.services', 'service')
 			.getOne();
 
 		return restutorInfo;
