@@ -130,6 +130,44 @@ class UserController {
 			userLogger.error(errors);
 			return res.status(400).send(errors);
 		}
+		let alreadyTutor: TutorInfo;
+		try {
+			alreadyTutor = await userService.getTutorByUserId(userId);
+		} catch (error) {
+			userLogger.error(error);
+			return res.status(500).send(error);
+		}
+		if (alreadyTutor === undefined && roles.includes('TUTOR')) {
+			const tutorInfo: TutorInfo = new TutorInfo();
+			tutorInfo.description = '';
+			tutorInfo.acceptedPayments = [];
+			tutorInfo.services = [];
+			tutorInfo.user = user;
+
+			//Validate if the parameters are ok
+			const errors: ValidationError[] = await validate(tutorInfo);
+			if (errors.length > 0) {
+				return res.status(400).send(errors);
+			}
+
+			let createdTutorInfo;
+			try {
+				createdTutorInfo = await userService.saveTutor(tutorInfo);
+			} catch (error) {
+				userLogger.error(error);
+				return res.status(400).send('TutorInfo could not be saved');
+			}
+
+			//If all ok, send 201 response
+			const tutorInfoForLog: string =
+				'Created: ' +
+				createdTutorInfo.id.toString() +
+				', ' +
+				createdTutorInfo.user.email +
+				', ' +
+				createdTutorInfo.description;
+			userLogger.info(tutorInfoForLog);
+		}
 
 		try {
 			await userService.save(user);
