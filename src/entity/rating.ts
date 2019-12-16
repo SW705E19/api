@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from './user';
 import { Service } from './service';
 import { IsInt, Min, Max } from 'class-validator';
@@ -20,8 +20,17 @@ export class Rating {
 	description: string;
 
 	@ManyToOne(type => User, user => user.ratings)
+	@JoinColumn({name: 'userId'})
 	user: User;
 
+	@Column({type: 'int'})
+	userId: number;
+
 	@ManyToOne(type => Service, service => service.ratings, { onDelete: 'CASCADE'})
+	@JoinColumn({name: 'serviceId'})
 	service: Service;
+
+	@Column({type: 'int'})
+	serviceId: number;
 }
+
