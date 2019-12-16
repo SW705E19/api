@@ -19,7 +19,7 @@ export class Rating {
 	})
 	description: string;
 
-	@ManyToOne(type => User, user => user.ratings)
+	@ManyToOne(type => User, user => user.ratings, { onDelete: 'CASCADE'})
 	@JoinColumn({name: 'userId'})
 	user: User;
 
