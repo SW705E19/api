@@ -5,9 +5,11 @@ const router = Router();
 
 router.get('/', RatingController.listAll);
 
-router.post('/', RatingController.newRating);
+router.put('/', RatingController.newRating);
 
 router.get('/avg/:id([0-9]+)', RatingController.getAverageRatingByServiceId);
+
+router.post('/userIdServiceId', RatingController.getRatingByUserAndServiceId);
 
 router.get('/top/:amount([0-9]+)', RatingController.getTopRatings);
 
