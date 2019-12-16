@@ -183,6 +183,8 @@ describe('Recommender populate user service matrix', function() {
 		description: 'rating 1',
 		user: mockUser1,
 		service: service1,
+		userId: 1,
+		serviceId: 1,
 	};
 	const rating2: Rating = {
 		id: 2,
@@ -190,6 +192,8 @@ describe('Recommender populate user service matrix', function() {
 		description: 'rating 2',
 		user: mockUser2,
 		service: service2,
+		userId: 2,
+		serviceId: 2,
 	};
 	const rating3: Rating = {
 		id: 3,
@@ -197,6 +201,8 @@ describe('Recommender populate user service matrix', function() {
 		description: 'rating 2',
 		user: mockUser3,
 		service: service3,
+		userId: 3,
+		serviceId: 3,
 	};
 
 	it('populates the array', async function() {
