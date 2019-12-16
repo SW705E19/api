@@ -360,7 +360,7 @@ describe('Rating controller newRating', () => {
 		sinon.stub(validator, 'validate').resolves([]);
 		sinon.stub(RatingService, 'save').throws();
 		const ratingRes = await RatingController.newRating(req, res);
-		expect(ratingRes).to.equal('Could not create rating');
+		expect(ratingRes).to.equal('Could not save rating');
 	});
 });
 describe('Rating controller getRatingByUserAndSerivedId', () => {
