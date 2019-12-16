@@ -17,7 +17,7 @@ export class Service {
 	@Length(2, 140)
 	name: string;
 
-	@ManyToOne(type => TutorInfo, tutorInfo => tutorInfo.services)
+	@ManyToOne(type => TutorInfo, tutorInfo => tutorInfo.services, { onDelete: 'CASCADE'})
 	tutorInfo: TutorInfo;
 
 	@ManyToMany(type => Category, category => category.services)

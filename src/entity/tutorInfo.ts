@@ -8,7 +8,7 @@ export class TutorInfo {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(type => User, user => user.tutorInfo)
+	@OneToOne(type => User, user => user.tutorInfo, { onDelete: 'CASCADE'})
 	@JoinColumn({name: 'userId'})
 	user: User;
 
