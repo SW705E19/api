@@ -11,4 +11,6 @@ router.get('/avg/:id([0-9]+)', RatingController.getAverageRatingByServiceId);
 
 router.get('/userIdServiceId', RatingController.getRatingByUserAndServiceId);
 
+router.get('/top/:amount([0-9]+)', RatingController.getTopRatings);
+
 export default router;
