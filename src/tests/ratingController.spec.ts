@@ -174,7 +174,7 @@ describe('Rating controller tests', () => {
 		await RatingController.getAverageRatingByServiceId(req, res);
 		expect(res.statusCode).to.equal(404);
 	});
-  it('Get top five average ratings returns 200', async () => {
+	it('Get top five average ratings returns 200', async () => {
 		const req = mockReq();
 		const res = mockRes({
 			status: function(s: number) {

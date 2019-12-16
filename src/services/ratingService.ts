@@ -28,7 +28,6 @@ class RatingService {
 		return ratings;
 	};
 
-
 	static getRatingByUserAndServiceId = async (userId: number, serviceId: number): Promise<Rating> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);
 		return await ratingRepository
@@ -39,7 +38,7 @@ class RatingService {
 				userId: userId,
 			})
 			.getOne();
-  };
+	};
 
 	static getTopRatings = async (amount: number): Promise<object[]> => {
 		const ratingRepository: Repository<Rating> = getRepository(Rating);

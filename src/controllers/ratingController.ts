@@ -84,7 +84,7 @@ class RatingController {
 			return res.status(404).send('Could not find rating');
 		}
 		return res.status(200).send(rating);
-  };
+	};
 
 	static getTopRatings = async (req: Request, res: Response): Promise<Response> => {
 		const amount = (req.params.amount as unknown) as number;
@@ -97,7 +97,7 @@ class RatingController {
 			return res.status(404).send('Could not get average ratings');
 		}
 		return res.status(200).send(ratings);
-  };
+	};
 }
 
 export default RatingController;
