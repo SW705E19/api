@@ -7,22 +7,21 @@ import * as cors from 'cors';
 import routes from './routes';
 
 //Connects to the Database -> then starts the express
-createConnection()
-	.then(async () => {
-		// Create a new express application instance
-		const app = express();
+createConnection();
 
-		// Call midlewares
-		app.use(cors());
-		app.use(helmet());
-		app.use(bodyParser.json());
+const app = express();
 
-		//Set all routes from routes folder
-		app.use('/', routes);
+// Call midlewares
+app.use(cors());
+app.use(helmet());
+app.use(bodyParser.json());
 
-		const port = 8393;
-		app.listen(port, () => {
-			console.log(`Server started on port ${port}`);
-		});
-	})
-	.catch(error => console.log(error));
+//Set all routes from routes folder
+app.use('/', routes);
+
+const port = 8393;
+const server = app.listen(port, () => {
+	console.log(`Server started on port ${port}`);
+});
+
+export default server;

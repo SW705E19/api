@@ -5,7 +5,7 @@ import { Rating } from '../entity/rating';
 import { User } from '../entity/user';
 import { Service } from '../entity/service';
 
-function dotMatrices(
+export function dotMatrices(
 	numberOfRows: number,
 	numberOfCols: number,
 	numberOfFactors: number,
@@ -28,7 +28,11 @@ function dotMatrices(
 	return predictedRatings;
 }
 
-function initUserFactorMatrix(numberOfRows: number, numberOfFactors: number, userFactorMatrix: number[][]): number[][] {
+export function initUserFactorMatrix(
+	numberOfRows: number,
+	numberOfFactors: number,
+	userFactorMatrix: number[][],
+): number[][] {
 	for (let i = 0; i < numberOfRows; i++) {
 		userFactorMatrix[i] = []; // Initialize inner array
 		for (let j = 0; j < numberOfFactors; j++) {
@@ -39,7 +43,7 @@ function initUserFactorMatrix(numberOfRows: number, numberOfFactors: number, use
 	return userFactorMatrix;
 }
 
-function initServiceFactorMatrix(
+export function initServiceFactorMatrix(
 	numberOfCols: number,
 	numberOfFactors: number,
 	serviceFactorMatrix: number[][],
@@ -54,7 +58,7 @@ function initServiceFactorMatrix(
 	return serviceFactorMatrix;
 }
 
-function populateUserServiceMatrix(
+export function populateUserServiceMatrix(
 	allRatings: Rating[],
 	numberOfRows: number,
 	numberOfCols: number,
@@ -82,7 +86,7 @@ function populateUserServiceMatrix(
 	return userServiceMatrix;
 }
 
-function initUserServiceMatrix(
+export function initUserServiceMatrix(
 	numberOfRows: number,
 	numberOfCols: number,
 	allUsers: User[],

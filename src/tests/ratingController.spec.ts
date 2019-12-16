@@ -286,4 +286,30 @@ describe('Rating controller tests', () => {
 		await RatingController.newRating(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
+
+	it('should fail to create a new rating and return error message', async () => {
+		const rating = {
+			rating: '3',
+			description: 'I am a 3 rating',
+			service: new Service(),
+			user: new User(),
+		};
+		const req = mockReq({
+			body: rating,
+		});
+		const res = mockRes({
+			status: function() {
+				return {
+					send: (e: string): string => {
+						return e;
+					},
+				};
+			},
+		});
+
+		sinon.stub(validator, 'validate').resolves([]);
+		sinon.stub(RatingService, 'save').throws();
+		const ratingRes = await RatingController.newRating(req, res);
+		expect(ratingRes).to.equal('Could not create rating');
+	});
 });
