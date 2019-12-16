@@ -17,6 +17,8 @@ const mockRatings: Rating[] = [
 		description: 'I am 2 rating',
 		service: new Service(),
 		user: new User(),
+		userId: 1,
+		serviceId: 15,
 	},
 	{
 		id: 2,
@@ -24,6 +26,8 @@ const mockRatings: Rating[] = [
 		description: 'I am 4 rating',
 		service: new Service(),
 		user: new User(),
+		userId: 1,
+		serviceId: 15,
 	},
 ];
 
@@ -43,6 +47,8 @@ const mockAverageRatings: Rating[] = [
 			image: '',
 		},
 		user: new User(),
+		userId: 1,
+		serviceId: 2,
 	},
 	{
 		id: 4,
@@ -59,6 +65,8 @@ const mockAverageRatings: Rating[] = [
 			image: '',
 		},
 		user: new User(),
+		userId: 1,
+		serviceId: 2,
 	},
 ];
 describe('Rating controller tests', () => {
