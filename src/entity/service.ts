@@ -14,7 +14,7 @@ export class Service {
 	description: string;
 
 	@Column()
-	@Length(4, 140)
+	@Length(2, 140)
 	name: string;
 
 	@ManyToOne(type => TutorInfo, tutorInfo => tutorInfo.services)
