@@ -62,7 +62,6 @@ class UserService {
 			.leftJoinAndSelect('tutorInfo.services', 'service')
 			.getOne();
 
-			console.log(restutorInfo)
 		return restutorInfo;
 	};
 
