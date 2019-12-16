@@ -245,6 +245,24 @@ describe('Rating controller getRatingByUserAndSerivedId', () => {
 			body: value,
 		});
 		const res = mockRes({
+			status: function() {
+				return {
+					send: (e: Rating): Rating => {
+						return e;
+					},
+				};
+			},
+		});
+		sinon.stub(RatingService, 'getRatingByUserAndServiceId').resolves(mockRatings[0]);
+		const result = await RatingController.getRatingByUserAndServiceId(req, res);
+		expect(result).equals(mockRatings[0]);
+	});
+	it('should get a rating from userid and serviceid and return status 200', async () => {
+		const value = { userId: 1, serviceId: 15 };
+		const req = mockReq({
+			body: value,
+		});
+		const res = mockRes({
 			status: function(s: number) {
 				this.statusCode = s;
 				return this;
