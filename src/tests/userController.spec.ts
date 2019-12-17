@@ -427,7 +427,7 @@ describe('Usercontroller edittutorrole', () => {
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
-	it('should fali to change tutor role to TUTOR when a tutorinfo does not exists and return 400 because it fails to save', async () => {
+	it('should fail to change tutor role to TUTOR when a tutorinfo does not exists and return 400 because it fails to save', async () => {
 		const req = mockReq({
 			body: ['TUTOR'],
 			params: {
@@ -448,7 +448,7 @@ describe('Usercontroller edittutorrole', () => {
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
-	it('should fali to change tutor role to TUTOR when a tutorinfo does not exists and return 400 because it fails to validate', async () => {
+	it('should fail to change tutor role to TUTOR when a tutorinfo does not exists and return 400 because it fails to validate', async () => {
 		const req = mockReq({
 			body: ['TUTOR'],
 			params: {
