@@ -12,59 +12,58 @@ import { DeleteResult } from 'typeorm';
 import { Rating } from '../entity/rating';
 import { Recommendation } from '../entity/recommendation';
 
-describe('User controller tests', () => {
-	const mockUsers: User[] = [
-		{
-			id: 1,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		},
-		{
-			id: 2,
-			email: 'john@bob.dk',
-			firstName: 'john',
-			lastName: 'bob',
-			password: 'admin',
-			roles: ['ADMIN'],
-			createdAt: new Date(),
-			updatedAt: new Date(),
-			tutorInfo: null,
-			phoneNumber: '11223344',
-			education: '',
-			address: '',
-			dateOfBirth: new Date(),
-			avatarUrl: '',
-			languages: ['', ''],
-			subjectsOfInterest: ['', ''],
-			ratings: [new Rating(), new Rating()],
-			recommendations: [new Recommendation(), new Recommendation()],
-		},
-	];
-
-	const mockTutorInfo: TutorInfo = {
+const mockUsers: User[] = [
+	{
 		id: 1,
-		description: 'i am a tutor',
-		acceptedPayments: ['', ''],
-		services: [new Service(), new Service()],
-		user: mockUsers[0],
-		userId: 1,
-	};
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	},
+	{
+		id: 2,
+		email: 'john@bob.dk',
+		firstName: 'john',
+		lastName: 'bob',
+		password: 'admin',
+		roles: ['ADMIN'],
+		createdAt: new Date(),
+		updatedAt: new Date(),
+		tutorInfo: null,
+		phoneNumber: '11223344',
+		education: '',
+		address: '',
+		dateOfBirth: new Date(),
+		avatarUrl: '',
+		languages: ['', ''],
+		subjectsOfInterest: ['', ''],
+		ratings: [new Rating(), new Rating()],
+		recommendations: [new Recommendation(), new Recommendation()],
+	},
+];
 
+const mockTutorInfo: TutorInfo = {
+	id: 1,
+	description: 'i am a tutor',
+	acceptedPayments: ['', ''],
+	services: [new Service(), new Service()],
+	user: mockUsers[0],
+	userId: 1,
+};
+describe('User controller tests', () => {
 	afterEach(() => {
 		sinon.restore();
 	});
@@ -380,7 +379,33 @@ describe('User controller tests', () => {
 		await UserController.newTutor(req, res);
 		expect(res.statusCode).to.equal(400);
 	});
-	it('should change tutor role to TUTOR and return 200', async () => {
+});
+describe('Usercontroller edittutorrole', () => {
+	afterEach(() => {
+		sinon.restore();
+	});
+	it('should change tutor role to TUTOR when a tutorinfo already exists and return 200', async () => {
+		const req = mockReq({
+			body: ['TUTOR'],
+			params: {
+				id: 200,
+			},
+		});
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+
+		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'getTutorByUserId').resolves(mockTutorInfo);
+		sinon.stub(UserService, 'save').resolves();
+		sinon.stub(validator, 'validate').resolves([]);
+		await UserController.editTutorRole(req, res);
+		expect(res.statusCode).to.equal(200);
+	});
+	it('should change tutor role to TUTOR when a tutorinfo does not exists and return 200', async () => {
 		const req = mockReq({
 			body: ['TUTOR'],
 			params: {
@@ -395,12 +420,54 @@ describe('User controller tests', () => {
 		});
 
 		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'getTutorByUserId').resolves(undefined);
+		sinon.stub(UserService, 'saveTutor').resolves(mockTutorInfo);
 		sinon.stub(UserService, 'save').resolves();
 		sinon.stub(validator, 'validate').resolves([]);
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(200);
 	});
+	it('should fail to change tutor role to TUTOR when a tutorinfo does not exists and return 400 because it fails to save', async () => {
+		const req = mockReq({
+			body: ['TUTOR'],
+			params: {
+				id: 1,
+			},
+		});
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
 
+		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'getTutorByUserId').resolves(undefined);
+		sinon.stub(UserService, 'saveTutor').throws();
+		sinon.stub(validator, 'validate').resolves([]);
+		await UserController.editTutorRole(req, res);
+		expect(res.statusCode).to.equal(400);
+	});
+	it('should fail to change tutor role to TUTOR when a tutorinfo does not exists and return 400 because it fails to validate', async () => {
+		const req = mockReq({
+			body: ['TUTOR'],
+			params: {
+				id: 1,
+			},
+		});
+		const res = mockRes({
+			status: function(s: number) {
+				this.statusCode = s;
+				return this;
+			},
+		});
+
+		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'getTutorByUserId').resolves(undefined);
+		sinon.stub(validator, 'validate').resolves([new ValidationError()]);
+		await UserController.editTutorRole(req, res);
+		expect(res.statusCode).to.equal(400);
+	});
 	it('should fail to change role because it cant find user and return 404', async () => {
 		const req = mockReq({
 			body: ['TUTOR'],
@@ -418,7 +485,7 @@ describe('User controller tests', () => {
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(404);
 	});
-	it('should fail to change tutor role to TUTOR and return 400', async () => {
+	it('should fail to save the change of tutor role to TUTOR and return 400', async () => {
 		const req = mockReq({
 			body: ['TUTOR'],
 			params: {
@@ -433,6 +500,7 @@ describe('User controller tests', () => {
 		});
 
 		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
+		sinon.stub(UserService, 'getTutorByUserId').resolves(mockTutorInfo[0]);
 		sinon.stub(UserService, 'save').throws();
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(400);
@@ -452,7 +520,7 @@ describe('User controller tests', () => {
 		});
 
 		sinon.stub(UserService, 'getById').resolves(mockUsers[0]);
-		sinon.stub(UserService, 'save').resolves();
+		sinon.stub(UserService, 'save').resolves(mockUsers[0]);
 		sinon.stub(validator, 'validate').resolves([new ValidationError()]);
 		await UserController.editTutorRole(req, res);
 		expect(res.statusCode).to.equal(400);

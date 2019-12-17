@@ -130,15 +130,52 @@ class UserController {
 			userLogger.error(errors);
 			return res.status(400).send(errors);
 		}
-
 		try {
-			await userService.save(user);
+			await userService.getTutorByUserId(userId).then(async alreadyTutor => {
+				if (alreadyTutor === undefined && roles.includes('TUTOR')) {
+					const tutorInfo: TutorInfo = new TutorInfo();
+					tutorInfo.description = '';
+					tutorInfo.acceptedPayments = [];
+					tutorInfo.services = [];
+					tutorInfo.user = user;
+
+					//Validate if the parameters are ok
+					const errors: ValidationError[] = await validate(tutorInfo);
+					if (errors.length > 0) {
+						return res.status(400).send(errors);
+					}
+
+					let createdTutorInfo;
+					try {
+						createdTutorInfo = await userService.saveTutor(tutorInfo);
+					} catch (error) {
+						userLogger.error(error);
+						return res.status(400).send('TutorInfo could not be saved');
+					}
+
+					//If all ok, send 200 response
+					const tutorInfoForLog: string =
+						'Created: ' +
+						createdTutorInfo.id.toString() +
+						', ' +
+						createdTutorInfo.user.email +
+						', ' +
+						createdTutorInfo.description;
+					userLogger.info(tutorInfoForLog);
+				}
+				try {
+					await userService.save(user);
+				} catch (error) {
+					userLogger.error(error);
+					return res.status(400).send(error);
+				}
+
+				return res.status(200).send(user);
+			});
 		} catch (error) {
 			userLogger.error(error);
-			return res.status(400).send(error);
+			return res.status(500).send(error);
 		}
-
-		return res.status(200).send(user);
 	};
 
 	static deleteUser = async (req: Request, res: Response): Promise<Response> => {
