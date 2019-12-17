@@ -10,7 +10,7 @@ export function dotMatrices(
 	numberOfCols: number,
 	numberOfFactors: number,
 	userFactorMatrix: number[][],
-	serviceFactorMatrix: number[][],
+	factorServiceMatrix: number[][],
 ): number[][] {
 	const predictedRatings: number[][] = [];
 	let sum = 0;
@@ -18,7 +18,7 @@ export function dotMatrices(
 		predictedRatings[i] = [];
 		for (let j = 0; j < numberOfCols; j++) {
 			for (let k = 0; k < numberOfFactors; k++) {
-				sum = sum + userFactorMatrix[i][k] * serviceFactorMatrix[k][j];
+				sum = sum + userFactorMatrix[i][k] * factorServiceMatrix[k][j];
 			}
 			predictedRatings[i][j] = sum;
 			sum = 0;
@@ -43,19 +43,19 @@ export function initUserFactorMatrix(
 	return userFactorMatrix;
 }
 
-export function initServiceFactorMatrix(
+export function initFactorServiceMatrix(
 	numberOfCols: number,
 	numberOfFactors: number,
-	serviceFactorMatrix: number[][],
+	factorServiceMatrix: number[][],
 ): number[][] {
 	for (let i = 0; i < numberOfFactors; i++) {
-		serviceFactorMatrix[i] = []; // Initialize inner array
+		factorServiceMatrix[i] = []; // Initialize inner array
 		for (let j = 0; j < numberOfCols; j++) {
-			serviceFactorMatrix[i][j] = Math.random() * 1;
+			factorServiceMatrix[i][j] = Math.random() * 1;
 		}
 	}
 
-	return serviceFactorMatrix;
+	return factorServiceMatrix;
 }
 
 export function populateUserServiceMatrix(
@@ -129,7 +129,7 @@ export default class Recommender {
 		let userServiceMatrix: number[][] = [];
 		let predictedRatings: number[][] = [];
 		let userFactorMatrix: number[][] = [];
-		let serviceFactorMatrix: number[][] = [];
+		let factorServiceMatrix: number[][] = [];
 
 		//Makes users x service matrix. Initializes all entries to 0.
 		userServiceMatrix = initUserServiceMatrix(numberOfRows, numberOfCols, allUsers, allServices, userServiceMatrix);
@@ -141,7 +141,7 @@ export default class Recommender {
 		userFactorMatrix = initUserFactorMatrix(numberOfRows, numberOfFactors, userFactorMatrix);
 
 		//Creates the serviceFactor facorization. All entries are filled with random value between 0 and 1.
-		serviceFactorMatrix = initServiceFactorMatrix(numberOfCols, numberOfFactors, serviceFactorMatrix);
+		factorServiceMatrix = initFactorServiceMatrix(numberOfCols, numberOfFactors, factorServiceMatrix);
 
 		for (let i = 0; i < maxIterations; i++) {
 			//To predict we take the dot product of the factor matrices. They are users x factors and factors x services. This creates a users x services matrix with all values filled.
@@ -150,7 +150,7 @@ export default class Recommender {
 				numberOfCols,
 				numberOfFactors,
 				userFactorMatrix,
-				serviceFactorMatrix,
+				factorServiceMatrix,
 			);
 
 			//We learn by moving towards a solution where the error is minimized by updating the values in the factor matrices.
@@ -166,10 +166,10 @@ export default class Recommender {
 						for (let k = 0; k < numberOfFactors; k++) {
 							userFactorMatrix[i][k] =
 								userFactorMatrix[i][k] +
-								alphaValue * (error * serviceFactorMatrix[k][j] - betaValue * userFactorMatrix[i][k]);
-							serviceFactorMatrix[k][j] =
-								serviceFactorMatrix[k][j] +
-								alphaValue * (error * userFactorMatrix[i][k] - betaValue * serviceFactorMatrix[k][j]);
+								alphaValue * (error * factorServiceMatrix[k][j] - betaValue * userFactorMatrix[i][k]);
+							factorServiceMatrix[k][j] =
+								factorServiceMatrix[k][j] +
+								alphaValue * (error * userFactorMatrix[i][k] - betaValue * factorServiceMatrix[k][j]);
 						}
 					}
 				}
@@ -181,7 +181,7 @@ export default class Recommender {
 				numberOfCols,
 				numberOfFactors,
 				userFactorMatrix,
-				serviceFactorMatrix,
+				factorServiceMatrix,
 			);
 			//Then we calculate the regularized squared error of our new prediction.
 			//This value should move toward 0.
@@ -195,7 +195,7 @@ export default class Recommender {
 							squareError =
 								squareError +
 								betaValue *
-									(Math.pow(userFactorMatrix[i][k], 2) + Math.pow(serviceFactorMatrix[k][j], 2));
+									(Math.pow(userFactorMatrix[i][k], 2) + Math.pow(factorServiceMatrix[k][j], 2));
 						}
 					}
 				}
