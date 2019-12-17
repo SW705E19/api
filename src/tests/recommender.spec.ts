@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import {
 	dotMatrices,
 	initUserFactorMatrix,
-	initServiceFactorMatrix,
+	initFactorServiceMatrix,
 	populateUserServiceMatrix,
 	initUserServiceMatrix,
 } from '../recommender/recommender';
@@ -75,7 +75,7 @@ describe('Recommender init service factor matrix', function() {
 		constmatrix.push([999, 999]);
 
 		sinon.stub(Math, 'random').returns(999);
-		const res = initServiceFactorMatrix(2, 3, []);
+		const res = initFactorServiceMatrix(2, 3, []);
 
 		expect(JSON.stringify(res)).to.equal(JSON.stringify(constmatrix));
 		sinon.restore();
