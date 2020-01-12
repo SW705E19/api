@@ -123,7 +123,14 @@ class AuthController {
 		const userInfoForLog =
 			'Created: ' + user.id.toString() + ', ' + user.email + ', ' + user.roles + ', ' + user.createdAt.toString();
 		userLogger.info(userInfoForLog);
-		return res.status(201).send(user);
+
+		//Sign JWT, valid for 1 hour
+		const token = jwt.sign({ userId: user.id, email: user.email, roles: user.roles }, config.jwtSecret, {
+			expiresIn: '1h',
+		});
+
+		//Send the jwt in the response
+		return res.status(200).send(token);
 	};
 }
 export default AuthController;
