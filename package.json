@@ -60,7 +60,7 @@
       "sqlite3": "^4.0.3",
       "supertest": "^4.0.2",
       "ts-node-dev": "^1.0.0-pre.42",
-      "typeorm": "^0.2.18"
+      "typeorm": "^0.2.25"
    },
    "scripts": {
       "test": "mocha -r ts-node/register src/tests/*.ts",
