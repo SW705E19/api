@@ -49,7 +49,7 @@
       "eslint": "^6.6.0",
       "eslint-config-prettier": "^6.5.0",
       "eslint-plugin-prettier": "^3.1.1",
-      "express": "^4.15.4",
+      "express": "^4.17.3",
       "express-request-id": "^1.4.1",
       "helmet": "^3.21.0",
       "husky": "^3.0.9",
